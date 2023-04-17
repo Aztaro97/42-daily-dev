@@ -47,6 +47,16 @@ export default function AsideBar({ isSidebarExtended, toggleVisible }) {
           <a>Reading History</a>
         </Menu.Item>
 
+		<Menu.Title>
+          <span>Admin</span>
+        </Menu.Title>
+        <Menu.Item  className="hover-bordered bordered">
+          <a>Privacy Policy</a>
+        </Menu.Item>
+        <Menu.Item  className="hover-bordered bordered">
+          <a>Terms of Use</a>
+        </Menu.Item>
+
         
       </Menu>
     </AsideContainer>
