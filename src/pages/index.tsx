@@ -31,7 +31,6 @@ function HomePage() {
   );
 }
 
-const Testing = tw.div`h-[2000px]`
-const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4`
+const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-7`
 
 export default HomePage;
