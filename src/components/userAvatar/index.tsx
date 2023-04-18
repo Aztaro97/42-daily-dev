@@ -8,6 +8,7 @@ import Image from "next/image";
 import { IoBookOutline } from "react-icons/io5";
 import { AiOutlineSetting } from "react-icons/ai";
 import { MdOutlineLogout } from "react-icons/md";
+import Link from "next/link";
 
 export default function NavUserAvatar() {
   const [theme] = useLocalStorage("theme", "night");
@@ -27,19 +28,27 @@ export default function NavUserAvatar() {
         className="w-52"
         dataTheme={theme}
       >
-        <Dropdown.Item>
-          <HiOutlineUser size={20} />
-          Profile
-        </Dropdown.Item>
-        <Dropdown.Item>
-          <IoBookOutline size={20} /> My Post
-        </Dropdown.Item>
-        <Dropdown.Item>
-          <BsBookmark size={20} /> My Bookmarks
-        </Dropdown.Item>
-        <Dropdown.Item>
-          <AiOutlineSetting size={20} /> Settings
-        </Dropdown.Item>
+        <Link href="/profile">
+          <Dropdown.Item>
+            <HiOutlineUser size={20} />
+            Profile
+          </Dropdown.Item>
+        </Link>
+        <Link href="/post">
+          <Dropdown.Item>
+            <IoBookOutline size={20} /> My Post
+          </Dropdown.Item>
+        </Link>
+        <Link href="/bookmark">
+          <Dropdown.Item>
+            <BsBookmark size={20} /> My Bookmarks
+          </Dropdown.Item>
+        </Link>
+        <Link href="/settings">
+          <Dropdown.Item>
+            <AiOutlineSetting size={20} /> Settings
+          </Dropdown.Item>
+        </Link>
         <Divider tw="my-0 py-0" />
         <Dropdown.Item>
           <MdOutlineLogout size={20} />

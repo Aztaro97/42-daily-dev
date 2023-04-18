@@ -1,8 +1,8 @@
 import Layout from '@/components/layout'
 import React from 'react'
 
-export default function PostPage() {
+export default function TermsPage() {
   return (
-	<Layout>PostPage</Layout>
+	<Layout>TermsPage</Layout>
   )
 }

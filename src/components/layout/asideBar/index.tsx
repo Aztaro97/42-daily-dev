@@ -56,27 +56,23 @@ export default function AsideBar({ isSidebarExtended, toggleVisible }: props) {
           <span>Others</span>
         </MenuTitle>
         <MenuItem>
-          <Link href="/">
-            {" "}
+          <Link href="/about">
             <HiOutlineUserGroup size={20} /> About
           </Link>
-        </MenuItem>
+        </MenuItem> 
         <MenuItem>
-          <Link href="/">
-            {" "}
+          <Link href="/contact">
             <SlEarphonesAlt size={20} />
             Contact
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link href="/">
-            {" "}
+          <Link href="/privacy">
             <MdOutlinePrivacyTip size={20} /> Privacy Policy
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link href="/">
-            {" "}
+          <Link href="/terms">
             <TfiWrite size={20} />
             Terms of Use
           </Link>

@@ -1,8 +1,8 @@
 import Layout from '@/components/layout'
 import React from 'react'
 
-export default function PostPage() {
+export default function ContactPage() {
   return (
-	<Layout>PostPage</Layout>
+	<Layout>ContactPage</Layout>
   )
 }
