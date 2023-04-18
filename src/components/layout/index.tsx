@@ -30,7 +30,7 @@ export default function Layout({ children }: props) {
         mobile={visible}
         onClickOverlay={toggleVisible}
 		tw="!h-[100vh - 65px]"
-        contentClassName={"p-5 relative top-[65px] mb-20"}
+        contentClassName={"py-5 px-20 relative top-[65px] mb-20 mt-10"}
         sideClassName="w-48 relative top-[65px]"
       >
         <main>{children}</main>

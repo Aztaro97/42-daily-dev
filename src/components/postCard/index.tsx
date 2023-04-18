@@ -31,7 +31,7 @@ function PostCard() {
 		<CardRightAction>
 			<Tooltip color="primary" message="View">
 				<CardActionIcon>
-					<GrView size={18} tw="fill-gray-400" />
+					<GrView size={18} tw="!stroke-gray-400" />
 					<span>12.6k</span>
 				</CardActionIcon>
 			</Tooltip>

@@ -15,6 +15,6 @@ const CustomButton = ({children, onClick, className, type, ...rest}: props) => {
   )
 }
 
-const ButtonStyled = tw(Button)`dark:bg-primary dark:text-white py-0 text-sm light:!bg-black hover:bg-primary light:text-gray-700 transition-all duration-300 ease-in-out` 
+const ButtonStyled = tw(Button)`bg-primary text-white py-0 text-sm transition-all duration-300 ease-in-out` 
 
 export default CustomButton
