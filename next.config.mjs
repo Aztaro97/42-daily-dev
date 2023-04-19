@@ -1,4 +1,5 @@
 import withTwin from "./withTwin.cjs";
+import { withContentlayer } from 'next-contentlayer'
 
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
 
@@ -9,4 +10,5 @@ const config = withTwin({
 	domains: ["i.pravatar.cc","daily-now-res.cloudinary.com"]
   }
 });
-export default config;
+
+export default withContentlayer(config);

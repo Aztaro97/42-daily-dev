@@ -1,15 +1,11 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "checkJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -22,9 +18,8 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "contentlayer/generated": ["./.contentlayer/generated"],
+      "@/*": ["./src/*"]
     },
     "plugins": [
       {
@@ -40,9 +35,8 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts",
-	"withTwin.cjc"
+    "withTwin.cjc",
+    ".contentlayer/generated"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

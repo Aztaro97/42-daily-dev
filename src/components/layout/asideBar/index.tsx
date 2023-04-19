@@ -40,7 +40,6 @@ export default function AsideBar({ isSidebarExtended, toggleVisible }: props) {
       <Menu>
         <MenuTitle>
           <span>Discover</span>
-<<<<<<< HEAD
         </MenuTitle>
         <MenuItem>
           <Link href="/">
@@ -78,43 +77,6 @@ export default function AsideBar({ isSidebarExtended, toggleVisible }: props) {
             Terms of Use
           </Link>
         </MenuItem>
-=======
-        </Menu.Title>
-		<Menu.Item className="hover-bordered bordered">
-          <a >PodCast</a>
-        </Menu.Item>
-        <Menu.Item className="hover-bordered bordered">
-          <a >Popular Posts</a>
-        </Menu.Item>
-        <Menu.Item  className="hover-bordered bordered">
-          <a>Most Like</a>
-        </Menu.Item>
-
-		<Menu.Title>
-          <span>Manage</span>
-        </Menu.Title>
-        <Menu.Item  className="hover-bordered bordered">
-          <a>Home</a>
-        </Menu.Item>
-        <Menu.Item  className="hover-bordered bordered">
-          <a>About</a>
-        </Menu.Item>
-		<Menu.Item  className="hover-bordered bordered">
-          <a>Contact</a>
-        </Menu.Item>
-
-		<Menu.Title>
-          <span>Other</span>
-        </Menu.Title>
-        <Menu.Item  className="hover-bordered bordered">
-          <a>Privacy Policy</a>
-        </Menu.Item>
-        <Menu.Item  className="hover-bordered bordered">
-          <a>Terms of Use</a>
-        </Menu.Item>
-
-        
->>>>>>> 24471d7 (Updated Aside Bar Content)
       </Menu>
     </AsideContainer>
   );
