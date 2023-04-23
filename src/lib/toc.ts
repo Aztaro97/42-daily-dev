@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { toc } from "mdast-util-toc";
 import { remark } from "remark"
 import { visit } from "unist-util-visit"
@@ -70,7 +72,7 @@ export const getTOC = () => (node, file) => {
 export type TableOfContents = Items
 
 export const getTableOfContent = async (content: string): Promise<TableOfContents> => {
-	const result = await remark.use(getTOC).process(content);
+	const result = await remark().use(getTOC).process(content);
 
 	return result.data;
 }

@@ -1,6 +1,7 @@
-import Editor from "@/components/editor";
-import React from "react";
-import Layout from "@/components/layout";
+import React from "react"
+
+import Editor from "@/components/editor"
+import Layout from "@/components/layout"
 
 export default function CreateNewPost() {
   return (
@@ -14,5 +15,5 @@ export default function CreateNewPost() {
         }}
       />
     </Layout>
-  );
+  )
 }

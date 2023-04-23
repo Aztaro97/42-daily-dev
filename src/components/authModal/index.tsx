@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button } from "react-daisyui";
-import useStore from "@/stores/useStore";
-import tw from "twin.macro";
-import { VscChromeClose } from "react-icons/vsc";
-import { useSession, signIn } from "next-auth/react";
-import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react"
+import { useRouter } from "next/router"
+import { signIn, useSession } from "next-auth/react"
+import { Button, Modal } from "react-daisyui"
+import { VscChromeClose } from "react-icons/vsc"
+import tw from "twin.macro"
+
+import useStore from "@/stores/useStore"
 
 export default function AuthModal() {
-	const [loading, setIsLoading] = useState<boolean>(false);
-  const { showModal, toggleModal } = useStore();
+  const [loading, setIsLoading] = useState<boolean>(false)
+  const { showModal, toggleModal } = useStore()
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
-  const callbackUrl = decodeURI((router.query?.callbackUrl as string) ?? "/");
-
+  const callbackUrl = decodeURI((router.query?.callbackUrl as string) ?? "/")
 
   const handleLogin = async () => {
-	setIsLoading(true)
+    setIsLoading(true)
     await signIn("42-school", {
       redirect: true,
       callbackUrl,
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-	if (session) {
-		setIsLoading(false)
-	}
+    if (session) {
+      setIsLoading(false)
+    }
   }, [loading])
 
   return (
@@ -51,9 +51,9 @@ export default function AuthModal() {
         </LoginButton>
       </Modal.Actions>
     </Modal>
-  );
+  )
 }
 
 const SubTitle = tw.h3`text-gray-400 text-2xl font-bold`
-const CloseButton = tw(Button)`w-12 h-12 rounded-full px-1`;
-const LoginButton = tw(Button)`w-full bg-primary`;
+const CloseButton = tw(Button)`w-12 h-12 rounded-full px-1`
+const LoginButton = tw(Button)`w-full bg-primary`

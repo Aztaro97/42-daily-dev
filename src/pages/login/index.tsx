@@ -1,22 +1,22 @@
-import React, { useEffect } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import tw from "twin.macro";
-import { useRouter } from "next/router";
+import React, { useEffect } from "react"
+import { useRouter } from "next/router"
+import { signIn, signOut, useSession } from "next-auth/react"
+import tw from "twin.macro"
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const router = useRouter()
+  const { data: session, status } = useSession()
 
-  const callbackUrl = decodeURI((router.query?.callbackUrl as string) ?? "/");
+  const callbackUrl = decodeURI((router.query?.callbackUrl as string) ?? "/")
 
-  console.log("callbackUrl", callbackUrl);
+  console.log("callbackUrl", callbackUrl)
 
   const handleLogin = async () => {
     await signIn("42-school", {
       redirect: true,
       callbackUrl,
-    });
-  };
+    })
+  }
 
   //   console.log("session", session)
 
@@ -39,12 +39,12 @@ export default function LoginPage() {
       ) : (
         <>
           <h1>Not signed in</h1>
-		   <br />
+          <br />
           <button onClick={handleLogin}>Sign in</button>
         </>
       )}
     </Container>
-  );
+  )
 }
 
-const Container = tw.div`min-h-screen w-full flex items-center justify-center `;
+const Container = tw.div`min-h-screen w-full flex items-center justify-center `

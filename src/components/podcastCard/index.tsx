@@ -8,7 +8,7 @@ import { BiCommentDots } from "react-icons/bi"
 import { GrView } from "react-icons/gr"
 import tw from "twin.macro"
 
-function PostCard() {
+function PodCastCard() {
   const [isLike, setIsLike] = useState<boolean>(false)
 
   const onLikePost = () => {
@@ -16,7 +16,7 @@ function PostCard() {
   }
 
   return (
-    <Link href="/ataro-ga/hello-how-are-you">
+    <Link href="/podcast/hello-how-are-you">
       <CardWrapper>
         <Card.Image
           src="https://daily-now-res.cloudinary.com/image/upload/v1679306271/96835229db75693a44e598609fe73bbb.jpg"
@@ -85,4 +85,4 @@ const CardActionIcon = styled.div`
   }
 `
 
-export default PostCard
+export default PodCastCard

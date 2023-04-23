@@ -1,8 +1,7 @@
-import Layout from '@/components/layout'
-import React from 'react'
+import React from "react"
+
+import Layout from "@/components/layout"
 
 export default function ContactPage() {
-  return (
-	<Layout>ContactPage</Layout>
-  )
+  return <Layout>ContactPage</Layout>
 }

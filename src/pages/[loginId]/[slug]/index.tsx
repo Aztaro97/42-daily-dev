@@ -1,11 +1,12 @@
-import Layout from "@/components/layout";
-import React from "react";
-import tw from "twin.macro";
-import { Avatar } from "react-daisyui";
-import Image from "next/image";
-import Link from "next/link";
-import styled from "@emotion/styled";
-import ShareButton from "@/components/shareButton";
+import React from "react"
+import Image from "next/image"
+import Link from "next/link"
+import styled from "@emotion/styled"
+import { Avatar } from "react-daisyui"
+import tw from "twin.macro"
+
+import Layout from "@/components/layout"
+import ShareButton from "@/components/shareButton"
 
 const PostPage = () => {
   return (
@@ -65,34 +66,36 @@ const PostPage = () => {
             luctus massa, mattis blandit curabitur mauris ultricies venenatis
             viverra dignissim nisl.
           </BodyWraper>
-		  <FlexWrapper>
-			<TagStyled>Tag: <span>#Libft</span>, <span>#FT_Container</span>, <span>#Born2BeRoot</span> </TagStyled>
-			<ShareButton />
-
-		</FlexWrapper>
+          <FlexWrapper>
+            <TagStyled>
+              Tag: <span>#Libft</span>, <span>#FT_Container</span>,{" "}
+              <span>#Born2BeRoot</span>{" "}
+            </TagStyled>
+            <ShareButton />
+          </FlexWrapper>
         </PostWraper>
         <RightElement>Related Post</RightElement>
       </Grid>
     </Layout>
-  );
-};
+  )
+}
 
-const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(300px, 1fr)_300px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`;
-const PostWraper = tw.div`w-full`;
-const PostDate = tw.p`text-sm text-gray-400`;
-const PostTitle = tw.h1`text-4xl text-white mb-4`;
-const BannerWrapper = tw.div``;
-const BannerImage = tw(Image)`w-full h-[400px] object-cover object-center mb-4`;
-const BodyWraper = tw.div`mb-4`;
-const AuthorLink = tw(Link)`flex items-center gap-2`;
-const Box = tw.div`flex justify-between gap-x-5 mb-4`;
+const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(300px, 1fr)_300px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`
+const PostWraper = tw.div`w-full`
+const PostDate = tw.p`text-sm text-gray-400`
+const PostTitle = tw.h1`text-4xl text-white mb-4`
+const BannerWrapper = tw.div``
+const BannerImage = tw(Image)`w-full h-[400px] object-cover object-center mb-4`
+const BodyWraper = tw.div`mb-4`
+const AuthorLink = tw(Link)`flex items-center gap-2`
+const Box = tw.div`flex justify-between gap-x-5 mb-4`
 const FlexWrapper = tw.div`flex items-center justify-between gap-5`
 const TagStyled = styled.p`
-	${tw`text-lg`}
-	& span {
-		${tw`border-b border-primary`}
-	}
+  ${tw`text-lg`}
+  & span {
+    ${tw`border-b border-primary`}
+  }
 `
-const RightElement = tw.div``;
+const RightElement = tw.div``
 
-export default PostPage;
+export default PostPage
