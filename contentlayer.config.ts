@@ -13,24 +13,24 @@ const computedFields = {
 	},
 }
 
-export const Post = defineDocumentType(() => ({
-	name: 'Post',
-	filePathPattern: `blog/**/*.mdx`,
-	contentType: "mdx",
-	fields: {
-		title: {
-			type: 'string',
-			description: 'The title of the post',
-			required: true,
-		},
-		date: {
-			type: 'date',
-			description: 'The date of the post',
-			required: true,
-		},
-	},
-	computedFields
-}))
+// export const Post = defineDocumentType(() => ({
+// 	name: 'Post',
+// 	filePathPattern: `blog/**/*.mdx`,
+// 	contentType: "mdx",
+// 	fields: {
+// 		title: {
+// 			type: 'string',
+// 			description: 'The title of the post',
+// 			required: true,
+// 		},
+// 		date: {
+// 			type: 'date',
+// 			description: 'The date of the post',
+// 			required: true,
+// 		},
+// 	},
+// 	computedFields
+// }))
 
 export const Docs = defineDocumentType(() => ({
 	name: 'Docs',
@@ -47,12 +47,15 @@ export const Docs = defineDocumentType(() => ({
 			description: 'The date of the post',
 			required: true,
 		},
+		
+
+
 	},
 	computedFields
 }))
 
 export default makeSource({
 	contentDirPath: './src/contents',
-	documentTypes: [Post, Docs],
+	documentTypes: [Docs],
 	mdx: mdxPlugins
 })
