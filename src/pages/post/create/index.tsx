@@ -9,7 +9,7 @@ export default function CreateNewPost() {
       <Editor
         post={{
           id: "Hellowdjwkdkqdnq",
-          title: "Hello word",
+          title: "",
           content: null,
           published: false,
         }}

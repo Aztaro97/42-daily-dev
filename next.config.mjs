@@ -8,7 +8,7 @@ import { withContentlayer } from "next-contentlayer";
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["i.pravatar.cc", "daily-now-res.cloudinary.com"],
+    domains: ["i.pravatar.cc", "daily-now-res.cloudinary.com", "res.cloudinary.com"],
   },
   //   swcMinify: true,
   //   webpack: (config) => {

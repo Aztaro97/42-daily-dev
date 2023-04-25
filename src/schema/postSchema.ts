@@ -2,7 +2,7 @@ import * as z from "zod"
 
 export const postSchema = z.object({
 	id:z.string(),
-	title: z.string().min(3).max(128).optional(),
+	title: z.string().max(128),
 	content: z.any().optional(),
 	published: z.boolean(),
 })

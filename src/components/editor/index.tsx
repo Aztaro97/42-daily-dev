@@ -1,13 +1,19 @@
-import React, { useCallback, useEffect, useRef } from "react"
-import EditorJS from "@editorjs/editorjs"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import Image from "next/image"
+import EditorJS, { EditorConfig } from "@editorjs/editorjs"
+import styled from "@emotion/styled"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { FileInput } from "react-daisyui"
+import { Divider } from "react-daisyui"
 import { useForm } from "react-hook-form"
+import { FiUploadCloud } from "react-icons/fi"
+import ImageUploading, { ImageListType } from "react-images-uploading"
 import TextareaAutosize from "react-textarea-autosize"
 import tw from "twin.macro"
 import { z } from "zod"
 
-import CustomButtom from "@/components/ui/button"
+import { api } from "@/utils/api"
+import { convertToBase64 } from "@/utils/utils"
+import CustomButton from "@/components/ui/customButton"
 import { postSchema } from "@/schema/postSchema"
 
 interface editorProps {
@@ -16,14 +22,56 @@ interface editorProps {
 
 type FormData = z.infer<typeof postSchema>
 
+const EDITOR_HOLDER_ID = "editorJs"
+
 export default function Editor({ post }: editorProps) {
-  const [isMounted, setIsMounted] = React.useState<boolean>(false)
+  const [isMounted, setIsMounted] = useState<boolean>(false)
+  const [imageFile, setImageFile] = useState<ImageListType>([])
+  const ref = useRef<EditorJS>()
+
+  let allImageUploaded : string[] = []
 
   const { register, handleSubmit } = useForm<FormData>({
     resolver: zodResolver(postSchema),
   })
 
-  const ref = useRef<EditorJS>()
+  const uploadEditorImage = api.blog.uploadEditorImage.useMutation()
+  const deleteEditorImage = api.blog.deleteEditorImage.useMutation()
+
+  const onChangeImage = (
+    imageList: ImageListType,
+    addUpdateIndex: number[],
+  ) => {
+    console.log(imageList, addUpdateIndex)
+    setImageFile(imageList)
+  }
+
+  const handleChange = () => {
+    const currentImages: string[] = []
+	
+    document.querySelectorAll(".image-tool__image-picture").forEach((x) => {
+      const path = x.src.match(/\/*.*$/g)[0]
+      currentImages.push(path)
+    })
+
+    if (allImageUploaded.length > currentImages.length) {
+      allImageUploaded.forEach(async (img) => {
+        if (!currentImages.includes(img)) {
+          const url = new URL(img)
+          const public_id = url.pathname.split("/").pop().split(".")[0]
+          console.log(public_id)
+          // Mutate to remove img from server
+          await deleteEditorImage.mutateAsync({ public_id })
+
+          // if success, remove from allImageUploaded
+		  let filterImage = allImageUploaded.filter((x) => x != img)
+		  allImageUploaded = filterImage
+        }
+      })
+    }
+    
+  
+  }
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default
@@ -45,17 +93,25 @@ export default function Editor({ post }: editorProps) {
     const Underline = (await import("@editorjs/underline")).default
     const RawTool = (await import("@editorjs/raw")).default
     const Warning = (await import("@editorjs/warning")).default
+    const AlignmentTuneTool = (
+      await import("editorjs-text-alignment-blocktune")
+    ).default
+    const DragDrop = (await import("editorjs-drag-drop")).default
+    const Undo = (await import("editorjs-undo")).default
 
     const body = postSchema.parse(post)
 
     if (!ref.current) {
       const editor = new EditorJS({
-        holder: "editor",
+        holder: EDITOR_HOLDER_ID,
+        onChange: handleChange,
         onReady() {
           ref.current = editor
+          new Undo({ editor })
+          new DragDrop(editor)
         },
         data: body.content,
-        placeholder: "Type your content here...",
+        placeholder: "Type Your Content Here...",
         inlineToolbar: true,
         tools: {
           header: {
@@ -65,11 +121,13 @@ export default function Editor({ post }: editorProps) {
               placeholder: "Header",
             },
             shortcut: "CMD+SHIFT+H",
+            tunes: ["textAlignment"],
           },
           list: {
             class: List,
             inlineToolbar: true,
             shortcut: "CMD+SHIFT+L",
+            tunes: ["textAlignment"],
           },
           quote: {
             class: Quote,
@@ -122,34 +180,48 @@ export default function Editor({ post }: editorProps) {
           image: {
             class: ImageTool,
             config: {
-              endpoints: {
-                byFile: "http://localhost:8000/uploadFile", // Your backend file uploader endpoint
-                byUrl: "http://localhost:8000/fetchUrl", // Your endpoint that provides uploading by Url
+              field: "image",
+              types: "image/*",
+              uploader: {
+                uploadByFile: async (imageFile: File) => {
+                  const file = await convertToBase64(imageFile)
+                  const result = await uploadEditorImage.mutateAsync({ file })
+	 			// keep track of images, add the url of each new image to our array
+				  allImageUploaded.push(result.url)
+				  console.log("result.url", result.url)
+                  return {
+                    success: 1,
+                    file: {
+                      url: result.url,
+                    },
+                  }
+                },
               },
-            } as ImageToolConfig,
+            },
           },
-          //   simpleImage: {
-          // 	class: SimpleImage,
-          // 	config: {
-          // 	  endpoints: {
-          // 		byFile: "http://localhost:8000/uploadFile", // Your backend file uploader endpoint
-          // 		byUrl: "http://localhost:8000/fetchUrl", // Your endpoint that provides uploading by Url
-          // 	  },
-          // 	} as SimpleImageConfig,
-          //   },
           paragraph: {
             class: Paragraph,
             inlineToolbar: true,
+            tunes: ["textAlignment"],
           },
           underline: Underline,
+          textAlignment: {
+            class: AlignmentTuneTool,
+            config: {
+              default: "left",
+              blocks: ["paragraph", "header", "list"],
+            },
+          },
         },
       })
     }
   }, [post])
 
+
+
   const onSubmit = async (formData) => {
     const blockContent = await ref.current?.save()
-    console.log(blockContent)
+    // console.log(blockContent)
   }
 
   useEffect(() => {
@@ -160,7 +232,7 @@ export default function Editor({ post }: editorProps) {
 
   useEffect(() => {
     if (isMounted) {
-      initializeEditor()
+     	initializeEditor()
     }
     return () => {
       ref.current?.destroy()
@@ -174,25 +246,139 @@ export default function Editor({ post }: editorProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="prose-stone prose mx-auto w-[800px]">
-        <FileInput className="mb-5" placeholder="Upload file here" size="lg" />
+      <div className="prose-stone prose mx-auto w-full max-w-[900px]">
+        <InputImageUploader
+          onChangeImage={onChangeImage}
+          imageFile={imageFile}
+        />
+        <Divider className="my-2" />
         <TextareaAutosize
           autoFocus
           id="title"
           defaultValue={post.title}
           placeholder="New Post title here..."
-          className="w-full resize-none appearance-none overflow-hidden text-5xl font-bold focus:outline-none px-3 py-1 bg-transparent"
+          className="w-full resize-none appearance-none overflow-hidden text-5xl font-bold focus:outline-none px-3 py-1 bg-transparent mt-6"
           {...register("title")}
         />
-        <div id="editor" className={"w-full min-h-[500px] bg-gray-700 mb-5"} />
-
+        <Divider className="my-2" />
+        <EditorBox
+          id={EDITOR_HOLDER_ID}
+          className={"w-full min-h-[80px] mb-5"}
+        ></EditorBox>
         <ActionButtonWrapper>
-          <CustomButtom type="submit">Publish</CustomButtom>
-          <CustomButtom>Save draft</CustomButtom>
+          <CustomButton type="submit">Publish</CustomButton>
+          <CustomButton>Save draft</CustomButton>
         </ActionButtonWrapper>
       </div>
     </form>
   )
 }
 
+const InputImageUploader = ({
+  onChangeImage,
+  imageFile,
+}: {
+  onChangeImage: (
+    imageList: ImageListType,
+    addUpdateIndex: number[] | undefined,
+  ) => void
+  imageFile: ImageListType
+}) => {
+  return (
+    <ImageUploading
+      multiple
+      value={imageFile}
+      onChange={onChangeImage}
+      maxNumber={1}
+      dataURLKey="data_url"
+    >
+      {({
+        imageList,
+        onImageUpload,
+        onImageRemoveAll,
+        onImageUpdate,
+        onImageRemove,
+        isDragging,
+        dragProps,
+      }) => (
+        <div className="min-h-16 relative flex items-center justify-center">
+          {!imageList.length ? (
+            <div
+              style={isDragging ? { color: "red" } : undefined}
+              className="w-full h-full flex items-center justify-center flex-col gap-2 py-5 cursor-pointer border border-primary rounded-md"
+              onClick={onImageUpload}
+              {...dragProps}
+            >
+              <h2 className="text-3xl font-medium m-0">Add a cover image</h2>
+              <FiUploadCloud size={40} />
+              <p className="m-0">Upload or Drag & Drop</p>
+            </div>
+          ) : (
+            <>
+              {imageList.map((image, index) => (
+                <div
+                  key={index}
+                  className="w-full h-full flex items-center justify-start"
+                >
+                  <Image
+                    src={image["data_url"]}
+                    alt=""
+                    width={900}
+                    height={500}
+                    className="max-h-[300px] mr-auto  my-0 object-contain object-center"
+                  />
+                  <div className="flex items-start justify-start gap-2 z-10">
+                    <button
+                      onClick={() => onImageUpdate(index)}
+                      className="bg-green-500 px-3 py-1 text-black rounded-sm"
+                    >
+                      Change
+                    </button>
+                    <button
+                      onClick={() => onImageRemove(index)}
+                      className="bg-red-500 px-3 py-1 text-black rounded-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+    </ImageUploading>
+  )
+}
+
 const ActionButtonWrapper = tw.div`flex justify-end items-center gap-3`
+const EditorBox = styled.div`
+  & .ce-block__content {
+    /* ${tw`mx-0 ml-4`} */
+  }
+
+  & .ce-popover--opened {
+    ${tw`z-50 bg-slate-900 border border-white border-opacity-40`}
+
+    & .cdx-search-field {
+      ${tw`bg-transparent`}
+    }
+
+    & .ce-popover__item-icon {
+      ${tw`bg-transparent`}
+    }
+
+    & .ce-popover__item:hover {
+      ${tw`bg-primary text-white`}
+    }
+  }
+
+  & .ce-block--selected .ce-block__content {
+    ${tw`bg-blue-900`}
+  }
+
+  & .ce-toolbar__plus,
+  & .ce-toolbar__settings-btn {
+    ${tw`bg-primary text-white`}
+  }
+`

@@ -4,7 +4,7 @@ import { Button, Dropdown, Form, Input, Navbar } from "react-daisyui"
 import tw from "twin.macro"
 
 import SwitchTheme from "@/components/switchTheme"
-import CustomButton from "@/components/ui/button"
+import CustomButton from "@/components/ui/customButton"
 import NavUserAvatar from "@/components/userAvatar"
 import useStore from "@/stores/useStore"
 
@@ -21,15 +21,15 @@ const AppHeader = () => {
         </div>
         <RightNav>
           <Form>
-            <Input bordered type="text" placeholder="Search" />
-          </Form>
+            <Input bordered tw="h-[40px]" type="text" placeholder="Search" />
+          </Form> 
           <SwitchTheme />
           <Link href="/post/create">
             <CustomButton>Create Post</CustomButton>
           </Link>
-          <Button tw="py-1" onClick={setShowModal}>
+          <CustomButton tw="py-1" onClick={setShowModal} bgColor="primary">
             Login
-          </Button>
+          </CustomButton>
           <NavUserAvatar />
         </RightNav>
       </Navbar>

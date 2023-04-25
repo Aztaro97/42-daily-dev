@@ -22,6 +22,9 @@ const server = z.object({
   FORTYTWO_CLIENT_ID: z.string(),
   FORTYTWO_CLIENT_SECRET: z.string(),
   NEXTAUTH_JWT_SECRET: z.string(),
+  CLOUDINARY_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
 });
 
 /**
@@ -46,6 +49,9 @@ const processEnv = {
   FORTYTWO_CLIENT_ID: process.env.FORTYTWO_CLIENT_ID,
   FORTYTWO_CLIENT_SECRET: process.env.FORTYTWO_CLIENT_SECRET,
   NEXTAUTH_JWT_SECRET: process.env.NEXTAUTH_JWT_SECRET,
+  CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

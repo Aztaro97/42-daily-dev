@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
 	// 	updateAge: 24 * 60 * 60, // 24 hours
 	// },
 	// jwt: {
-	// 	secret: process.env.NEXTAUTH_JWT_SECRET,
+	// 	secret: env.NEXTAUTH_JWT_SECRET,
 	// 	maxAge: 60 * 60 * 24 * 14,
 	// 	async encode(data: any) {
 	// 		const { secret, token } = data;
@@ -62,8 +62,8 @@ export const authOptions: NextAuthOptions = {
 	// 	},
 
 	// },
-	secret: process.env.NEXTAUTH_SECRET,
-	debug: process.env.NODE_ENV === "development",
+	secret: env.NEXTAUTH_SECRET,
+	debug: env.NODE_ENV === "development",
 };
 
 
