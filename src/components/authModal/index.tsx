@@ -10,7 +10,7 @@ import useStore from "@/stores/useStore"
 export default function AuthModal() {
   const [loading, setIsLoading] = useState<boolean>(false)
   const { showModal, toggleModal } = useStore()
-  const router = useRouter();
+  const router = useRouter()
   const { data: session, status } = useSession()
 
   const callbackUrl = decodeURI((router.query?.callbackUrl as string) ?? "/")

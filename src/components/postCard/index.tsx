@@ -79,7 +79,7 @@ const CardAvatar = tw(Image)`rounded-full w-8 h-8`
 const CardRightAction = tw.div`flex gap-2`
 const CardActionIcon = styled.div`
   ${tw`text-gray-400 flex items-center gap-1 px-1`}
-
+  
   & span {
     ${tw`text-gray-400 text-sm`}
   }

@@ -1,5 +1,6 @@
 import React from "react"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 import { Button, Dropdown, Form, Input, Navbar } from "react-daisyui"
 import tw from "twin.macro"
 
@@ -10,6 +11,11 @@ import useStore from "@/stores/useStore"
 
 const AppHeader = () => {
   const { showModal, setShowModal } = useStore()
+  const { data: session, status } = useSession()
+
+  if (status === "loading") {
+    return null
+  }
 
   return (
     <HeaderContainer>
@@ -22,15 +28,24 @@ const AppHeader = () => {
         <RightNav>
           <Form>
             <Input bordered tw="h-[40px]" type="text" placeholder="Search" />
-          </Form> 
+          </Form>
           <SwitchTheme />
-          <Link href="/post/create">
-            <CustomButton>Create Post</CustomButton>
-          </Link>
-          <CustomButton tw="py-1" onClick={setShowModal} bgColor="primary">
-            Login
-          </CustomButton>
-          <NavUserAvatar />
+          {session ? (
+            <>
+              <Link href="/post/create">
+                <CustomButton>Create Post</CustomButton>
+              </Link>
+              <NavUserAvatar />
+            </>
+          ) : (
+            <CustomButton
+              tw="py-1"
+              onClick={() => setShowModal(true)}
+              bgColor="primary"
+            >
+              Login
+            </CustomButton>
+          )}
         </RightNav>
       </Navbar>
     </HeaderContainer>

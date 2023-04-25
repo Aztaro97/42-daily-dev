@@ -2,6 +2,14 @@
   "name": "42daily",
   "version": "0.1.0",
   "private": true,
+  "author": "Abdoul Aziz",
+  "license": "MIT",
+  "description": "42daily is a platform where you can share your daily thoughts and ideas with the world.",
+  "repository": {
+	"type": "git",
+	"url": "",
+	"directory": ""
+  },
   "scripts": {
     "build": "next build",
     "dev": "next dev",

@@ -14,25 +14,32 @@ import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
 	callbacks: {
+		signIn({ profile, user }) {
+			if (!profile || !user) return false
+			return user
+		},
 		jwt({ token, profile, account }) {
 			console.log("profile", profile)
 			/* Step 1: update the token based on the user object */
 			if (profile && account) {
 				token._id = profile.sub;
 				token.email = profile.email;
-				token.image = profile.image as string;
+				token.login = profile.login;
+				token.image = profile.image;
 				token.accessToken = account.access_token;
+
 			}
 			return token;
 		},
 		session({ session, token }) {
+			console.log("session", session)
 			if (token && session.user) {
-				session.user._id = token._id || token.sub;
-				session.user.username = token.username;
+				session.user.id = token._id || token.sub;
+				session.user.login = token.login;
 				session.user.email = token.email;
 				session.user.image = token.image;
-				session.user.email_verified = token.email_verified;
-				session.user.accessToken = token.accessToken;
+				session.user.emailVerified = true;
+				session.accessToken = token.accessToken;
 			}
 			return session;
 		},
