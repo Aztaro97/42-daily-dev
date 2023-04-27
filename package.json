@@ -6,9 +6,9 @@
   "license": "MIT",
   "description": "42daily is a platform where you can share your daily thoughts and ideas with the world.",
   "repository": {
-	"type": "git",
-	"url": "",
-	"directory": ""
+    "type": "git",
+    "url": "",
+    "directory": ""
   },
   "scripts": {
     "build": "next build",
@@ -74,6 +74,7 @@
     "react-howler": "^5.2.0",
     "react-icons": "^4.8.0",
     "react-images-uploading": "^3.1.7",
+    "react-select": "^5.7.2",
     "react-share": "^4.4.1",
     "react-textarea-autosize": "^8.4.1",
     "remark": "^14.0.2",

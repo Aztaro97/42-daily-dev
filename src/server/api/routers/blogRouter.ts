@@ -1,5 +1,6 @@
 import cloudinary from "@/lib/cloudinary";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { postSchema } from "@/schema/postSchema"
 import { z } from "zod";
 
 
@@ -32,5 +33,36 @@ export const blogRouter = createTRPCRouter({
 		} catch (error) {
 			console.log(error)
 		}
-	})
+	}),
+	createPost: protectedProcedure
+		.input(postSchema)
+		.mutation(async ({ ctx, input }) => {
+			const { content, id, published, tags, title } = input
+			const authorId = ctx.session.userId;
+
+			console.log("authorId", ctx.session)
+
+			const newPost = await ctx.prisma.post.create({
+				data: {
+					content,
+					id,
+					published,
+					title,
+					tags: { create: input.tags },
+					author: {
+						connectOrCreate: {
+							create: {
+								id: authorId
+							},
+							where: {
+								id: authorId
+							}
+						}
+					}
+				},
+			})
+
+			return newPost
+
+		})
 })

@@ -23,6 +23,14 @@ export default function CreateNewPost() {
           id: "Hellowdjwkdkqdnq",
           title: "",
           content: null,
+          tags: [
+            {
+              name: "minishell",
+            },
+            {
+              name: "minishell",
+            },
+          ],
           published: false,
         }}
       />

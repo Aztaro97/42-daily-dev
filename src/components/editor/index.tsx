@@ -4,7 +4,7 @@ import EditorJS, { EditorConfig } from "@editorjs/editorjs"
 import styled from "@emotion/styled"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Divider } from "react-daisyui"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { FiUploadCloud } from "react-icons/fi"
 import ImageUploading, { ImageListType } from "react-images-uploading"
 import TextareaAutosize from "react-textarea-autosize"
@@ -15,6 +15,7 @@ import { api } from "@/utils/api"
 import { convertToBase64 } from "@/utils/utils"
 import CustomButton from "@/components/ui/customButton"
 import { postSchema } from "@/schema/postSchema"
+import SelectInput from "../ui/SelectInput"
 
 interface editorProps {
   post: z.infer<typeof postSchema>
@@ -29,14 +30,25 @@ export default function Editor({ post }: editorProps) {
   const [imageFile, setImageFile] = useState<ImageListType>([])
   const ref = useRef<EditorJS>()
 
-  let allImageUploaded : string[] = []
+  let allImageUploaded: string[] = []
 
-  const { register, handleSubmit } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(postSchema),
+    defaultValues: {
+      id: post.id,
+      tags: post.tags,
+      published: post.published,
+    },
   })
 
   const uploadEditorImage = api.blog.uploadEditorImage.useMutation()
   const deleteEditorImage = api.blog.deleteEditorImage.useMutation()
+  const createPost = api.blog.createPost.useMutation()
 
   const onChangeImage = (
     imageList: ImageListType,
@@ -48,7 +60,7 @@ export default function Editor({ post }: editorProps) {
 
   const handleChange = () => {
     const currentImages: string[] = []
-	
+
     document.querySelectorAll(".image-tool__image-picture").forEach((x) => {
       const path = x.src.match(/\/*.*$/g)[0]
       currentImages.push(path)
@@ -64,13 +76,11 @@ export default function Editor({ post }: editorProps) {
           await deleteEditorImage.mutateAsync({ public_id })
 
           // if success, remove from allImageUploaded
-		  let filterImage = allImageUploaded.filter((x) => x != img)
-		  allImageUploaded = filterImage
+          let filterImage = allImageUploaded.filter((x) => x != img)
+          allImageUploaded = filterImage
         }
       })
     }
-    
-  
   }
 
   const initializeEditor = useCallback(async () => {
@@ -186,9 +196,9 @@ export default function Editor({ post }: editorProps) {
                 uploadByFile: async (imageFile: File) => {
                   const file = await convertToBase64(imageFile)
                   const result = await uploadEditorImage.mutateAsync({ file })
-	 			// keep track of images, add the url of each new image to our array
-				  allImageUploaded.push(result.url)
-				  console.log("result.url", result.url)
+                  // keep track of images, add the url of each new image to our array
+                  allImageUploaded.push(result.url)
+                  console.log("result.url", result.url)
                   return {
                     success: 1,
                     file: {
@@ -217,11 +227,16 @@ export default function Editor({ post }: editorProps) {
     }
   }, [post])
 
-
-
   const onSubmit = async (formData) => {
     const blockContent = await ref.current?.save()
-    // console.log(blockContent)
+    console.log("formData", formData)
+    createPost.mutate({
+      id: formData.id,
+      title: formData.title,
+      tags: formData.tags,
+      published: formData.published,
+      content: blockContent,
+    })
   }
 
   useEffect(() => {
@@ -232,7 +247,7 @@ export default function Editor({ post }: editorProps) {
 
   useEffect(() => {
     if (isMounted) {
-     	initializeEditor()
+      initializeEditor()
     }
     return () => {
       ref.current?.destroy()
@@ -260,13 +275,26 @@ export default function Editor({ post }: editorProps) {
           className="w-full resize-none appearance-none overflow-hidden text-5xl font-bold focus:outline-none px-3 py-1 bg-transparent mt-6"
           {...register("title")}
         />
+
+        <Controller
+          name="tags"
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <SelectInput
+              defaultValue={post.tags}
+              onBlur={onBlur}
+              onChange={onChange}
+              value={value}
+            />
+          )}
+        />
         <Divider className="my-2" />
         <EditorBox
           id={EDITOR_HOLDER_ID}
           className={"w-full min-h-[80px] mb-5"}
         ></EditorBox>
         <ActionButtonWrapper>
-          <CustomButton type="submit">Publish</CustomButton>
+          <button type="submit">Publish</button>
           <CustomButton>Save draft</CustomButton>
         </ActionButtonWrapper>
       </div>
