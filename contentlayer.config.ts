@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 import { mdxPlugins } from "@/lib/mdxPlugins"
 
@@ -5,11 +6,11 @@ import { mdxPlugins } from "@/lib/mdxPlugins"
 const computedFields = {
 	slug: {
 		type: "string",
-		resolve: (doc: any) => `/${doc._raw.flattenedPath}`,
+		resolve: (doc) => `/${doc._raw.flattenedPath}`,
 	},
 	slugAsParams: {
 		type: "string",
-		resolve: (doc: any) => doc._raw.flattenedPath.split("/").slice(1).join("/"),
+		resolve: (doc) => doc._raw.flattenedPath.split("/").slice(1).join("/"),
 	},
 }
 
@@ -47,7 +48,12 @@ export const Docs = defineDocumentType(() => ({
 			description: 'The date of the post',
 			required: true,
 		},
-		
+		description: {
+			type: 'string',
+			description: 'The description of the post',
+			required: true,
+		}
+
 
 
 	},

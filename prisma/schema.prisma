@@ -13,7 +13,7 @@ datasource db {
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
-    userId            Int     @map("user_id")
+    userId            String  @map("user_id")
     type              String
     provider          String
     providerAccountId String  @map("provider_account_id")
@@ -36,7 +36,7 @@ model Account {
 model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique @map("session_token")
-    userId       Int?     @map("user_id")
+    userId       String?  @map("user_id")
     accessToken  String?  @map("access_token")
     expires      DateTime
     createdAt    DateTime @default(now()) @map("created_at")
@@ -48,11 +48,12 @@ model Session {
 }
 
 model User {
-    id            Int       @id @default(autoincrement())
+    id            String    @id @default(cuid())
     name          String?
     email         String?   @unique
     login         String?   @unique
-    image         String?
+    loginId       Int?      @unique @map("login_id")
+    image         Json?
     emailVerified DateTime? @map("email_verified")
     createdAt     DateTime  @default(now()) @map(name: "created_at")
     updatedAt     DateTime  @updatedAt @map(name: "updated_at")
@@ -60,6 +61,8 @@ model User {
     accounts Account[]
     sessions Session[]
     Post     Post[]
+    Comment  Comment[]
+    Bookmark Bookmark[]
 
     @@map("users")
 }
@@ -79,21 +82,60 @@ model Post {
     id        String   @id @default(cuid())
     title     String
     content   Json?
+    image     String?
     published Boolean  @default(false)
-    authorId  Int
+    slug      String   @unique
+    authorId  String
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
     tags      Tag[]
 
-    author User? @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    author   User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    Comment  Comment[]
+    View     View[]
+    Bookmark Bookmark[]
 
     @@map("posts")
 }
 
 model Tag {
     id    String @id @default(cuid())
-    name  String @unique
+    name  String
+    slug  String @unique
     posts Post[]
 
     @@map("tags")
+}
+
+model Comment {
+    id       String @id @default(cuid())
+    content  String
+    postId   String
+    authorId String
+
+    post   Post @relation(fields: [postId], references: [id])
+    author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+    @@map("comments")
+}
+
+model View {
+    id        Int    @id @default(autoincrement())
+    postId    String
+    ipAddress String
+
+    post Post @relation(fields: [postId], references: [id])
+
+    @@map("views")
+}
+
+model Bookmark {
+    id     String @id @default(cuid())
+    userId String
+    postId String
+
+    post Post @relation(fields: [postId], references: [id])
+    user User @relation(fields: [userId], references: [id])
+
+    @@map("bookmarks")
 }

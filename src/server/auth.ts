@@ -1,27 +1,32 @@
 import { type GetServerSidePropsContext } from "next";
 import {
+	Awaitable,
 	getServerSession,
 	type NextAuthOptions,
-	type DefaultSession,
 } from "next-auth";
-import FortyTwoProvider from "next-auth/providers/42-school";
+import FortyTwoProvider, { FortyTwoProfile } from "next-auth/providers/42-school";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
-import jwt from "jsonwebtoken";
-import { JWT } from "next-auth/jwt/types";
-
+import { IFortyTwoProfile, IUser } from "@/@types/nextauth";
+import { IUserImage } from "@/@types/types";
+import { User } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
 	callbacks: {
 		signIn({ profile, user }) {
 			if (!profile || !user) return false
+
+			// Set the User Login ID to the Student ID
+			user.loginId = profile.id
+
 			return user
 		},
-		jwt({ token, profile, account }) {
+		jwt({ token, profile, account, user }) {
 			/* Step 1: update the token based on the user object */
 			if (profile && account) {
-				token.user_id = profile.id;
+				token.userId = user.id
+				token.loginId = profile.id;
 				token.email = profile.email;
 				token.login = profile.login;
 				token.image = profile.image;
@@ -31,13 +36,13 @@ export const authOptions: NextAuthOptions = {
 			return token;
 		},
 		session({ session, token }) {
-			// console.log("session", session)
 			if (token && session.user) {
-				session.userId = token.user_id;
 				session.user.login = token.login;
 				session.user.email = token.email;
 				session.user.image = token.image;
 				session.user.emailVerified = true;
+				session.user.loginId = token.loginId;
+				session.userId = token.userId;
 				session.accessToken = token.accessToken;
 			}
 			return session;
@@ -48,6 +53,18 @@ export const authOptions: NextAuthOptions = {
 		FortyTwoProvider({
 			clientId: env.FORTYTWO_CLIENT_ID,
 			clientSecret: env.FORTYTWO_CLIENT_SECRET,
+			profile: (profile: IFortyTwoProfile): User => {
+				console.log("**:, profile", profile)
+				return {
+					// ...profile,
+					id: profile.id.toString(),
+					loginId: profile.id,
+					login: profile.login,
+					name: profile.usual_full_name,
+					email: profile.email,
+					image: profile.image,
+				}
+			}
 		}),
 	],
 	session: {

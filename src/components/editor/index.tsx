@@ -15,7 +15,10 @@ import { api } from "@/utils/api"
 import { convertToBase64 } from "@/utils/utils"
 import CustomButton from "@/components/ui/customButton"
 import { postSchema } from "@/schema/postSchema"
+import CoverImageUploader from "../coverImageUploader"
 import SelectInput from "../ui/SelectInput"
+import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader"
+import { successAlert } from "../alert"
 
 interface editorProps {
   post: z.infer<typeof postSchema>
@@ -27,6 +30,7 @@ const EDITOR_HOLDER_ID = "editorJs"
 
 export default function Editor({ post }: editorProps) {
   const [isMounted, setIsMounted] = useState<boolean>(false)
+  const [isPublished, setIsPublished] = useState<boolean>(false)
   const [imageFile, setImageFile] = useState<ImageListType>([])
   const ref = useRef<EditorJS>()
 
@@ -36,11 +40,13 @@ export default function Editor({ post }: editorProps) {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+	getValues,
+    formState: { errors,  },
   } = useForm<FormData>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       id: post.id,
+      coverImage: post.coverImage || [],
       tags: post.tags,
       published: post.published,
     },
@@ -50,11 +56,8 @@ export default function Editor({ post }: editorProps) {
   const deleteEditorImage = api.blog.deleteEditorImage.useMutation()
   const createPost = api.blog.createPost.useMutation()
 
-  const onChangeImage = (
-    imageList: ImageListType,
-    addUpdateIndex: number[],
-  ) => {
-    console.log(imageList, addUpdateIndex)
+  const onChangeImage = (imageList: ImageListType) => {
+    console.log(imageList)
     setImageFile(imageList)
   }
 
@@ -193,8 +196,8 @@ export default function Editor({ post }: editorProps) {
               field: "image",
               types: "image/*",
               uploader: {
-                uploadByFile: async (imageFile: File) => {
-                  const file = await convertToBase64(imageFile)
+                uploadByFile: async (fileImg: File) => {
+                  const file = await convertToBase64(fileImg)
                   const result = await uploadEditorImage.mutateAsync({ file })
                   // keep track of images, add the url of each new image to our array
                   allImageUploaded.push(result.url)
@@ -227,16 +230,26 @@ export default function Editor({ post }: editorProps) {
     }
   }, [post])
 
+  
   const onSubmit = async (formData) => {
     const blockContent = await ref.current?.save()
     console.log("formData", formData)
-    createPost.mutate({
-      id: formData.id,
-      title: formData.title,
-      tags: formData.tags,
-      published: formData.published,
-      content: blockContent,
-    })
+    const response = await createPost.mutateAsync({
+		id: formData.id,
+		title: formData.title,
+		tags: formData.tags,
+		published: formData.published,
+		coverImage: getValues(`coverImage[0][${DATA_COVER_IMAGE_URL_KEY}]`),
+		content: blockContent,
+	  })
+	  if (response) {
+		console.log("response", response)
+		successAlert("Post Published")
+	  }
+  }
+
+  const onPublish = () => {
+	console.log(" on onPublish")
   }
 
   useEffect(() => {
@@ -262,10 +275,14 @@ export default function Editor({ post }: editorProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="prose-stone prose mx-auto w-full max-w-[900px]">
-        <InputImageUploader
-          onChangeImage={onChangeImage}
-          imageFile={imageFile}
+        <Controller
+          name="coverImage"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CoverImageUploader onChangeImage={onChange} value={value} />
+          )}
         />
+
         <Divider className="my-2" />
         <TextareaAutosize
           autoFocus
@@ -294,88 +311,11 @@ export default function Editor({ post }: editorProps) {
           className={"w-full min-h-[80px] mb-5"}
         ></EditorBox>
         <ActionButtonWrapper>
-          <button type="submit">Publish</button>
+          <CustomButton  bgColor="primary" type="submit" loading={createPost.isLoading} onClick={onPublish}>Publish</CustomButton>
           <CustomButton>Save draft</CustomButton>
         </ActionButtonWrapper>
       </div>
     </form>
-  )
-}
-
-const InputImageUploader = ({
-  onChangeImage,
-  imageFile,
-}: {
-  onChangeImage: (
-    imageList: ImageListType,
-    addUpdateIndex: number[] | undefined,
-  ) => void
-  imageFile: ImageListType
-}) => {
-  return (
-    <ImageUploading
-      multiple
-      value={imageFile}
-      onChange={onChangeImage}
-      maxNumber={1}
-      dataURLKey="data_url"
-    >
-      {({
-        imageList,
-        onImageUpload,
-        onImageRemoveAll,
-        onImageUpdate,
-        onImageRemove,
-        isDragging,
-        dragProps,
-      }) => (
-        <div className="min-h-16 relative flex items-center justify-center">
-          {!imageList.length ? (
-            <div
-              style={isDragging ? { color: "red" } : undefined}
-              className="w-full h-full flex items-center justify-center flex-col gap-2 py-5 cursor-pointer border border-primary rounded-md"
-              onClick={onImageUpload}
-              {...dragProps}
-            >
-              <h2 className="text-3xl font-medium m-0">Add a cover image</h2>
-              <FiUploadCloud size={40} />
-              <p className="m-0">Upload or Drag & Drop</p>
-            </div>
-          ) : (
-            <>
-              {imageList.map((image, index) => (
-                <div
-                  key={index}
-                  className="w-full h-full flex items-center justify-start"
-                >
-                  <Image
-                    src={image["data_url"]}
-                    alt=""
-                    width={900}
-                    height={500}
-                    className="max-h-[300px] mr-auto  my-0 object-contain object-center"
-                  />
-                  <div className="flex items-start justify-start gap-2 z-10">
-                    <button
-                      onClick={() => onImageUpdate(index)}
-                      className="bg-green-500 px-3 py-1 text-black rounded-sm"
-                    >
-                      Change
-                    </button>
-                    <button
-                      onClick={() => onImageRemove(index)}
-                      className="bg-red-500 px-3 py-1 text-black rounded-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-      )}
-    </ImageUploading>
   )
 }
 
