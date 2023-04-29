@@ -4,13 +4,14 @@ import { tagSchema } from "@/schema/postSchema"
 import { z } from "zod";
 import slugify from "slugify"
 import { uidGenerator } from "@/lib/uidGenerator";
+import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
 
 export const createPostSchema = z.object({
 	id: z.string(),
 	title: z.string(),
 	slug: z.string().optional(),
 	tags: z.array(tagSchema),
-	coverImage: z.string(),
+	coverImage: z.any().optional(),
 	content: z.any().optional(),
 	published: z.boolean().optional(),
 })
@@ -76,8 +77,11 @@ export const blogRouter = createTRPCRouter({
 			const { content, published, tags, title, coverImage } = input
 			const authorId = ctx.session.userId;
 
+			// Get Cover Image Url
+			const coverImageUrl = coverImage[DATA_COVER_IMAGE_URL_KEY] as string
+
 			// Create Image 
-			const cloudImage = await createImage(coverImage)
+			const cloudImage = await createImage(coverImageUrl)
 
 			const newPost = await ctx.prisma.post.create({
 				data: {

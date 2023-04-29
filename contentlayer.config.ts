@@ -53,9 +53,6 @@ export const Docs = defineDocumentType(() => ({
 			description: 'The description of the post',
 			required: true,
 		}
-
-
-
 	},
 	computedFields
 }))

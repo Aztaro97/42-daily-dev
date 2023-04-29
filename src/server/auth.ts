@@ -14,14 +14,14 @@ import { User } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
 	callbacks: {
-		signIn({ profile, user }) {
-			if (!profile || !user) return false
+		// signIn({ profile, user }) {
+		// 	if (!profile || !user) return false
 
-			// Set the User Login ID to the Student ID
-			user.loginId = profile.id
+		// 	// Set the User Login ID to the Student ID
+		// 	user.loginId = profile.id
 
-			return user
-		},
+		// 	return user
+		// },
 		jwt({ token, profile, account, user }) {
 			/* Step 1: update the token based on the user object */
 			if (profile && account) {
@@ -29,8 +29,9 @@ export const authOptions: NextAuthOptions = {
 				token.loginId = profile.id;
 				token.email = profile.email;
 				token.login = profile.login;
-				token.image = profile.image;
 				token.accessToken = account.access_token;
+				// @ts-ignore
+				token.image = profile.image;
 
 			}
 			return token;

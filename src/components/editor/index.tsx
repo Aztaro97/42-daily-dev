@@ -4,7 +4,7 @@ import EditorJS, { EditorConfig } from "@editorjs/editorjs"
 import styled from "@emotion/styled"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Divider } from "react-daisyui"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { FiUploadCloud } from "react-icons/fi"
 import ImageUploading, { ImageListType } from "react-images-uploading"
 import TextareaAutosize from "react-textarea-autosize"
@@ -13,12 +13,12 @@ import { z } from "zod"
 
 import { api } from "@/utils/api"
 import { convertToBase64 } from "@/utils/utils"
+import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader"
 import CustomButton from "@/components/ui/customButton"
 import { postSchema } from "@/schema/postSchema"
+import { successAlert } from "../alert"
 import CoverImageUploader from "../coverImageUploader"
 import SelectInput from "../ui/SelectInput"
-import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader"
-import { successAlert } from "../alert"
 
 interface editorProps {
   post: z.infer<typeof postSchema>
@@ -40,13 +40,13 @@ export default function Editor({ post }: editorProps) {
     register,
     handleSubmit,
     control,
-	getValues,
-    formState: { errors,  },
+    getValues,
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       id: post.id,
-      coverImage: post.coverImage || [],
+      coverImage: [],
       tags: post.tags,
       published: post.published,
     },
@@ -64,10 +64,12 @@ export default function Editor({ post }: editorProps) {
   const handleChange = () => {
     const currentImages: string[] = []
 
-    document.querySelectorAll(".image-tool__image-picture").forEach((x) => {
-      const path = x.src.match(/\/*.*$/g)[0]
-      currentImages.push(path)
-    })
+    document
+      .querySelectorAll(".image-tool__image-picture")
+      .forEach((x: HTMLImageElement) => {
+        const path = x.src.match(/\/*.*$/g)[0]
+        currentImages.push(path)
+      })
 
     if (allImageUploaded.length > currentImages.length) {
       allImageUploaded.forEach(async (img) => {
@@ -197,7 +199,7 @@ export default function Editor({ post }: editorProps) {
               types: "image/*",
               uploader: {
                 uploadByFile: async (fileImg: File) => {
-                  const file = await convertToBase64(fileImg)
+                  const file = (await convertToBase64(fileImg)) as string
                   const result = await uploadEditorImage.mutateAsync({ file })
                   // keep track of images, add the url of each new image to our array
                   allImageUploaded.push(result.url)
@@ -230,26 +232,26 @@ export default function Editor({ post }: editorProps) {
     }
   }, [post])
 
-  
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData: FormData) => {
     const blockContent = await ref.current?.save()
+    // const coverImageUrl = getValues(`coverImage`)[DATA_COVER_IMAGE_URL_KEY]
     console.log("formData", formData)
     const response = await createPost.mutateAsync({
-		id: formData.id,
-		title: formData.title,
-		tags: formData.tags,
-		published: formData.published,
-		coverImage: getValues(`coverImage[0][${DATA_COVER_IMAGE_URL_KEY}]`),
-		content: blockContent,
-	  })
-	  if (response) {
-		console.log("response", response)
-		successAlert("Post Published")
-	  }
+      id: formData.id,
+      title: formData.title,
+      tags: formData.tags,
+      published: false,
+      coverImage: formData.coverImage,
+      content: blockContent,
+    })
+    if (response) {
+      console.log("response", response)
+      successAlert("Post Published")
+    }
   }
 
   const onPublish = () => {
-	console.log(" on onPublish")
+    console.log(" on onPublish")
   }
 
   useEffect(() => {
@@ -311,7 +313,14 @@ export default function Editor({ post }: editorProps) {
           className={"w-full min-h-[80px] mb-5"}
         ></EditorBox>
         <ActionButtonWrapper>
-          <CustomButton  bgColor="primary" type="submit" loading={createPost.isLoading} onClick={onPublish}>Publish</CustomButton>
+          <CustomButton
+            bgColor="primary"
+            type="submit"
+            loading={createPost.isLoading}
+            onClick={onPublish}
+          >
+            Publish
+          </CustomButton>
           <CustomButton>Save draft</CustomButton>
         </ActionButtonWrapper>
       </div>

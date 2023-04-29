@@ -5,5 +5,5 @@ export const convertToBase64 = (file: File) => {
 		fileReader.readAsDataURL(file);
 		fileReader.onload = () => resolve(fileReader.result);
 		fileReader.onerror = (error) => reject(error);
-	});
+	})
 };

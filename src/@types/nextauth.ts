@@ -1,5 +1,5 @@
 // nextauth.d.ts
-import { DefaultUser, DefaultSession, Profile } from "next-auth";
+import { DefaultSession, Profile } from "next-auth";
 import { FortyTwoProfile } from "next-auth/providers/42-school";
 
 import { IUserImage } from "@/@types/types"
@@ -10,14 +10,15 @@ export enum Role {
 }
 
 
-// common interface for JWT and Session
-export interface IUser extends DefaultUser {
+export interface IUser {
+	id: string;
+	name: string;
+	email: string;
+	image?: IUserImage;
 	role?: Role;
 	user_id?: string;
 	login?: string;
 	loginId?: number;
-	email: string;
-	image?: IUserImage;
 	emailVerified?: boolean;
 	accessToken?: string;
 }
@@ -50,14 +51,14 @@ declare module "next-auth/jwt" {
 		userId?: string;
 		sessionToken?: string;
 		user?: IUser;
+		image: IUserImage;
 	}
 }
 
 // Extends FortyTwoProfile 
 declare module "next-auth/providers" {
 
-	interface FortyTwoProfile extends IFortyTwoProfile {
-	}
+	interface FortyTwoProfile extends IFortyTwoProfile {}
 
 
 }

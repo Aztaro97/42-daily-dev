@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config =  {
 	content: [
 		"./src/**/*.{js,ts,jsx,tsx}",
 		"node_modules/daisyui/dist/**/*.js",
@@ -9,24 +9,24 @@ module.exports = {
 		extend: {},
 	},
 	daisyui: {
-	themes: [
-		{
-			night: {
-				...require("daisyui/src/colors/themes")["[data-theme=night]"],
-				primary: "#7100FE",
-				secondary: "#00E5FC",
-				accent: "#FF5E4F"
-			}
-		},
-		"light"
-	],
-	darkTheme: "night",
-	// styled: true,
-	// base: true,
-    // utils: true,
-    // logs: true,
-    // rtl: false,
-    // prefix: "",
+		themes: [
+			{
+				night: {
+					...require("daisyui/src/colors/themes")["[data-theme=night]"],
+					primary: "#7100FE",
+					secondary: "#00E5FC",
+					accent: "#FF5E4F"
+				}
+			},
+			"light"
+		],
+		darkTheme: "night",
+		// styled: true,
+		// base: true,
+		// utils: true,
+		// logs: true,
+		// rtl: false,
+		// prefix: "",
 	},
 	plugins: [
 		require("daisyui"),
@@ -34,3 +34,5 @@ module.exports = {
 		require('@tailwindcss/typography'),
 	],
 }
+
+export default config
