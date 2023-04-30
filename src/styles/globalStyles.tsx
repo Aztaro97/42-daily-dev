@@ -6,7 +6,7 @@ const customStyles = css({
   body: {
     ...tw`antialiased`,
     WebkitTapHighlightColor: theme`colors.purple.500`,
-    fontFamily: ["Playfair Display", "serif"],
+    fontFamily: [" --roboto-font", "serif"],
     // background: theme`colors.secondary`,
   },
 });

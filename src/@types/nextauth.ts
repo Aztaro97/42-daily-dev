@@ -3,6 +3,7 @@ import { DefaultSession, Profile } from "next-auth";
 import { FortyTwoProfile } from "next-auth/providers/42-school";
 
 import { IUserImage } from "@/@types/types"
+import { Prisma } from "@prisma/client";
 // Define a role enum
 export enum Role {
 	user = "user",
@@ -14,7 +15,7 @@ export interface IUser {
 	id: string;
 	name: string;
 	email: string;
-	image?: IUserImage;
+	image?: IUserImage | Prisma.JsonValue;
 	role?: Role;
 	user_id?: string;
 	login?: string;
@@ -58,7 +59,7 @@ declare module "next-auth/jwt" {
 // Extends FortyTwoProfile 
 declare module "next-auth/providers" {
 
-	interface FortyTwoProfile extends IFortyTwoProfile {}
+	interface FortyTwoProfile extends IFortyTwoProfile { }
 
 
 }

@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
+// Import All editor js dynamicly
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import EditorJS, { EditorConfig } from "@editorjs/editorjs"
 import styled from "@emotion/styled"
 import { zodResolver } from "@hookform/resolvers/zod"
+// import DragDrop from "editorjs-drag-drop"
+// import Undo from "editorjs-undo"
 import { Divider } from "react-daisyui"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { FiUploadCloud } from "react-icons/fi"
@@ -20,6 +24,8 @@ import { successAlert } from "../alert"
 import CoverImageUploader from "../coverImageUploader"
 import SelectInput from "../ui/SelectInput"
 
+const DragDrop = dynamic(() => import("editorjs-drag-drop"), { ssr: false })
+const Undo = dynamic(() => import("editorjs-undo"), { ssr: false })
 interface editorProps {
   post: z.infer<typeof postSchema>
 }
@@ -89,30 +95,32 @@ export default function Editor({ post }: editorProps) {
   }
 
   const initializeEditor = useCallback(async () => {
-    const EditorJS = (await import("@editorjs/editorjs")).default
-    const Header = (await import("@editorjs/header")).default
-    const Embed = (await import("@editorjs/embed")).default
-    const Table = (await import("@editorjs/table")).default
-    const List = (await import("@editorjs/list")).default
-    // const Code = (await import("@editorjs/code")).default
-    const CodeFlask = (await import("@calumk/editorjs-codeflask")).default
-    const LinkTool = (await import("@editorjs/link")).default
-    const InlineCode = (await import("@editorjs/inline-code")).default
-    const Quote = (await import("@editorjs/quote")).default
-    const Marker = (await import("@editorjs/marker")).default
-    const Delimiter = (await import("@editorjs/marker")).default
-    const Checklist = (await import("@editorjs/checklist")).default
+    // const EditorJs = (await import("@editorjs/editorjs")).default
+
+    // const Header = (await import("@editorjs/header")).default
+    // const Embed = (await import("@editorjs/embed")).default
+    // const Table = (await import("@editorjs/table")).default
+    // const List = (await import("@editorjs/list")).default
+    // // const Code = (await import("@editorjs/code")).default
+    // const CodeFlask = (await import("@calumk/editorjs-codeflask")).default
+    // const LinkTool = (await import("@editorjs/link")).default
+    // const InlineCode = (await import("@editorjs/inline-code")).default
+    // const Quote = (await import("@editorjs/quote")).default
+    // const Marker = (await import("@editorjs/marker")).default
+    // const Delimiter = (await import("@editorjs/marker")).default
+    // const Checklist = (await import("@editorjs/checklist")).default
     const ImageTool = (await import("@editorjs/image")).default
-    const simpleImage = (await import("@editorjs/simple-image")).default
-    const Paragraph = (await import("@editorjs/paragraph")).default
-    const Underline = (await import("@editorjs/underline")).default
-    const RawTool = (await import("@editorjs/raw")).default
-    const Warning = (await import("@editorjs/warning")).default
-    const AlignmentTuneTool = (
-      await import("editorjs-text-alignment-blocktune")
-    ).default
-    const DragDrop = (await import("editorjs-drag-drop")).default
-    const Undo = (await import("editorjs-undo")).default
+    const { EDITOR_JS_TOOLS } = await import("@editorjs/image")
+    // const simpleImage = (await import("@editorjs/simple-image")).default
+    // const Paragraph = (await import("@editorjs/paragraph")).default
+    // const Underline = (await import("@editorjs/underline")).default
+    // const RawTool = (await import("@editorjs/raw")).default
+    // const Warning = (await import("@editorjs/warning")).default
+    // const AlignmentTuneTool = (
+    //   await import("editorjs-text-alignment-blocktune")
+    // ).default
+    // const DragDrop = (await import("editorjs-drag-drop")).default
+    // const Undo = (await import("editorjs-undo")).default
 
     const body = postSchema.parse(post)
 
@@ -122,76 +130,14 @@ export default function Editor({ post }: editorProps) {
         onChange: handleChange,
         onReady() {
           ref.current = editor
-          new Undo({ editor })
-          new DragDrop(editor)
+        //   new Undo({ editor })
+        //   new DragDrop(editor)
         },
         data: body.content,
         placeholder: "Type Your Content Here...",
         inlineToolbar: true,
         tools: {
-          header: {
-            class: Header,
-            inlineToolbar: ["link"],
-            config: {
-              placeholder: "Header",
-            },
-            shortcut: "CMD+SHIFT+H",
-            tunes: ["textAlignment"],
-          },
-          list: {
-            class: List,
-            inlineToolbar: true,
-            shortcut: "CMD+SHIFT+L",
-            tunes: ["textAlignment"],
-          },
-          quote: {
-            class: Quote,
-            inlineToolbar: true,
-            config: {
-              quotePlaceholder: "Enter a quote",
-              captionPlaceholder: "Quote's author",
-            },
-            shortcut: "CMD+SHIFT+O",
-          },
-          marker: {
-            class: Marker,
-            shortcut: "CMD+SHIFT+M",
-          },
-          code: {
-            class: CodeFlask,
-            inlineToolbar: true,
-          },
-          delimiter: Delimiter,
-          inlineCode: {
-            class: InlineCode,
-            shortcut: "CMD+SHIFT+C",
-          },
-          linkTool: {
-            class: LinkTool,
-            config: {
-              endpoint: "http://localhost:8000/fetchUrl", // Your backend endpoint for url data fetching
-            },
-          },
-          embed: {
-            class: Embed,
-            config: {
-              services: {
-                youtube: true,
-                coub: true,
-              },
-            },
-          },
-          table: {
-            class: Table,
-            inlineToolbar: true,
-            shortcut: "CMD+ALT+T",
-          },
-          warning: Warning,
-          checklist: {
-            class: Checklist,
-            inlineToolbar: true,
-          },
-          raw: RawTool,
+          ...EDITOR_JS_TOOLS,
           image: {
             class: ImageTool,
             config: {
@@ -214,19 +160,6 @@ export default function Editor({ post }: editorProps) {
               },
             },
           },
-          paragraph: {
-            class: Paragraph,
-            inlineToolbar: true,
-            tunes: ["textAlignment"],
-          },
-          underline: Underline,
-          textAlignment: {
-            class: AlignmentTuneTool,
-            config: {
-              default: "left",
-              blocks: ["paragraph", "header", "list"],
-            },
-          },
         },
       })
     }
@@ -235,7 +168,6 @@ export default function Editor({ post }: editorProps) {
   const onSubmit = async (formData: FormData) => {
     const blockContent = await ref.current?.save()
     // const coverImageUrl = getValues(`coverImage`)[DATA_COVER_IMAGE_URL_KEY]
-    console.log("formData", formData)
     const response = await createPost.mutateAsync({
       id: formData.id,
       title: formData.title,
@@ -245,7 +177,6 @@ export default function Editor({ post }: editorProps) {
       content: blockContent,
     })
     if (response) {
-      console.log("response", response)
       successAlert("Post Published")
     }
   }
@@ -291,7 +222,7 @@ export default function Editor({ post }: editorProps) {
           id="title"
           defaultValue={post.title}
           placeholder="New Post title here..."
-          className="w-full resize-none appearance-none overflow-hidden text-5xl font-bold focus:outline-none px-3 py-1 bg-transparent mt-6"
+          className="w-full px-3 py-1 mt-6 overflow-hidden text-5xl font-bold bg-transparent appearance-none resize-none focus:outline-none"
           {...register("title")}
         />
 
@@ -308,10 +239,7 @@ export default function Editor({ post }: editorProps) {
           )}
         />
         <Divider className="my-2" />
-        <EditorBox
-          id={EDITOR_HOLDER_ID}
-          className={"w-full min-h-[80px] mb-5"}
-        ></EditorBox>
+        <EditorBox id={EDITOR_HOLDER_ID}></EditorBox>
         <ActionButtonWrapper>
           <CustomButton
             bgColor="primary"
@@ -330,12 +258,13 @@ export default function Editor({ post }: editorProps) {
 
 const ActionButtonWrapper = tw.div`flex justify-end items-center gap-3`
 const EditorBox = styled.div`
+  ${tw`w-full max-w-full prose min-h-[40px] mb-5`}
   & .ce-block__content {
     /* ${tw`mx-0 ml-4`} */
   }
 
   & .ce-popover--opened {
-    ${tw`z-50 bg-slate-900 border border-white border-opacity-40`}
+    ${tw`z-50 border border-white bg-slate-900 border-opacity-40`}
 
     & .cdx-search-field {
       ${tw`bg-transparent`}
@@ -346,7 +275,7 @@ const EditorBox = styled.div`
     }
 
     & .ce-popover__item:hover {
-      ${tw`bg-primary text-white`}
+      ${tw`text-white bg-primary`}
     }
   }
 
@@ -356,6 +285,6 @@ const EditorBox = styled.div`
 
   & .ce-toolbar__plus,
   & .ce-toolbar__settings-btn {
-    ${tw`bg-primary text-white`}
+    ${tw`text-white bg-primary`}
   }
 `

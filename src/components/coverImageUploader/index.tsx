@@ -26,22 +26,21 @@ const CoverImageUploader = ({ onChangeImage, value, ...rest }: props) => {
       {({
         imageList,
         onImageUpload,
-        onImageRemoveAll,
         onImageUpdate,
         onImageRemove,
         isDragging,
         dragProps,
       }) => {
         return (
-          <div className="min-h-16 relative flex items-center justify-center">
+          <div className="relative flex items-center justify-center min-h-16">
             {!imageList.length ? (
               <div
                 style={isDragging ? { color: "red" } : undefined}
-                className="w-full h-full flex items-center justify-center flex-col gap-2 py-5 cursor-pointer border border-primary rounded-md"
+                className="flex flex-col items-center justify-center w-full h-full gap-2 py-5 border rounded-md cursor-pointer border-primary"
                 onClick={onImageUpload}
                 {...dragProps}
               >
-                <h2 className="text-3xl font-medium m-0">Add a cover image</h2>
+                <h2 className="m-0 text-3xl font-medium">Add a cover image</h2>
                 <FiUploadCloud size={40} />
                 <p className="m-0">Upload or Drag & Drop</p>
               </div>
@@ -50,7 +49,7 @@ const CoverImageUploader = ({ onChangeImage, value, ...rest }: props) => {
                 {imageList.map((image, index) => (
                   <div
                     key={index}
-                    className="w-full h-full flex items-center justify-start"
+                    className="flex items-center justify-start w-full h-full"
                   >
                     <Image
                       src={image[DATA_COVER_IMAGE_URL_KEY]}
@@ -59,16 +58,16 @@ const CoverImageUploader = ({ onChangeImage, value, ...rest }: props) => {
                       height={500}
                       className="max-h-[300px] mr-auto  my-0 object-contain object-center"
                     />
-                    <div className="flex items-start justify-start gap-2 z-10">
+                    <div className="z-10 flex items-start justify-start gap-2">
                       <button
                         onClick={() => onImageUpdate(index)}
-                        className="bg-green-500 px-3 py-1 text-black rounded-sm"
+                        className="px-3 py-1 text-black bg-green-500 rounded-sm"
                       >
                         Change
                       </button>
                       <button
                         onClick={() => onImageRemove(index)}
-                        className="bg-red-500 px-3 py-1 text-black rounded-sm"
+                        className="px-3 py-1 text-black bg-red-500 rounded-sm"
                       >
                         Delete
                       </button>

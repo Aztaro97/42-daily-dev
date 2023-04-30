@@ -48,11 +48,6 @@ export const Docs = defineDocumentType(() => ({
 			description: 'The date of the post',
 			required: true,
 		},
-		description: {
-			type: 'string',
-			description: 'The description of the post',
-			required: true,
-		}
 	},
 	computedFields
 }))
@@ -60,5 +55,5 @@ export const Docs = defineDocumentType(() => ({
 export default makeSource({
 	contentDirPath: './src/contents',
 	documentTypes: [Docs],
-	mdx: mdxPlugins
+	// mdx: mdxPlugins
 })

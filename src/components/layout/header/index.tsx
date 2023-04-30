@@ -52,7 +52,7 @@ const AppHeader = () => {
   )
 }
 
-const HeaderContainer = tw.header`fixed w-full top-0 flex justify-between items-center h-[65px] px-20 gap-10 border-b border-gray-400 border-opacity-40 z-30`
+const HeaderContainer = tw.header`w-full top-0 flex justify-between items-center h-[65px] px-20 gap-10 border-b border-gray-400 border-opacity-40 z-30`
 const RightNav = tw.div`flex-none items-center gap-2`
 
 export default AppHeader

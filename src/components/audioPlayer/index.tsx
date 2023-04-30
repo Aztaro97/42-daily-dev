@@ -101,7 +101,7 @@ const AudioPlayer = ({ src }) => {
         onLoadedMetadata={handleLoadedMetadata}
       />
       <div
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-24 h-24 rounded-full bg-blue-300"
+        className="absolute flex items-center justify-center w-24 h-24 -translate-x-1/2 -translate-y-1/2 bg-blue-300 rounded-full top-1/2 left-1/2"
         onClick={handleCircleClick}
       >
         <svg
@@ -110,7 +110,7 @@ const AudioPlayer = ({ src }) => {
         >
           <circle
             ref={circleRef}
-            className="stroke-current text-blue-500 stroke-4/24"
+            className="text-blue-500 stroke-current stroke-4/24"
             cx="12"
             cy="12"
             r="9"

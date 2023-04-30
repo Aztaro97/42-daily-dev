@@ -2,13 +2,17 @@ import React, { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import styled from "@emotion/styled"
+import dayjs from "dayjs"
 import { Button, Card, Tooltip } from "react-daisyui"
 import { AiOutlineLike, AiTwotoneLike } from "react-icons/ai"
 import { BiCommentDots } from "react-icons/bi"
 import { GrView } from "react-icons/gr"
 import tw from "twin.macro"
+import { z } from "zod"
 
-function PostCard() {
+import { IPost } from "@/@types/types"
+
+function PostCard({ title, image, slug, author, _count, createdAt}: IPost) {
   const [isLike, setIsLike] = useState<boolean>(false)
 
   const onLikePost = () => {
@@ -16,21 +20,17 @@ function PostCard() {
   }
 
   return (
-    <Link href="/ataro-ga/hello-how-are-you">
+    <Link href={`/${author.login}/${slug}`}>
       <CardWrapper>
-        <Card.Image
-          src="https://daily-now-res.cloudinary.com/image/upload/v1679306271/96835229db75693a44e598609fe73bbb.jpg"
-          alt="Post"
-        />
+        <Card.Image src={image} alt="Post" />
         <CardBody>
-          <CardDate>April 4, 2023</CardDate>
-          <CardTitle tag="h2">
-            After internal 'panic', Google is rushing to unveil a new AI-powered
-            search engine to compete with Microsoft{" "}
-          </CardTitle>
+          <CardDate>
+            {dayjs(createdAt).format("MMM D, YYYY")}
+          </CardDate>
+          <CardTitle tag="h2">{title}</CardTitle>
           <CardActions>
             <CardAvatar
-              src="https://i.pravatar.cc/300"
+              src={author.image.link}
               height={60}
               width={60}
               alt="user avatar"
@@ -39,13 +39,13 @@ function PostCard() {
               <Tooltip color="primary" message="View">
                 <CardActionIcon>
                   <GrView size={18} tw="!stroke-gray-400" />
-                  <span>12.6k</span>
+                  <span>{_count.View}</span>
                 </CardActionIcon>
               </Tooltip>
               <Tooltip color="primary" message="Comment">
                 <CardActionIcon tw="border-x border-gray-400 border-opacity-40 px-3">
                   <BiCommentDots size={18} />
-                  <span>13</span>
+                  <span>{_count.Comment}</span>
                 </CardActionIcon>
               </Tooltip>
               <Tooltip color="primary" message="Like">
@@ -78,10 +78,10 @@ const CardActions = tw(
 const CardAvatar = tw(Image)`rounded-full w-8 h-8`
 const CardRightAction = tw.div`flex gap-2`
 const CardActionIcon = styled.div`
-  ${tw`text-gray-400 flex items-center gap-1 px-1`}
-  
+  ${tw`flex items-center gap-1 px-1 text-gray-400`}
+
   & span {
-    ${tw`text-gray-400 text-sm`}
+    ${tw`text-sm text-gray-400`}
   }
 `
 

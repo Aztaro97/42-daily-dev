@@ -84,7 +84,7 @@ model Post {
     content   Json?
     image     String?
     published Boolean  @default(false)
-    slug      String   @unique
+    slug      String
     authorId  String
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
@@ -108,10 +108,11 @@ model Tag {
 }
 
 model Comment {
-    id       String @id @default(cuid())
-    content  String
-    postId   String
-    authorId String
+    id        String   @id @default(cuid())
+    content   String
+    postId    String
+    authorId  String
+    createdAt DateTime @default(now()) @map(name: "created_at")
 
     post   Post @relation(fields: [postId], references: [id])
     author User @relation(fields: [authorId], references: [id], onDelete: Cascade)

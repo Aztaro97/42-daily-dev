@@ -1,7 +1,6 @@
 import React from "react"
 import Link from "next/link"
-import { allPosts } from "contentlayer/generated"
-import { compareDesc, format, parseISO } from "date-fns"
+import { allDocs } from "contentlayer/generated"
 
 import Layout from "@/components/layout"
 

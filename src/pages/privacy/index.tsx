@@ -1,7 +1,6 @@
 import React from "react"
 import Link from "next/link"
 import { allDocs } from "contentlayer/generated"
-import { compareDesc, format, parseISO } from "date-fns"
 import { useMDXComponent } from "next-contentlayer/hooks"
 
 import Layout from "@/components/layout"
@@ -16,24 +15,24 @@ import Layout from "@/components/layout"
 // 	}
 //   }
 
-export function getStaticProps() {
-  const doc = allDocs.find(
-    (post) => post._raw.sourceFilePath == "document/privacy-policy-02.mdx",
-  )
-  // const doc = allDocs.find((post) => post._raw.flattenedPath)
-  // const doc = allDocs.map((post) => post)
-  return {
-    props: {
-      doc,
-    },
-  }
-}
+// export function getStaticProps() {
+//   const doc = allDocs.find(
+//     (post) => post._raw.sourceFilePath == "document/privacy-policy-02.mdx",
+//   )
+//   // const doc = allDocs.find((post) => post._raw.flattenedPath)
+//   // const doc = allDocs.map((post) => post)
+//   return {
+//     props: {
+//       doc,
+//     },
+//   }
+// }
 
 export default function PolicyPage({ doc }: { doc: any }) {
   //   const tableOfContent = getTableOfContent(doc.body.raw);
-  const MdxContent = useMDXComponent(doc.body.code)
+//   const MdxContent = useMDXComponent(doc.body.code)
   //   console.log("tableOfContent", tableOfContent)
-  console.log("doc", doc)
+//   console.log("doc", doc)
   return (
     <Layout>
       <div className="text-lg">Hello Privacy Policy</div>

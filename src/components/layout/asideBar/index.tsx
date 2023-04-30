@@ -20,7 +20,7 @@ export default function AsideBar({ isSidebarExtended, toggleVisible }: props) {
     // 	isSidebarExtended ? "w-64" : "w-16"
     //   } sm:w-16 md:w-56 lg:w-64 xl:w-64 2xl:w-64`}
     >
-      <div className="z-60 absolute -right-10 right-0 top-0 py-2">
+      <div className="z-60 absolute right-0 top-0 py-2">
         <button
           className="mx-auto rounded-full bg-gray-700 px-4 py-2 text-white hover:bg-gray-800"
           onClick={toggleVisible}

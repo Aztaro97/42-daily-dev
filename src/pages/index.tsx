@@ -4,28 +4,22 @@ import { useSession } from "next-auth/react"
 import { Button, Progress } from "react-daisyui"
 import tw from "twin.macro"
 
+import { api } from "@/utils/api"
 import Layout from "@/components/layout"
 import PostCard from "@/components/postCard"
+import { IPost } from "@/@types/types"
 
 function HomePage() {
-  const { data: session, status } = useSession()
+  //   const { data: session, status } = useSession()
 
-  console.log("session", session)
+  const { data: allPost, isLoading } = api.blog.getAllPosts.useQuery()
+
   return (
     <Layout>
       <GridWrapper>
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
-        <PostCard />
+        {allPost?.map((post) => (
+          <PostCard key={post.id} {...post} />
+        ))}
       </GridWrapper>
     </Layout>
   )
