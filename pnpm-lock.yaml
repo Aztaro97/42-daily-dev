@@ -71,6 +71,7 @@ specifiers:
   mdast-util-toc: ^6.1.1
   next: ^13.2.4
   next-auth: ^4.21.0
+  next-axiom: ^0.17.0
   next-compose-plugins: ^2.2.1
   next-contentlayer: ^0.3.1
   postcss: ^8.4.21
@@ -153,6 +154,7 @@ dependencies:
   mdast-util-toc: 6.1.1
   next: 13.3.1_tsjsdwgoayrgj2vkuwx4gihgnq
   next-auth: 4.22.1_ivamjty3az7dj3hhadhjniqtwe
+  next-axiom: 0.17.0_next@13.3.1
   next-compose-plugins: 2.2.1
   next-contentlayer: 0.3.2_uw66xz47eocrewa6udl42ujhla
   react: 18.2.0
@@ -6000,6 +6002,16 @@ packages:
       uuid: 8.3.2
     dev: false
 
+  /next-axiom/0.17.0_next@13.3.1:
+    resolution: {integrity: sha512-qFdnH50SvRjJUAmNjGIYLcRc4tO/U4R1h9WUuniiwaucXAH5KhL06m7TT3WWD2U1HbulwSfC0R+NlPASOx1XlQ==}
+    engines: {node: '>=15'}
+    peerDependencies:
+      next: ^12.1.4 || ^13
+    dependencies:
+      next: 13.3.1_tsjsdwgoayrgj2vkuwx4gihgnq
+      whatwg-fetch: 3.6.2
+    dev: false
+
   /next-compose-plugins/2.2.1:
     resolution: {integrity: sha512-OjJ+fV15FXO2uQXQagLD4C0abYErBjyjE0I0FHpOEIB8upw0hg1ldFP6cqHTJBH1cZqy96OeR3u1dJ+Ez2D4Bg==}
     dev: false
@@ -8204,6 +8216,10 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
+
+  /whatwg-fetch/3.6.2:
+    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
+    dev: false
 
   /which-boxed-primitive/1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}

@@ -1,3 +1,4 @@
+import { withAxiom } from "next-axiom"
 import withPlugins from "next-compose-plugins"
 import { withContentlayer } from "next-contentlayer"
 
@@ -13,7 +14,7 @@ const nextConfig = {
       "i.pravatar.cc",
       "daily-now-res.cloudinary.com",
       "res.cloudinary.com",
-	  "cdn.intra.42.fr"
+      "cdn.intra.42.fr",
     ],
   },
   //   swcMinify: true,
@@ -31,4 +32,4 @@ const nextConfig = {
 
 // export default withPlugins([contentLayer, twin], nextConfig);
 
-export default withTwin(withContentlayer(nextConfig))
+export default withTwin(withAxiom(withContentlayer(nextConfig)))
