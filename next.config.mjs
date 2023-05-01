@@ -1,8 +1,16 @@
+import withBundleAnalyzer from "@next/bundle-analyzer"
 import { withAxiom } from "next-axiom"
 import withPlugins from "next-compose-plugins"
 import { withContentlayer } from "next-contentlayer"
 
 import withTwin from "./withTwin.cjs"
+
+// const withBundleAnalyzer = require("@next/bundle-analyzer")({
+//   enabled: true,
+// })
+
+// const withPlugins = require("next-compose-plugins")
+// enable withBundleAnalyzer
 
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"))
 
@@ -25,11 +33,19 @@ const nextConfig = {
   //   },
 }
 
-// const contentLayer = withContentlayer({
-//   nextConfig,
-// })
-// const twin = withTwin(nextConfig)
+const contentLayer = withContentlayer({
+  nextConfig,
+})
+const twin = withTwin(nextConfig)
+const bundleAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+})(nextConfig)
 
-// export default withPlugins([contentLayer, twin], nextConfig);
+const axiom = withAxiom(nextConfig)
 
-export default withTwin(withAxiom(withContentlayer(nextConfig)))
+export default withPlugins(
+  [contentLayer, twin, bundleAnalyzer, axiom],
+  nextConfig,
+)
+
+// export default withTwin(withAxiom(withContentlayer(nextConfig)))
