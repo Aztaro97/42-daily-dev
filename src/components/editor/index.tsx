@@ -24,8 +24,8 @@ import { successAlert } from "../alert"
 import CoverImageUploader from "../coverImageUploader"
 import SelectInput from "../ui/SelectInput"
 
-const DragDrop = dynamic(() => import("editorjs-drag-drop"), { ssr: false })
-const Undo = dynamic(() => import("editorjs-undo"), { ssr: false })
+// const DragDrop = dynamic(() => import("editorjs-drag-drop"), { ssr: false })
+// const Undo = dynamic(() => import("editorjs-undo"), { ssr: false })
 interface editorProps {
   post: z.infer<typeof postSchema>
 }
@@ -119,8 +119,8 @@ export default function Editor({ post }: editorProps) {
     // const AlignmentTuneTool = (
     //   await import("editorjs-text-alignment-blocktune")
     // ).default
-    // const DragDrop = (await import("editorjs-drag-drop")).default
-    // const Undo = (await import("editorjs-undo")).default
+    const DragDrop = (await import("editorjs-drag-drop")).default
+    const Undo = (await import("editorjs-undo")).default
 
     const body = postSchema.parse(post)
 
@@ -130,8 +130,8 @@ export default function Editor({ post }: editorProps) {
         onChange: handleChange,
         onReady() {
           ref.current = editor
-          //   new Undo({ editor })
-          //   new DragDrop(editor)
+            new Undo({ editor })
+            new DragDrop(editor)
         },
         data: body.content,
         placeholder: "Type Your Content Here...",

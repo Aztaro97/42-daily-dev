@@ -148,6 +148,63 @@ export const blogRouter = createTRPCRouter({
 
 		}),
 
+	// Get All User Post
+	getAllUserPost: protectedProcedure.query(async ({ ctx, input }) => {
+		const authorId = ctx.session.userId;
+
+		const posts = ctx.prisma.post.findMany({
+			where: {
+				authorId
+			},
+			orderBy: {
+				createdAt: "desc"
+			},
+			select: {
+				id: true,
+				title: true,
+				slug: true,
+				createdAt: true,
+				published: true,
+				author: {
+					select: {
+						name: true,
+						login: true
+					}
+				}
+			}
+		})
+
+		return posts;
+
+	}),
+
+	// Delete Post By ID
+	deletePostById: protectedProcedure.input(z.object({ postId: z.string() })).mutation(async ({ ctx, input }) => {
+		const { postId } = input;
+		const authorId = ctx.session.userId;
+
+		const post = await ctx.prisma.post.findUnique({
+			where: {
+				id: postId
+			}
+		})
+
+		if (post.authorId !== authorId) {
+			throw new TRPCError({ code: "FORBIDDEN", message: "You are not allowed to delete this post" })
+		}
+
+		await ctx.prisma.post.delete({
+			where: {
+				id: postId
+			}
+		})
+
+		return {
+			message: "Post Deleted"
+		}
+
+	}),
+
 
 	// Get all posts by author info
 	getAllPosts: publicProcedure.input(z.object({
