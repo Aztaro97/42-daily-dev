@@ -5,12 +5,13 @@ import { z } from "zod";
 import slugify from "slugify"
 import { uidGenerator } from "@/lib/uidGenerator";
 import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
+import { TRPCError } from "@trpc/server";
 
 export const createPostSchema = z.object({
 	id: z.string(),
 	title: z.string(),
 	slug: z.string().optional(),
-	tags: z.array(tagSchema),
+	tags: z.array(tagSchema).optional(),
 	coverImage: z.any().optional(),
 	content: z.any().optional(),
 	published: z.boolean().optional(),
@@ -71,10 +72,37 @@ export const blogRouter = createTRPCRouter({
 			console.log(error)
 		}
 	}),
-	createPost: protectedProcedure
+
+	// Create new Post
+	createPost: protectedProcedure.input(z.object({
+		title: z.string()
+	})).mutation(async ({ ctx, input }) => {
+		const { title } = input;
+		const authorId = ctx.session.userId;
+
+		const slug = slugify(title, { lower: true }) + "-" + uidGenerator()
+
+		const newPost = ctx.prisma.post.create({
+			data: {
+				title,
+				slug,
+				author: {
+					connect: {
+						id: authorId
+					}
+				},
+			},
+		})
+
+		return newPost;
+	}),
+
+
+	// Update Post By Id
+	updatePost: protectedProcedure
 		.input(createPostSchema)
 		.mutation(async ({ ctx, input }) => {
-			const { content, published, tags, title, coverImage } = input
+			const { content, published, tags, title, coverImage, id: postId } = input
 			const authorId = ctx.session.userId;
 
 			// Generate Post Slug
@@ -90,7 +118,10 @@ export const blogRouter = createTRPCRouter({
 			// Create Image 
 			const cloudImage = await createImage(coverImageUrl)
 
-			const newPost = await ctx.prisma.post.create({
+			const newPost = await ctx.prisma.post.update({
+				where: {
+					id: postId
+				},
 				data: {
 					title,
 					content,
@@ -116,17 +147,25 @@ export const blogRouter = createTRPCRouter({
 			return newPost
 
 		}),
-	// Get all posts by author info
-	getAllPosts: publicProcedure.query(async ({ ctx }) => {
 
+
+	// Get all posts by author info
+	getAllPosts: publicProcedure.input(z.object({
+		limit: z.number(),
+		cursor: z.string().nullish(),
+
+	})).query(async ({ ctx, input }) => {
+		const { limit, cursor } = input
 		const posts = await ctx.prisma.post.findMany({
-			take: 20,
+			take: limit + 1,
 			orderBy: {
 				createdAt: "desc"
 			},
+			cursor: cursor ? { id: cursor } : undefined,
 			where: {
 				// Exclude posts that are not published
-				published: true
+				published: true,
+				// Exclude posts that are created after the cursor
 			},
 			select: {
 				id: true,
@@ -154,9 +193,56 @@ export const blogRouter = createTRPCRouter({
 			}
 		})
 
-		console.log("posts from server", posts)
+		let nextCursor: typeof cursor | undefined = undefined
+		if (posts.length > limit) {
+			const nextPost = posts.pop()
+			nextCursor = nextPost!?.id
+		}
 
-		return posts;
-	})
+		return {
+			posts,
+			hasMore: posts.length > limit,
+			nextCursor,
+		};
+	}),
+
+	// Get Post for User
+	getPostForUserById: protectedProcedure.input(z.object({
+		postId: z.string()
+	})).query(async ({ ctx, input }) => {
+		const { postId } = input;
+
+		const post = ctx.prisma.post.findUnique({
+			where: {
+				id: postId
+			},
+			include: {
+				tags: true
+			}
+		})
+
+		if (!post) {
+			throw new TRPCError({
+				code: 'NOT_FOUND',
+				message: "Post Not Exit",
+			})
+		}
+
+		return post;
+	}),
+
 
 })
+
+
+// async function verifyCurrentUserHasAccessToPost(postId: string) {
+// 	const session = await getServerSession(authOptions)
+// 	const count = await db.post.count({
+// 		where: {
+// 			id: postId,
+// 			authorId: session?.user.id,
+// 		},
+// 	})
+
+// 	return count > 0
+// }

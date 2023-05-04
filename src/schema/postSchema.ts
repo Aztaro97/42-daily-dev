@@ -9,8 +9,8 @@ export const tagSchema = z.object({
 export const postSchema = z.object({
 	id: z.string(),
 	title: z.string().max(128),
-	tags: z.array(tagSchema),
 	coverImage: z.any().optional(),
 	content: z.any().optional(),
 	published: z.boolean(),
+	tags: z.array(tagSchema).optional(),
 })

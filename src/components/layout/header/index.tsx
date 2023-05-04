@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react"
 import { Button, Dropdown, Form, Input, Navbar } from "react-daisyui"
 import tw from "twin.macro"
 
+import CreatePostButton from "@/components/createPostButton"
 import SwitchTheme from "@/components/switchTheme"
 import CustomButton from "@/components/ui/customButton"
 import NavUserAvatar from "@/components/userAvatar"
@@ -32,9 +33,7 @@ const AppHeader = () => {
           <SwitchTheme />
           {session ? (
             <>
-              <Link href="/post/create">
-                <CustomButton>Create Post</CustomButton>
-              </Link>
+              <CreatePostButton />
               <NavUserAvatar />
             </>
           ) : (

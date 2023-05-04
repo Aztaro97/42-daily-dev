@@ -52,7 +52,7 @@ export default function Editor({ post }: editorProps) {
     resolver: zodResolver(postSchema),
     defaultValues: {
       id: post.id,
-      coverImage: [],
+      coverImage: post.coverImage,
       tags: post.tags,
       published: post.published,
     },
@@ -60,7 +60,7 @@ export default function Editor({ post }: editorProps) {
 
   const uploadEditorImage = api.blog.uploadEditorImage.useMutation()
   const deleteEditorImage = api.blog.deleteEditorImage.useMutation()
-  const createPost = api.blog.createPost.useMutation()
+  const updatePost = api.blog.updatePost.useMutation()
 
   const onChangeImage = (imageList: ImageListType) => {
     console.log(imageList)
@@ -130,8 +130,8 @@ export default function Editor({ post }: editorProps) {
         onChange: handleChange,
         onReady() {
           ref.current = editor
-        //   new Undo({ editor })
-        //   new DragDrop(editor)
+          //   new Undo({ editor })
+          //   new DragDrop(editor)
         },
         data: body.content,
         placeholder: "Type Your Content Here...",
@@ -168,7 +168,7 @@ export default function Editor({ post }: editorProps) {
   const onSubmit = async (formData: FormData) => {
     const blockContent = await ref.current?.save()
     // const coverImageUrl = getValues(`coverImage`)[DATA_COVER_IMAGE_URL_KEY]
-    const response = await createPost.mutateAsync({
+    const response = await updatePost.mutateAsync({
       id: formData.id,
       title: formData.title,
       tags: formData.tags,
@@ -208,15 +208,6 @@ export default function Editor({ post }: editorProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="prose-stone prose mx-auto w-full max-w-[900px]">
-        <Controller
-          name="coverImage"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <CoverImageUploader onChangeImage={onChange} value={value} />
-          )}
-        />
-
-        <Divider className="my-2" />
         <TextareaAutosize
           autoFocus
           id="title"
@@ -225,7 +216,14 @@ export default function Editor({ post }: editorProps) {
           className="w-full px-3 py-1 mt-6 overflow-hidden text-5xl font-bold bg-transparent appearance-none resize-none focus:outline-none"
           {...register("title")}
         />
-
+        <Divider className="my-2" />
+        <Controller
+          name="coverImage"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CoverImageUploader onChangeImage={onChange} value={value} />
+          )}
+        />
         <Controller
           name="tags"
           control={control}
@@ -244,7 +242,7 @@ export default function Editor({ post }: editorProps) {
           <CustomButton
             bgColor="primary"
             type="submit"
-            loading={createPost.isLoading}
+            loading={updatePost.isLoading}
             onClick={onPublish}
           >
             Publish

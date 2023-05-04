@@ -14,6 +14,7 @@ interface props {
   type?: "button" | "submit" | "reset" | undefined;
   bgColor?: TbgColor["bgColor"];
   loading?: boolean;
+  disabled?: boolean;
 }
 
 const CustomButton = ({
@@ -23,6 +24,7 @@ const CustomButton = ({
   type,
   bgColor,
   loading,
+  disabled,
   ...rest
 }: props) => {
   return (
@@ -33,6 +35,7 @@ const CustomButton = ({
       className={className}
       bgColor={bgColor}
 	  loading={loading}
+	  disabled={disabled}
     >
       {children}
     </ButtonStyled>
