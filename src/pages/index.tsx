@@ -8,9 +8,10 @@ import tw from "twin.macro"
 import { api } from "@/utils/api"
 import Layout from "@/components/layout"
 import PostCard from "@/components/postCard"
+import PostContent from "@/components/postContent"
 import { IPost } from "@/@types/types"
 
-const LIMIT_ITEMS_PER_PAGE: number = 6
+const LIMIT_ITEMS_PER_PAGE: number = 8
 
 function HomePage() {
   //   const { data: session, status } = useSession()
@@ -19,6 +20,7 @@ function HomePage() {
     api.blog.getAllPosts.useInfiniteQuery(
       {
         limit: LIMIT_ITEMS_PER_PAGE,
+		published: true
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -35,26 +37,14 @@ function HomePage() {
 
   return (
     <Layout>
-      <InfiniteScroll
-        dataLength={data?.pages.length * LIMIT_ITEMS_PER_PAGE}
-        next={fetchNextPage}
-        hasMore={hasNextPage}
-        loader={<>Loading ...</>}
-      >
-        <GridWrapper>
-          {data?.pages.map((page) => (
-            <>
-              {page?.posts.map((post) => (
-                <PostCard key={post.id} {...post} />
-              ))}
-            </>
-          ))}
-        </GridWrapper>
-      </InfiniteScroll>
+      <PostContent
+        data={data as any}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        limitItem={LIMIT_ITEMS_PER_PAGE}
+      />
     </Layout>
   )
 }
-
-const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-7`
 
 export default HomePage

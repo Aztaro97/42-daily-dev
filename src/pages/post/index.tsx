@@ -1,10 +1,11 @@
-import React, { useState } from "react"
+import React, { FC, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
 import { Button, Dropdown, Modal } from "react-daisyui"
 import { TbDotsVertical } from "react-icons/tb"
+import InfiniteScroll from "react-infinite-scroll-component"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
@@ -12,10 +13,18 @@ import CreatePostButton from "@/components/createPostButton"
 import Layout from "@/components/layout"
 import { IPost } from "@/@types/types"
 
-export default function PostPage() {
-  const { data, isLoading } = api.blog.getAllUserPost.useQuery()
+const LIMIT_ITEM: number = 5
 
-  console.log("data", data)
+export default function PostPage() {
+  const { data, isLoading, fetchNextPage, hasNextPage } =
+    api.blog.getAllUserPost.useInfiniteQuery(
+      {
+        limit: LIMIT_ITEM,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    )
 
   if (isLoading) {
     return <Layout>Loading...</Layout>
@@ -30,16 +39,27 @@ export default function PostPage() {
         </div>
         <CreatePostButton />
       </Box>
-      <CardWrapper>
-        {data?.map((post) => (
-          <PostCard key={post.id} {...post} />
-        ))}
-      </CardWrapper>
+      <InfiniteScroll
+        dataLength={(data?.pages.length || 0) * LIMIT_ITEM}
+        next={fetchNextPage}
+        hasMore={hasNextPage as boolean}
+        loader={<>Loading ...</>}
+      >
+        <CardWrapper>
+          {data?.pages.map((page) => (
+            <>
+              {page.posts.map((post) => (
+                <Card key={post.id} {...post} />
+              ))}
+            </>
+          ))}
+        </CardWrapper>
+      </InfiniteScroll>
     </Layout>
   )
 }
 
-const PostCard = ({ id, title, slug, createdAt, author, published }: IPost) => {
+const Card: FC<IPost> = ({ id, title, slug, createdAt, author, published }) => {
   const router = useRouter()
   const [showModal, setShowModal] = useState(false)
 

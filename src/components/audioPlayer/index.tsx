@@ -47,11 +47,11 @@ import ReactHowler from "react-howler"
 // }
 const audioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 
-const AudioPlayer = ({ src }) => {
+const AudioPlayer = ({ src }: { src: string }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
-  const audioRef = useRef(null)
-  const circleRef = useRef(null)
+  const audioRef = useRef<any>(null)
+  const circleRef = useRef<any>(null)
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying)
@@ -72,7 +72,7 @@ const AudioPlayer = ({ src }) => {
     setCurrentTime(audioRef.current.currentTime)
   }
 
-  const handleCircleClick = (e) => {
+  const handleCircleClick = (e: any) => {
     const rect = e.target.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top

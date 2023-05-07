@@ -24,6 +24,10 @@ const createImage = async (base64Image: string) => {
 		return imageResponse
 	} catch (error) {
 		console.log(error)
+		throw new TRPCError({
+			code: 'INTERNAL_SERVER_ERROR',
+			message: 'Error Uploading Image',
+		})
 
 	}
 }
@@ -107,7 +111,6 @@ export const blogRouter = createTRPCRouter({
 
 			// Generate Post Slug
 			const slug = slugify(title, { lower: true }) + "-" + uidGenerator()
-			// `${slugify(title)}-${uidGenerator()}`
 
 			// Get Cover Image Url
 			const coverImageUrl = coverImage[0][DATA_COVER_IMAGE_URL_KEY] as string
@@ -149,13 +152,26 @@ export const blogRouter = createTRPCRouter({
 		}),
 
 	// Get All User Post
-	getAllUserPost: protectedProcedure.query(async ({ ctx, input }) => {
+	getAllUserPost: protectedProcedure.input(z.object({
+		limit: z.number(),
+		cursor: z.string().nullish(),
+		userId: z.string().optional(),
+		published: z.boolean().optional(),
+	})).query(async ({ ctx, input }) => {
 		const authorId = ctx.session.userId;
+		const { limit, cursor, published, userId } = input
 
-		const posts = ctx.prisma.post.findMany({
+		const posts = await ctx.prisma.post.findMany({
+			take: limit + 1,
+			cursor: cursor ? { id: cursor } : undefined,
 			where: {
 				authorId
 			},
+			...(published && {
+				where: {
+					published
+				}
+			}),
 			orderBy: {
 				createdAt: "desc"
 			},
@@ -163,6 +179,7 @@ export const blogRouter = createTRPCRouter({
 				id: true,
 				title: true,
 				slug: true,
+				image: true,
 				createdAt: true,
 				published: true,
 				author: {
@@ -170,11 +187,21 @@ export const blogRouter = createTRPCRouter({
 						name: true,
 						login: true
 					}
-				}
+				},
 			}
 		})
 
-		return posts;
+		let nextCursor: typeof cursor | undefined = undefined
+		if (posts.length > limit) {
+			const nextPost = posts.pop()
+			nextCursor = nextPost!?.id
+		}
+
+		return {
+			posts,
+			hasMore: posts.length > limit,
+			nextCursor,
+		};
 
 	}),
 
@@ -186,10 +213,18 @@ export const blogRouter = createTRPCRouter({
 		const post = await ctx.prisma.post.findUnique({
 			where: {
 				id: postId
+			},
+			select: {
+				id: true,
+				author: {
+					select: {
+						id: true,
+					}
+				}
 			}
 		})
 
-		if (post.authorId !== authorId) {
+		if (post?.author?.id !== authorId) {
 			throw new TRPCError({ code: "FORBIDDEN", message: "You are not allowed to delete this post" })
 		}
 
@@ -210,20 +245,28 @@ export const blogRouter = createTRPCRouter({
 	getAllPosts: publicProcedure.input(z.object({
 		limit: z.number(),
 		cursor: z.string().nullish(),
+		userId: z.string().optional(),
+		published: z.boolean().optional()
 
 	})).query(async ({ ctx, input }) => {
-		const { limit, cursor } = input
+		const { limit, cursor, userId, published } = input
+
 		const posts = await ctx.prisma.post.findMany({
 			take: limit + 1,
 			orderBy: {
 				createdAt: "desc"
 			},
 			cursor: cursor ? { id: cursor } : undefined,
-			where: {
-				// Exclude posts that are not published
-				published: true,
-				// Exclude posts that are created after the cursor
-			},
+			...(published && {
+				where: {
+					published
+				}
+			}),
+			...(userId && {
+				where: {
+					authorId: userId
+				}
+			}),
 			select: {
 				id: true,
 				title: true,
@@ -239,12 +282,18 @@ export const blogRouter = createTRPCRouter({
 						login: true
 					}
 				},
+				likes: {
+					select: {
+						dislike: true
+					}
+				},
 				// Count Number of View and Comment
 				_count: {
 					select: {
-						Comment: true,
-						View: true,
-						tags: true
+						comments: true,
+						views: true,
+						tags: true,
+						likes: true
 					}
 				}
 			}
@@ -290,16 +339,3 @@ export const blogRouter = createTRPCRouter({
 
 
 })
-
-
-// async function verifyCurrentUserHasAccessToPost(postId: string) {
-// 	const session = await getServerSession(authOptions)
-// 	const count = await db.post.count({
-// 		where: {
-// 			id: postId,
-// 			authorId: session?.user.id,
-// 		},
-// 	})
-
-// 	return count > 0
-// }

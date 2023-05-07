@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { type GetServerSidePropsContext } from "next";
 import {
 	Awaitable,
@@ -54,10 +56,9 @@ export const authOptions: NextAuthOptions = {
 		FortyTwoProvider({
 			clientId: env.FORTYTWO_CLIENT_ID,
 			clientSecret: env.FORTYTWO_CLIENT_SECRET,
-			profile: (profile: IFortyTwoProfile): User => {
+			profile: (profile: IFortyTwoProfile): Promise<IUser> => {
 				console.log("**:, profile", profile)
 				return {
-					// ...profile,
 					id: profile.id.toString(),
 					loginId: profile.id,
 					login: profile.login,
@@ -73,19 +74,6 @@ export const authOptions: NextAuthOptions = {
 		maxAge: 30 * 24 * 60 * 60, // 30 days
 		updateAge: 24 * 60 * 60, // 24 hours
 	},
-	// jwt: {
-	// 	secret: env.NEXTAUTH_JWT_SECRET,
-	// 	maxAge: 60 * 60 * 24 * 14,
-	// 	async encode(data: any) {
-	// 		const { secret, token } = data;
-	// 		return jwt.sign(token as JWT, secret)
-	// 	},
-	// 	async decode(data: any) {
-	// 		const { secret, token } = data;
-	// 		return jwt.verify(token as string, secret) as JWT
-	// 	},
-
-	// },
 	secret: env.NEXTAUTH_SECRET,
 	debug: env.NODE_ENV === "development",
 };

@@ -15,13 +15,13 @@ import { useLocalStorage } from "usehooks-ts"
 export default function NavUserAvatar() {
   const [theme] = useLocalStorage("theme", "night")
   const router = useRouter()
-  const { data: session } = useSession()
+  const { data: sessionData } = useSession()
 
   return (
     <Dropdown end={true} vertical="bottom">
       <Button color="ghost" className="avatar" shape="circle">
         <ProfilePicture
-          src="https://i.pravatar.cc/300"
+          src={sessionData?.user.image.link ?? ""}
           width={140}
           height={140}
           alt="Profile Picture"

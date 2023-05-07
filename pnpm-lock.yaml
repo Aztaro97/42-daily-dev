@@ -74,7 +74,6 @@ specifiers:
   next: ^13.2.4
   next-auth: ^4.21.0
   next-axiom: ^0.17.0
-  next-compose-plugins: ^2.2.1
   next-contentlayer: ^0.3.1
   postcss: ^8.4.21
   prettier: ^2.8.6
@@ -159,7 +158,6 @@ dependencies:
   next: 13.3.1_tsjsdwgoayrgj2vkuwx4gihgnq
   next-auth: 4.22.1_ivamjty3az7dj3hhadhjniqtwe
   next-axiom: 0.17.0_next@13.3.1
-  next-compose-plugins: 2.2.1
   next-contentlayer: 0.3.2_uw66xz47eocrewa6udl42ujhla
   react: 18.2.0
   react-daisyui: 3.1.2_luxndbhbgcpd4hlnkz227qwz6i
@@ -6051,10 +6049,6 @@ packages:
     dependencies:
       next: 13.3.1_tsjsdwgoayrgj2vkuwx4gihgnq
       whatwg-fetch: 3.6.2
-    dev: false
-
-  /next-compose-plugins/2.2.1:
-    resolution: {integrity: sha512-OjJ+fV15FXO2uQXQagLD4C0abYErBjyjE0I0FHpOEIB8upw0hg1ldFP6cqHTJBH1cZqy96OeR3u1dJ+Ez2D4Bg==}
     dev: false
 
   /next-contentlayer/0.3.2_uw66xz47eocrewa6udl42ujhla:

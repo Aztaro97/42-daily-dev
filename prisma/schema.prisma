@@ -47,22 +47,44 @@ model Session {
     @@map("sessions")
 }
 
+model UserLink {
+    id String @id @default(cuid())
+
+    title       String
+    url         String
+    description String?
+    icon        String?
+    userId      String  @unique
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("user_links")
+}
+
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    login         String?   @unique
+    id    String  @id @default(cuid())
+    name  String?
+    email String? @unique
+    login String? @unique
+    image Json?
+
     loginId       Int?      @unique @map("login_id")
-    image         Json?
+    bio           String?
+    role          String?   @default("user")
     emailVerified DateTime? @map("email_verified")
-    createdAt     DateTime  @default(now()) @map(name: "created_at")
-    updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+    followers     Follows[] @relation("following")
+    following     Follows[] @relation("follower")
+    url           UserLink?
+
+    createdAt DateTime @default(now()) @map(name: "created_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
 
     accounts Account[]
     sessions Session[]
-    Post     Post[]
-    Comment  Comment[]
-    Bookmark Bookmark[]
+    posts     Post[]
+    comments  Comment[]
+    bookmarks Bookmark[]
+    likes     Like[]
 
     @@map("users")
 }
@@ -88,12 +110,13 @@ model Post {
     authorId  String
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
-    tags      Tag[]
 
     author   User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    Comment  Comment[]
-    View     View[]
-    Bookmark Bookmark[]
+    comments  Comment[]
+    views     View[]
+    bookmarks Bookmark[]
+    likes     Like[]
+    tags      Tag[]
 
     @@map("posts")
 }
@@ -139,4 +162,33 @@ model Bookmark {
     user User @relation(fields: [userId], references: [id])
 
     @@map("bookmarks")
+}
+
+model Like {
+    postId    String
+    userId    String
+    createdAt DateTime @default(now()) @map(name: "created_at")
+
+    dislike Boolean @default(false)
+
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([userId, postId])
+    @@index([userId])
+    @@index([postId])
+    @@map("likes")
+}
+
+model Follows {
+    followerId  String
+    followingId String
+
+    follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+    following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+    @@id([followerId, followingId])
+    @@index([followerId])
+    @@index([followingId])
+    @@map("follows")
 }

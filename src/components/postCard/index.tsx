@@ -10,27 +10,45 @@ import { GrView } from "react-icons/gr"
 import tw from "twin.macro"
 import { z } from "zod"
 
+import { api } from "@/utils/api"
 import { IPost } from "@/@types/types"
 
-function PostCard({ title, image, slug, author, _count, createdAt}: IPost) {
+function PostCard({
+  id,
+  title,
+  image,
+  slug,
+  author,
+  _count,
+  createdAt,
+  likes,
+}: IPost) {
   const [isLike, setIsLike] = useState<boolean>(false)
 
-  const onLikePost = () => {
-    setIsLike(!isLike)
+  const createLike = api.like.createLike.useMutation({
+    onSuccess: () => {
+      console.log("like success")
+      //   setIsLike(!isLike)
+    },
+  })
+
+  const onLikePost = async (dislike: boolean) => {
+    await createLike.mutateAsync({
+      postId: id,
+      dislike,
+    })
   }
 
   return (
     <Link href={`/${author.login}/${slug}`}>
       <CardWrapper>
-        <Card.Image src={image} alt="Post" />
+        <Card.Image src={image} tw="h-48 w-full object-cover" alt="Post" />
         <CardBody>
-          <CardDate>
-            {dayjs(createdAt).format("MMM D, YYYY")}
-          </CardDate>
+          <CardDate>{dayjs(createdAt).format("MMM D, YYYY")}</CardDate>
           <CardTitle tag="h2">{title}</CardTitle>
           <CardActions>
             <CardAvatar
-              src={author.image.link}
+              src={author.image?.link ?? ""}
               height={60}
               width={60}
               alt="user avatar"
@@ -38,24 +56,28 @@ function PostCard({ title, image, slug, author, _count, createdAt}: IPost) {
             <CardRightAction>
               <Tooltip color="primary" message="View">
                 <CardActionIcon>
-                  <GrView size={18} tw="!stroke-gray-400" />
-                  <span>{_count.View}</span>
+                  <GrView size={20} tw="!stroke-gray-400" />
+                  <span>{_count?.views}</span>
                 </CardActionIcon>
               </Tooltip>
               <Tooltip color="primary" message="Comment">
                 <CardActionIcon tw="border-x border-gray-400 border-opacity-40 px-3">
-                  <BiCommentDots size={18} />
-                  <span>{_count.Comment}</span>
+                  <BiCommentDots size={20} />
+                  <span>{_count?.comments}</span>
                 </CardActionIcon>
               </Tooltip>
               <Tooltip color="primary" message="Like">
-                <CardActionIcon onClick={onLikePost}>
-                  {isLike ? (
-                    <AiTwotoneLike tw="text-primary" size={18} />
+                <CardActionIcon>
+                  {likes.length ? (
+                    <AiTwotoneLike
+                      onClick={() => onLikePost(false)}
+                      tw="text-primary"
+                      size={20}
+                    />
                   ) : (
-                    <AiOutlineLike size={18} />
+                    <AiOutlineLike onClick={() => onLikePost(true)} size={20} />
                   )}
-                  <span>45</span>
+                  <span>{_count.likes}</span>
                 </CardActionIcon>
               </Tooltip>
             </CardRightAction>

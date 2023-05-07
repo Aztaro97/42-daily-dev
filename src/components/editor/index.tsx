@@ -72,7 +72,7 @@ export default function Editor({ post }: editorProps) {
 
     document
       .querySelectorAll(".image-tool__image-picture")
-      .forEach((x: HTMLImageElement) => {
+      .forEach((x: any) => {
         const path = x.src.match(/\/*.*$/g)[0]
         currentImages.push(path)
       })
@@ -81,8 +81,7 @@ export default function Editor({ post }: editorProps) {
       allImageUploaded.forEach(async (img) => {
         if (!currentImages.includes(img)) {
           const url = new URL(img)
-          const public_id = url.pathname.split("/").pop().split(".")[0]
-          console.log(public_id)
+          const public_id = url.pathname.split("/").pop().split(".")[0] as string
           // Mutate to remove img from server
           await deleteEditorImage.mutateAsync({ public_id })
 

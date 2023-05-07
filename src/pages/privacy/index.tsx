@@ -20,22 +20,23 @@ export default function PrivacyPage({ doc }: { doc: any }) {
   )
 }
 
-export async function getStaticPaths() {
-  const paths = allDocs.map((doc) => doc.slug)
-  return {
-    paths,
-    fallback: false,
-  }
-}
 
-export async function getStaticProps({ params: { slug } }) {
-  console.log("slug--", slug)
-  const doc = allDocs.find((post) => post._raw.flattenedPath === slug)
+// export async function getStaticPaths() {
+//   const paths = allDocs.map((doc) => doc.slug)
+//   return {
+//     paths,
+//     fallback: false,
+//   }
+// }
 
-  console.log("doc--", doc)
-  return {
-    props: {
-      doc,
-    },
-  }
-}
+// export async function getStaticProps({ params: { slug } }) {
+//   console.log("slug--", slug)
+//   const doc = allDocs.find((post) => post._raw.flattenedPath === slug)
+
+//   console.log("doc--", doc)
+//   return {
+//     props: {
+//       doc,
+//     },
+//   }
+// }

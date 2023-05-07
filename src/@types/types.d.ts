@@ -9,8 +9,16 @@ export interface ITags {
 	slug: string;
 }
 
+export interface ILike {
+	postId: string;
+	userId: string;
+	user: IUser;
+	post: IPost;
+	dislike: boolean;
+}
+
 export interface IUserImage {
-	link?: string;
+	link: string;
 	version: {
 		large: string;
 		medium: string;
@@ -23,20 +31,22 @@ export interface IUserImage {
 export interface IPost {
 	id: string
 	title: string
-	content?: string
-	image?: string
-	slug?: string
-	published?: boolean
-	createdAt?: Date
-	updatedAt?: Date
-	author?: IUser
-	tags?: ITags[]
-	comment?: IComment
-	View?: IView
-	_count?: {
-		Comment?: number
-		View?: number
-		Tags?: number
+	content: string
+	image: string
+	slug: string
+	published: boolean
+	createdAt: Date
+	updatedAt: Date
+	author: IUser
+	tags: ITags[]
+	comments: IComment[]
+	views: IView[]
+	likes: ILike[]
+	_count: {
+		comments: number
+		views: number
+		tags: number
+		likes: number
 	}
 }
 

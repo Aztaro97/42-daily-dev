@@ -44,7 +44,7 @@ const CustomButton = ({
 
 const ButtonStyled = styled(Button)(
   ({ bgColor }: { bgColor: TbgColor["bgColor"] }) => [
-    tw`min-h-[40px] h-auto text-white py-0 text-sm font-normal transition-all duration-300 ease-in-out`,
+    tw`min-h-[40px] h-auto capitalize text-white py-0 text-sm font-normal transition-all duration-300 ease-in-out`,
     bgColor === "primary" && tw`bg-primary`,
     bgColor === "secondary" && tw`bg-secondary`,
     bgColor === "transparent" && tw`bg-transparent`,

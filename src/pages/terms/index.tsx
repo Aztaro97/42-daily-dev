@@ -4,6 +4,6 @@ import { allDocs } from "contentlayer/generated"
 
 import Layout from "@/components/layout"
 
-export default function TermsPage({ data }) {
+export default function TermsPage() {
   return <Layout>TermsPage</Layout>
 }

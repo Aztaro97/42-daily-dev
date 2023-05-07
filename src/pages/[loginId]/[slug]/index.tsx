@@ -80,7 +80,7 @@ const PostPage = () => {
   )
 }
 
-const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(300px, 1fr)_300px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`
+const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(180px, 1fr)_180px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`
 const PostWraper = tw.div`w-full`
 const PostDate = tw.p`text-sm text-gray-400`
 const PostTitle = tw.h1`text-4xl text-white mb-4`
