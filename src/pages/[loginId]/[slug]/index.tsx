@@ -1,75 +1,69 @@
 import React from "react"
+import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import styled from "@emotion/styled"
+import dayjs from "dayjs"
 import { Avatar } from "react-daisyui"
 import tw from "twin.macro"
 
+import { api } from "@/utils/api"
+import BlockEditorRendering from "@/components/EditorRendering"
 import Layout from "@/components/layout"
 import ShareButton from "@/components/shareButton"
+import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 
-const PostPage = () => {
+export default function PostPage({ slug }: { slug: string }) {
+  const { data, isLoading } = api.blog.getPostBySlug.useQuery({ slug })
+
+  if (data && !isLoading) {
+    console.log("Post Detail", data)
+  }
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <h2>Loading...</h2>
+      </Layout>
+    )
+  }
+
   return (
     <Layout>
       <Grid>
         <PostWraper>
           <BannerWrapper>
             <BannerImage
-              src="https://daily-now-res.cloudinary.com/image/upload/v1679306271/96835229db75693a44e598609fe73bbb.jpg"
+              src={data?.image as string}
               width={900}
               height={400}
-              alt="Post Image"
+              alt={data?.title as string}
             />
-            <PostTitle>How to Create Dynamic Routes in Next.js</PostTitle>
+            <PostTitle>{data?.title}</PostTitle>
             <Box>
-              <AuthorLink href="/ataro-ga">
+              <AuthorLink href={`/${data?.author?.login}`}>
                 <Avatar
-                  src="https://i.pravatar.cc/300"
+                  src={data?.author?.image.link as string}
                   shape="circle"
                   size="xs"
                   border={true}
                 />
-                <span>Mohammed</span>
+                <span tw="text-gray-400">{data?.author?.name}</span>
               </AuthorLink>
-              <PostDate>Published: April 13, 2023</PostDate>
+              <PostDate>
+                Published: {dayjs(data?.createdAt).format("MMMM DD, YYYY")}
+              </PostDate>
             </Box>
           </BannerWrapper>
           <BodyWraper>
-            Lorem ipsum dolor sit amet consectetur adipiscing elit id conubia,
-            non porttitor nisl quam ac iaculis bibendum consequat, rhoncus vel
-            varius cum sapien urna sociis penatibus. Id fermentum orci nullam
-            cum vehicula cursus lectus turpis, senectus aliquam curae iaculis
-            pellentesque a vivamus cubilia, interdum elementum ultrices
-            convallis purus dapibus dis. Leo mi purus sagittis proin lobortis
-            mollis malesuada fames auctor platea, venenatis nisi euismod eros
-            potenti eleifend imperdiet nam lectus, donec pulvinar class felis
-            elementum per condimentum sociosqu integer. Parturient nascetur sem
-            porttitor facilisi accumsan convallis sagittis, mauris proin iaculis
-            fringilla felis varius hac, fusce tempus pharetra tincidunt urna
-            quis. Turpis dui cursus curae sollicitudin sociis arcu faucibus
-            ullamcorper massa, eu elementum nisi inceptos quisque urna facilisis
-            lectus eleifend, nascetur auctor tincidunt platea lacus placerat
-            laoreet velit. Venenatis maecenas justo leo mollis velit
-            sollicitudin ridiculus nullam, posuere bibendum mauris egestas nulla
-            malesuada integer, ullamcorper magnis duis mus scelerisque lacus
-            nisl. Senectus facilisi donec magnis quisque vitae hendrerit
-            suscipit elementum, vulputate purus nullam quis pretium phasellus
-            sapien, neque tempor sed pulvinar fringilla torquent facilisis.
-            Mauris torquent sociosqu duis enim aptent et pulvinar auctor
-            facilisi, aenean porta eros mus pretium proin volutpat ridiculus,
-            sollicitudin class tellus habitasse a ultrices lectus sed. Pulvinar
-            tristique torquent lacinia quisque ornare nisi sed mus, habitant
-            penatibus proin fringilla purus scelerisque convallis himenaeos,
-            ante felis lacus vulputate eu venenatis tempus. Natoque ullamcorper
-            ad nunc arcu scelerisque himenaeos posuere ac ultrices fusce,
-            malesuada accumsan class per hendrerit suspendisse suscipit dui leo
-            luctus massa, mattis blandit curabitur mauris ultricies venenatis
-            viverra dignissim nisl.
+            <BlockEditorRendering data={data?.content} />
           </BodyWraper>
           <FlexWrapper>
             <TagStyled>
-              Tag: <span>#Libft</span>, <span>#FT_Container</span>,{" "}
-              <span>#Born2BeRoot</span>{" "}
+              Tag:{" "}
+              {data?.tags.map((tag) => (
+                <span>{`#${tag.name}`}</span>
+              ))}
             </TagStyled>
             <ShareButton />
           </FlexWrapper>
@@ -80,22 +74,43 @@ const PostPage = () => {
   )
 }
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  }
+}
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const ssg = generateSSGHelper()
+
+  const slug = params?.slug as string
+
+  if (typeof slug !== "string") throw new Error("The slug shoul be a string")
+
+  await ssg.blog.getPostBySlug.prefetch({ slug })
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      slug,
+    },
+  }
+}
+
 const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(180px, 1fr)_180px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`
 const PostWraper = tw.div`w-full`
 const PostDate = tw.p`text-sm text-gray-400`
-const PostTitle = tw.h1`text-4xl text-white mb-4`
+const PostTitle = tw.h1`text-4xl text-white my-5`
 const BannerWrapper = tw.div``
 const BannerImage = tw(Image)`w-full h-[400px] object-cover object-center mb-4`
-const BodyWraper = tw.div`mb-4`
-const AuthorLink = tw(Link)`flex items-center gap-2`
+const BodyWraper = tw.div`mb-4 text-gray-400 w-full mx-0 prose lg:prose-lg`
+const AuthorLink = tw(Link)`flex items-center gap-3`
 const Box = tw.div`flex justify-between gap-x-5 mb-4`
 const FlexWrapper = tw.div`flex items-center justify-between gap-5`
 const TagStyled = styled.p`
-  ${tw`text-lg`}
+  ${tw`text-lg text-white`}
   & span {
-    ${tw`border-b border-primary`}
+    ${tw`border-b border-secondary text-secondary mx-1`}
   }
 `
 const RightElement = tw.div``
-
-export default PostPage

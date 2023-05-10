@@ -284,7 +284,9 @@ export const blogRouter = createTRPCRouter({
 				},
 				likes: {
 					select: {
-						dislike: true
+						userId: true,
+						dislike: true,
+						
 					}
 				},
 				// Count Number of View and Comment
@@ -337,5 +339,119 @@ export const blogRouter = createTRPCRouter({
 		return post;
 	}),
 
+
+	// GET POST LIKED FROM USER_ID
+	getPostsLiked: publicProcedure.input(z.object({
+		userId: z.string(),
+		limit: z.number(),
+		cursor: z.string().nullish(),
+		published: z.boolean().optional()
+	})).query(async ({ ctx, input }) => {
+		const { userId, cursor, limit, published } = input;
+
+		const posts = await ctx.prisma.post.findMany({
+			take: limit + 1,
+			orderBy: {
+				createdAt: "desc"
+			},
+			cursor: cursor ? { id: cursor } : undefined,
+			where: {
+				likes: {
+					some: {
+						userId,
+						dislike: true
+					}
+				},
+				// We don't want to list the user's own posts,
+				// as they are liked by the user automatically on creation.
+				NOT: {
+					authorId: userId
+				},
+
+			},
+			...(published && {
+				where: {
+					published
+				}
+			}),
+			select: {
+				id: true,
+				title: true,
+				image: true,
+				slug: true,
+				createdAt: true,
+				author: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+						image: true,
+						login: true
+					}
+				},
+				likes: {
+					select: {
+						dislike: true
+					}
+				},
+				// Count Number of View and Comment
+				_count: {
+					select: {
+						comments: true,
+						views: true,
+						tags: true,
+						likes: true
+					}
+				}
+			},
+			// include: {
+			// 	likes: true,
+			// 	author: true,
+			// 	tags: true
+			// },
+
+		})
+
+		let nextCursor: typeof cursor | undefined = undefined
+		if (posts.length > limit) {
+			const nextPost = posts.pop()
+			nextCursor = nextPost!?.id
+		}
+
+		return {
+			posts,
+			hasMore: posts.length > limit,
+			nextCursor,
+		};
+	}),
+
+
+
+
+	// GET POST BY ID
+	getPostBySlug: publicProcedure.input(z.object({
+		slug: z.string()
+	})).query(async ({ ctx, input }) => {
+		const { slug } = input;
+		const post = await ctx.prisma.post.findFirst({
+			where: {
+				slug
+			},
+			select: {
+				id: true,
+				title: true,
+				slug: true,
+				image: true,
+				author: true,
+				content: true,
+				createdAt: true,
+				updatedAt: true,
+				tags: true,
+				_count: true,
+			}
+		})
+
+		return post
+	})
 
 })

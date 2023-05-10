@@ -14,6 +14,6 @@ export const successAlert = (message: string) => toast.success(message, {
 
 
 export const errorAlert = (message: string) => toast.error(message, {
-	// position: `${toast.POSITION[position]}`,
+	// position: `${toast.POSITION.BOTTOM_RIGHT}`,
 	pauseOnHover: true,
 });

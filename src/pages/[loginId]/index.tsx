@@ -13,6 +13,7 @@ import CustomButton from "@/components/ui/customButton"
 import { IUser } from "@/@types/nextauth"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 import CustomPage404 from "../404"
+import tw from "twin.macro"
 
 const LIMIT_ITEM: number = 5
 const { Tab } = Tabs
@@ -47,7 +48,11 @@ export default function StudentProfile({ login }: { login: string }) {
         <Tab value={0}>Post</Tab>
         <Tab value={1}>Likes</Tab>
       </Tabs>
-      {tabValue === 0 ? <PostCreated userId={userInfo?.id} /> : <PostLiked />}
+      {tabValue === 0 ? (
+        <PostCreated userId={userInfo?.id} />
+      ) : (
+        <PostLiked userId={userInfo?.id} />
+      )}
     </Layout>
   )
 }
@@ -82,15 +87,14 @@ const PostLiked = ({ userId }: { userId: string }) => {
   const router = useRouter()
   const login = router.query?.loginId as string
   const { data, isLoading, fetchNextPage, hasNextPage } =
-    api.blog.getAllPosts.useInfiniteQuery(
+    api.blog.getPostsLiked.useInfiniteQuery(
+      { userId, limit: LIMIT_ITEM, published: false },
       {
-        limit: LIMIT_ITEM,
-        published: true,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        getNextPageParam: (lastPage: any) => lastPage.nextCursor,
       },
     )
+
+  console.log("data==", data)
 
   if (isLoading) {
     return <>Loading...</>
@@ -105,16 +109,16 @@ const PostLiked = ({ userId }: { userId: string }) => {
   )
 }
 
-const CardProfile: FC<IUser> = ({ email, name, login }) => {
+const CardProfile: FC<IUser> = ({ email, image, name, login }) => {
   return (
     <div className="grid items-start justify-center max-w-4xl grid-cols-2 gap-10 mx-auto">
       <figure>
-        <Image
-          src="https://picsum.photos/id/1005/400/250"
+        <ProfileImage
+          src={image.link}
           width={900}
           height={900}
           alt="Picture"
-          className="rounded-md"
+          className=""
         />
       </figure>
       <div className="h-full">
@@ -160,6 +164,8 @@ const CardProfile: FC<IUser> = ({ email, name, login }) => {
     </div>
   )
 }
+
+const ProfileImage = tw(Image)`max-w-[600px] w-full h-[300px] object-cover object-center rounded-md`
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const ssg = generateSSGHelper()

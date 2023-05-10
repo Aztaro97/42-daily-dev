@@ -28,7 +28,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <main className={robotoFont.className}>
         <GlobalStyles />
         <Component {...pageProps} />
-        <ToastContainer autoClose={3000} />
+        <ToastContainer autoClose={3000} hideProgressBar />
       </main>
     </SessionProvider>
   )
