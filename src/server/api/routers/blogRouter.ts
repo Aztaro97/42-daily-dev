@@ -286,7 +286,7 @@ export const blogRouter = createTRPCRouter({
 					select: {
 						userId: true,
 						dislike: true,
-						
+
 					}
 				},
 				// Count Number of View and Comment
@@ -391,9 +391,12 @@ export const blogRouter = createTRPCRouter({
 				},
 				likes: {
 					select: {
-						dislike: true
+						userId: true,
+						dislike: true,
+
 					}
-				},
+				}
+				,
 				// Count Number of View and Comment
 				_count: {
 					select: {
@@ -447,6 +450,12 @@ export const blogRouter = createTRPCRouter({
 				createdAt: true,
 				updatedAt: true,
 				tags: true,
+				likes: {
+					select: {
+						userId: true,
+						dislike: true,
+					}
+				},
 				_count: true,
 			}
 		})

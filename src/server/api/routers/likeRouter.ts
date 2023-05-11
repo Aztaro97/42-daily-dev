@@ -60,15 +60,18 @@ export const likeRouter = createTRPCRouter({
 					return updatedLike
 				}
 
-				// Check if the user is changing his like
+				// Check if the user is changing his like ( ) 
 				if (previousLike.dislike === dislike) {
 					// Delete the like
-					const deletedLike = await prisma.like.delete({
+					const deletedLike = await prisma.like.update({
 						where: {
 							userId_postId: {
 								userId: userId as string,
 								postId
 							}
+						},
+						data: {
+							dislike: false
 						}
 					})
 

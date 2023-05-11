@@ -1,11 +1,17 @@
-import React, { memo, useCallback, useState } from "react"
+import { truncate } from "fs"
+import React, { memo, useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
 import { useSession } from "next-auth/react"
 import { Button, Card, Tooltip } from "react-daisyui"
-import { AiOutlineLike, AiTwotoneLike } from "react-icons/ai"
+import {
+  AiFillLike,
+  AiOutlineDislike,
+  AiOutlineLike,
+  AiTwotoneLike,
+} from "react-icons/ai"
 import { BiCommentDots } from "react-icons/bi"
 import { GrView } from "react-icons/gr"
 import tw from "twin.macro"
@@ -26,83 +32,60 @@ function PostCard({
   createdAt,
   likes,
 }: IPost) {
-  const [isLike, setIsLike] = useState<boolean>(false)
+  const [likeByMe, setLikeByMe] = useState<boolean>(false)
   const { data: userSession } = useSession()
   const { showModal, setShowModal } = useStore()
 
-  const utils = api.useContext()
+  const tRpcUtils = api.useContext()
 
   const { data } = api.blog.getPostBySlug.useQuery({ slug })
 
   const createLike = api.like.createLike.useMutation({
     onMutate: async ({ dislike, postId }) => {
-      console.log("Mutate dislike :", dislike)
-      console.log("Mutate postId :", postId)
+      const dislikeCount = dislike ? 1 : -1
 
-      await utils.blog.getAllPosts.cancel()
-      await utils.blog.getPostBySlug.cancel()
+      await tRpcUtils.blog.getAllPosts.cancel()
+      await tRpcUtils.blog.getPostBySlug.cancel()
 
-      const previousPost = utils.blog.getPostBySlug.getData({ slug })
-
-      console.log("previousPost", previousPost)
-
-      //   //   Update Actual Like Query
-      //   const previousLikes = utils.like.getLikesByPostId(postId)
-      //   console.log("previousLikes :", previousLikes)
-
-      //   //   Optimistic Update
-      //   utils.like.setLikesByPostId(postId, {
-      //     ...previousLikes,
-      //     likes: [
-      //       ...previousLikes.likes,
-      //       {
-      //         id: "optimistic",
-      //         dislike,
-      //         createdAt: new Date().toISOString(),
-      //         updatedAt: new Date().toISOString(),
-      //         userId: "optimistic",
-      //         postId,
-      //       },
-      //     ],
-      //   })
-
-      // Update Like Count from Sing Post
-      if (previousPost) {
-        utils.blog.getPostBySlug.setData(
-          { slug },
-          {
-            ...previousPost,
-            _count: {
-              ...previousPost._count,
-              likes: previousPost._count.likes + 1,
-            },
-          },
-        )
-      }
+      const previousPost = tRpcUtils.blog.getPostBySlug.getData({ slug })
 
       //   Update Like Count from list all post
-      const previousAllPost = utils.blog.getAllPosts.getInfiniteData({
+      const previousAllPost = tRpcUtils.blog.getAllPosts.getInfiniteData({
         limit: 8,
         published: true,
       })
-      console.log("previousAllPost--", previousAllPost)
 
-      utils.blog.getAllPosts.setInfiniteData(
+      tRpcUtils.blog.getAllPosts.setInfiniteData(
         { limit: 8, published: true },
-        (data: any) => {
+        (oldData: any) => {
           return {
-            ...data,
-            pages: data.pages.map((page: any) => {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => {
               return {
                 ...page,
                 posts: page.posts.map((post: any) => {
                   if (post.id === postId) {
                     return {
                       ...post,
-                      dislike: dislike,
+                      //   Check if likes exist, otherwise return new object with dislike and userID
+                      likes: !post.likes.length
+                        ? post.likes.concat({
+                            dislike: dislike,
+                            userId: userSession?.userId,
+                          })
+                        : post.likes.map((like: any) => {
+                            if (like.userId === userSession?.userId) {
+                              return {
+                                ...like,
+                                dislike: dislike,
+                                userId: like.userId,
+                              }
+                            }
+                            return like
+                          }),
                       _count: {
                         ...post._count,
-                        likes: post._count.likes + 1,
+                        likes: post._count.likes + dislikeCount,
                       },
                     }
                   }
@@ -114,12 +97,9 @@ function PostCard({
         },
       )
 
-      return () => {
-        // // Revert Like Query
-        // utils.like.setLikesByPostId(postId, previousLikes),
-        //   // Revert Post Query
-        //   utils.blog.setPostBySlug(slug, previousPost),
-        previousPost
+      return {
+        previousPost,
+        previousAllPost,
       }
     },
 
@@ -127,13 +107,25 @@ function PostCard({
     // We'll use the context to returned from onMutate to roll back
     onError: (error, newData, context) => {
       console.log(error)
-      utils.blog.getPostBySlug.setData({ slug }, { ...context?.previousPost })
+      tRpcUtils.blog.getPostBySlug.setData(
+        { slug },
+        { ...(context?.previousPost as any) },
+      )
+      tRpcUtils.blog.getAllPosts.setInfiniteData(
+        { limit: 8, published: true },
+        { ...(context?.previousAllPost as any) },
+      )
     },
 
     // Alway Refresh after success or error
     onSettled: () => {
-      console.log("like settled")
-      utils.blog.getPostBySlug.invalidate({ slug })
+      //   console.log("like settled")
+      tRpcUtils.blog.getPostBySlug.invalidate({ slug })
+    },
+
+    onSuccess: (data) => {
+      console.log("like success")
+      //   console.log("data", data)
     },
   })
 
@@ -151,6 +143,23 @@ function PostCard({
     },
     [createLike, id, userSession],
   )
+
+  //   const likeByMe = likes.map((like) => {
+  //     if (like.userId === userSession?.userId && like.dislike) {
+  //       return true
+  //     }
+  //     return false
+  //   })
+
+  useEffect(() => {
+    // Check if the user have liked a post
+    // Set False by default if any post liked
+    const liked =
+      !!likes.find(
+        (like) => like.userId == userSession?.userId && like.dislike,
+      ) || false
+    setLikeByMe(liked)
+  }, [likeByMe, likes, userSession])
 
   return (
     <Link href={`/${author.login}/${slug}`}>
@@ -182,20 +191,19 @@ function PostCard({
               </Tooltip>
               <Tooltip color="primary" message="Like">
                 <CardActionIcon>
-                  {likes?.map((like) => {
-                    return like.userId === userSession?.userId ? (
-                      <AiTwotoneLike
-                        onClick={() => onLikeOrDislikePost(false)}
-                        tw="text-primary"
-                        size={20}
-                      />
-                    ) : (
-                      <AiOutlineLike
-                        onClick={() => onLikeOrDislikePost(true)}
-                        size={20}
-                      />
-                    )
-                  })}
+                  {likeByMe ? (
+                    <AiTwotoneLike
+                      onClick={() => onLikeOrDislikePost(false)}
+                      tw="text-primary"
+                      size={20}
+                    />
+                  ) : (
+                    <AiOutlineLike
+                      onClick={() => onLikeOrDislikePost(true)}
+                      size={20}
+                    />
+                  )}
+
                   <span>{_count.likes}</span>
                 </CardActionIcon>
               </Tooltip>

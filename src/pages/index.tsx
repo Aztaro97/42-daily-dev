@@ -27,6 +27,9 @@ function HomePage() {
       },
     )
 
+
+	console.log("data:::", data)
+
   if (isLoading) {
     return (
       <Layout>
