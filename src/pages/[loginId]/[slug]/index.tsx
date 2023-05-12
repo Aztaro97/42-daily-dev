@@ -85,7 +85,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const slug = params?.slug as string
 
-  if (typeof slug !== "string") throw new Error("The slug shoul be a string")
+  if (typeof slug !== "string") throw new Error("The slug should be a string")
 
   await ssg.blog.getPostBySlug.prefetch({ slug })
 
