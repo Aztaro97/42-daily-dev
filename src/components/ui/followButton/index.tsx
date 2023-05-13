@@ -1,6 +1,9 @@
-import React, { FC } from "react"
+import React, { FC, useCallback } from "react"
+import { useSession } from "next-auth/react"
 
 import { api } from "@/utils/api"
+import { infoAlert } from "@/components/alert"
+import useStore from "@/stores/useStore"
 import CustomButton from "../customButton"
 
 interface props {
@@ -11,6 +14,9 @@ interface props {
 
 const FollowButton: FC<props> = ({ followingId, isFollowing, login }) => {
   const tRpcUtils = api.useContext()
+
+  const { data: userSession } = useSession()
+  const { setShowModal } = useStore()
 
   const setFollowUser = api.follow.setFollowUser.useMutation({
     onMutate: async ({ followingId }) => {
@@ -109,19 +115,34 @@ const FollowButton: FC<props> = ({ followingId, isFollowing, login }) => {
     },
   })
 
+  const onFollowUser = useCallback(() => {
+    if (!userSession) {
+      infoAlert("You should login")
+    }
+    if (userSession && userSession.userId) {
+      setFollowUser.mutate({ followingId })
+    }
+  }, [userSession, followingId, setFollowUser])
+
+  const onUnFollowUser = useCallback(() => {
+    if (!userSession) {
+      infoAlert("You should login")
+    }
+    if (userSession && userSession.userId) {
+      deleteFollowUser.mutate({ followingId })
+    }
+  }, [userSession, followingId, deleteFollowUser])
+
   return (
     <>
       {!isFollowing ? (
-        <CustomButton
-          onClick={() => setFollowUser.mutate({ followingId })}
-          bgColor="primary"
-        >
+        <CustomButton onClick={onFollowUser} bgColor="primary">
           follow
         </CustomButton>
       ) : (
         <CustomButton
           tw="bg-transparent"
-          onClick={() => deleteFollowUser.mutate({ followingId })}
+          onClick={onUnFollowUser}
           bgColor="primary"
         >
           unfollow

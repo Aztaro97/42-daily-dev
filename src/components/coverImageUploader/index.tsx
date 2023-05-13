@@ -1,7 +1,9 @@
 import React from "react"
 import Image from "next/image"
+import { AiOutlineDelete } from "react-icons/ai"
 import { FiUploadCloud } from "react-icons/fi"
 import ImageUploading, { ImageListType } from "react-images-uploading"
+import tw from "twin.macro"
 
 interface props {
   onChangeImage: (
@@ -9,11 +11,27 @@ interface props {
     addUpdateIndex: number[] | undefined,
   ) => void
   value: ImageListType
+  imageUrl: string
 }
 
 export const DATA_COVER_IMAGE_URL_KEY = "image_url" as string
 
-const CoverImageUploader = ({ onChangeImage, value, ...rest }: props) => {
+const CoverImageUploader = ({
+  onChangeImage,
+  value,
+  imageUrl,
+  ...rest
+}: props) => {
+  const ExistingImage = () => (
+    <Image
+      src={imageUrl}
+      alt=""
+      width={900}
+      height={500}
+      className="max-h-[300px] mr-auto  my-0 object-contain object-center"
+    />
+  )
+
   return (
     <ImageUploading
       {...rest}
@@ -47,32 +65,19 @@ const CoverImageUploader = ({ onChangeImage, value, ...rest }: props) => {
             ) : (
               <>
                 {imageList.map((image, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-start w-full h-full"
-                  >
-                    <Image
-                      src={image[DATA_COVER_IMAGE_URL_KEY]}
-                      alt=""
-                      width={900}
-                      height={500}
-                      className="max-h-[300px] mr-auto  my-0 object-contain object-center"
-                    />
-                    <div className="z-10 flex items-start justify-start gap-2">
-                      <button
-                        onClick={() => onImageUpdate(index)}
-                        className="px-3 py-1 text-black bg-green-500 rounded-sm"
-                      >
-                        Change
-                      </button>
-                      <button
-                        onClick={() => onImageRemove(index)}
-                        className="px-3 py-1 text-black bg-red-500 rounded-sm"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
+                  <Box key={index}>
+                    <ImageWrapper>
+                      <ImageStyled
+                        src={image[DATA_COVER_IMAGE_URL_KEY]}
+                        alt=""
+                        width={900}
+                        height={500}
+                      />
+                      <DeleteBtn onClick={() => onImageRemove(index)}>
+                        <AiOutlineDelete size={20} />
+                      </DeleteBtn>
+                    </ImageWrapper>
+                  </Box>
                 ))}
               </>
             )}
@@ -82,5 +87,10 @@ const CoverImageUploader = ({ onChangeImage, value, ...rest }: props) => {
     </ImageUploading>
   )
 }
+
+const Box = tw.div`flex items-center justify-center`
+const ImageWrapper = tw.div`relative`
+const DeleteBtn = tw.button`absolute -top-3 -right-3 z-10 bg-secondary rounded-full flex items-center justify-center w-8 h-8 outline-none border-none text-black hover:scale-110 hover:animate-pulse duration-300 transition-all ease-in-out`
+const ImageStyled = tw(Image)`max-h-[200px] w-auto object-contain object-center`
 
 export default CoverImageUploader

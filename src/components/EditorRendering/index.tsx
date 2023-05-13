@@ -1,5 +1,4 @@
 import React, { FC } from "react"
-import Blocks from "editorjs-blocks-react-renderer"
 
 interface props {
   data: any

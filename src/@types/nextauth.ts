@@ -12,10 +12,10 @@ export enum Role {
 
 
 export interface IUser {
-	id: string;
+	id: string | null;
 	name: string;
 	email: string;
-	image: IUserImage;
+	image: string;
 	role: Role;
 	login: string;
 	loginId?: number;
@@ -25,6 +25,7 @@ export interface IUser {
 	followers: Prisma.FollowsGetPayload<{
 		include: {
 			follower: true;
+			following: true;
 		}
 	}>;
 	following: Prisma.FollowsGetPayload<{
@@ -86,7 +87,6 @@ export interface IFortyTwoProfile extends Profile42 {
 
 declare module "next-auth" {
 	interface User extends IUser {
-		image?: IUserImage;
 		loginId?: number;
 	}
 	interface Session {
@@ -107,8 +107,8 @@ declare module "next-auth/jwt" {
 		userId?: string;
 		sessionToken?: string;
 		user?: IUser;
-		image: IUserImage;
 	}
+
 }
 
 // Extends FortyTwoProfile 

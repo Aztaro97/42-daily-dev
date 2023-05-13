@@ -21,7 +21,7 @@ import { z } from "zod"
 import { api } from "@/utils/api"
 import { IPost } from "@/@types/types"
 import useStore from "@/stores/useStore"
-import { errorAlert } from "../alert"
+import { infoAlert } from "../alert"
 
 function PostCard({
   id,
@@ -133,16 +133,16 @@ function PostCard({
   const onLikeOrDislikePost = useCallback(
     async (dislike: boolean) => {
       if (!userSession) {
-        errorAlert("You should login")
-        setShowModal(true)
-        return
+        infoAlert("You should login")
       }
-      await toggleLike.mutateAsync({
-        postId: id,
-        dislike,
-      })
+      if (userSession && userSession.userId) {
+        toggleLike.mutate({
+          postId: id,
+          dislike,
+        })
+      }
     },
-    [toggleLike, id, userSession, setShowModal],
+    [toggleLike, id, userSession],
   )
 
   //   const likeBy = !!likes.find(
@@ -161,7 +161,10 @@ function PostCard({
 
   return (
     <CardWrapper>
-      <Link href={`/${author.login}/${slug}`}>
+      <Link
+        href={`/${author.login}/${slug}`}
+        tw="rounded-ss-2xl rounded-se-2xl overflow-hidden"
+      >
         <Card.Image src={image} tw="h-48 w-full object-cover" alt="Post" />
         {/* <CardImage src={image} width={300} height={300} tw="h-48 w-full object-cover" alt="Post" /> */}
         <CardBody>
@@ -172,7 +175,7 @@ function PostCard({
       <CardActions>
         <Link href={`/${author.login}`}>
           <CardAvatar
-            src={author.image?.link ?? ""}
+            src={author.image ?? ""}
             height={60}
             width={60}
             alt="user avatar"

@@ -17,3 +17,8 @@ export const errorAlert = (message: string) => toast.error(message, {
 	// position: `${toast.POSITION.BOTTOM_RIGHT}`,
 	pauseOnHover: true,
 });
+
+export const infoAlert = (message: string) => toast.info(message, {
+	// position: `${toast.POSITION.BOTTOM_RIGHT}`,
+	pauseOnHover: true,
+});

@@ -9,6 +9,7 @@ import tw from "twin.macro"
 
 import { api } from "@/utils/api"
 import BlockEditorRendering from "@/components/EditorRendering"
+import CommentField from "@/components/commentField"
 import Layout from "@/components/layout"
 import ShareButton from "@/components/shareButton"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
@@ -43,7 +44,7 @@ export default function PostPage({ slug }: { slug: string }) {
             <Box>
               <AuthorLink href={`/${data?.author?.login}`}>
                 <Avatar
-                  src={data?.author?.image.link as string}
+                  src={data?.author?.image as string}
                   shape="circle"
                   size="xs"
                   border={true}
@@ -67,6 +68,7 @@ export default function PostPage({ slug }: { slug: string }) {
             </TagStyled>
             <ShareButton />
           </FlexWrapper>
+          <CommentField />
         </PostWraper>
         <RightElement>Related Post</RightElement>
       </Grid>

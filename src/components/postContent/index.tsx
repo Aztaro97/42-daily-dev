@@ -6,11 +6,9 @@ import { IPost } from "@/@types/types"
 import PostCard from "../postCard"
 
 interface postContentProps {
-  data: {
-    pages: IPost[]
-  }
+  data: any
   fetchNextPage: any
-  hasNextPage: any
+  hasNextPage: boolean | undefined
   limitItem: number
 }
 
@@ -28,9 +26,9 @@ const PostContent: FC<postContentProps> = ({
       loader={<>Loading ...</>}
     >
       <GridWrapper>
-        {data?.pages.map((page) => (
+        {data?.pages.map((page: any) => (
           <>
-            {page?.posts.map((post) => (
+            {page?.posts.map((post: IPost) => (
               <PostCard key={post.id} {...post} />
             ))}
           </>

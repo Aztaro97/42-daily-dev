@@ -46,7 +46,7 @@ export default function CreateNewPost() {
           content: (data?.content as string) || "",
           tags: data?.tags || [],
           published: data?.published || false,
-          coverImage: data?.image ? [data?.image] : [],
+          coverImage: data?.image && [],
         }}
       />
     </Layout>

@@ -39,5 +39,5 @@
     "withTwin.cjc",
     ".contentlayer/generated"
   ],
-  "exclude": ["node_modules", "next-config.mjs"]
+  "exclude": ["node_modules", "next.config.mjs"]
 }

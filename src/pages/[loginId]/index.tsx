@@ -32,14 +32,13 @@ export default function StudentProfile({ login }: { login: string }) {
     return <>Loading...</>
   }
 
-  console.log("userInfo", userInfo)
-
   if (!userInfo) {
     return <CustomPage404 title="Page Not Fund!" />
   }
 
   return (
     <Layout>
+      {/* @ts-ignore */}
       <CardProfile {...userInfo} />
       <Tabs
         variant="bordered"
@@ -112,7 +111,21 @@ const PostLiked = ({ userId }: { userId: string }) => {
   )
 }
 
-const CardProfile: FC<IUser> = ({
+interface cardProfileProps extends IUser {
+  email: string
+  //   name: string
+  //   image: string
+  login: string
+  id: string | null
+  //   followers: any[]
+  //   _count: {
+  //     posts: number
+  //     followers: number
+  //     following: number
+  //   }
+}
+
+const CardProfile: FC<cardProfileProps> = ({
   email,
   image,
   name,
@@ -124,13 +137,14 @@ const CardProfile: FC<IUser> = ({
   const setFollowUser = api.follow.setFollowUser.useMutation()
 
   //   Check if the user is following the profile user
-  const isFollowing = followers?.some((fol) => fol.followingId === id)
+  //   @ts-ignore
+  const isFollowing = followers.some((fol) => fol.followingId === id)
 
   return (
     <div className="grid items-start justify-center max-w-4xl grid-cols-2 gap-10 mx-auto">
       <figure>
         <ProfileImage
-          src={image.link}
+          src={image}
           width={900}
           height={900}
           alt="Picture"
@@ -140,7 +154,11 @@ const CardProfile: FC<IUser> = ({
       <div className="h-full">
         <div className="flex items-center justify-between gap-5">
           <h2 className="mb-1 text-3xl ">{name}</h2>
-          <FollowButton login={login} followingId={id} isFollowing={isFollowing} />
+          <FollowButton
+            login={login}
+            followingId={id as string}
+            isFollowing={isFollowing}
+          />
         </div>
         <p className="mb-3 text-primary">{`@${login}`}</p>
         <p className="p-4 mb-5 border-l border-primary">
@@ -151,7 +169,7 @@ const CardProfile: FC<IUser> = ({
         <div className="flex items-center justify-between gap-5">
           <div className="flex items-center justify-start gap-5">
             <div className="flex flex-col items-center justify-center w-24 h-24 shadow shadow-primary">
-              <h3 className="text-xl">50</h3>
+              <h3 className="text-xl">{_count.posts}</h3>
               <p>Posts</p>
             </div>
             <div className="flex flex-col items-center justify-center w-24 h-24 shadow shadow-primary">

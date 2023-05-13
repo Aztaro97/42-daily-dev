@@ -14,10 +14,6 @@ const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
 })
 
-interface props {
-  value: any
-}
-
 export type FieldType = ControllerRenderProps<FieldValues, string>
 
 const enabledPlugins = [
@@ -72,7 +68,7 @@ const MarkdownEditor: FC<FieldType> = ({ value, ...rest }) => {
       style={{ height: "500px" }}
       defaultValue={value}
       placeholder="Write your content here..."
-      onChange={handleChange(rest)}
+      onChange={handleChange(rest as FieldType)}
       renderHTML={(text) => mdParser.parse(text)}
       shortcuts
       htmlClass="html_section"
@@ -96,12 +92,13 @@ const MarkdownEditor: FC<FieldType> = ({ value, ...rest }) => {
 }
 
 const MdEditorStyled = styled(MdEditor)`
+  ${tw`border-none !bg-transparent mb-5`}
   .html_section {
-    ${tw`prose prose-emerald dark:prose-invert`}
+    ${tw`prose prose-emerald dark:prose-invert `}
   }
 
   & .rc-md-navigation {
-    ${tw`border-none bg-zinc-800 text-zinc-100`}
+    ${tw`border-none bg-slate-800 text-zinc-100 !rounded-tl-lg !rounded-tr-lg`}
   }
 
   & .editor-container {
@@ -110,7 +107,11 @@ const MdEditorStyled = styled(MdEditor)`
     }
 
     & .sec-md textarea {
-      ${tw`bg-zinc-900 text-neutral-100`}
+      ${tw`!bg-slate-950 !text-neutral-100`}
+    }
+
+    & .sec-html {
+      ${tw`border-l border-neutral-800 bg-slate-950 text-neutral-100`}
     }
   }
 `

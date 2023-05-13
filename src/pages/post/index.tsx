@@ -11,6 +11,7 @@ import tw from "twin.macro"
 import { api } from "@/utils/api"
 import CreatePostButton from "@/components/createPostButton"
 import Layout from "@/components/layout"
+import { IUser } from "@/@types/nextauth"
 import { IPost } from "@/@types/types"
 
 const LIMIT_ITEM: number = 5
@@ -59,16 +60,67 @@ export default function PostPage() {
   )
 }
 
-const Card: FC<IPost> = ({ id, title, slug, createdAt, author, published }) => {
+type cardProps = {
+  id: string
+  title: string
+  slug: string
+  createdAt: Date
+  published: boolean
+  author: any
+}
+
+const Card: FC<cardProps> = ({
+  id,
+  title,
+  slug,
+  createdAt,
+  author,
+  published,
+}) => {
   const router = useRouter()
   const [showModal, setShowModal] = useState(false)
+  const tRpcUtils = api.useContext()
 
   const deletePostById = api.blog.deletePostById.useMutation({
+    onMutate: async () => {
+      await tRpcUtils.blog.getAllUserPost.cancel()
+
+      const previousAllPost = tRpcUtils.blog.getAllUserPost.getInfiniteData({
+        limit: LIMIT_ITEM,
+      })
+
+      tRpcUtils.blog.getAllUserPost.setInfiniteData(
+        { limit: LIMIT_ITEM },
+        (oldData: any) => {
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.filter((post: any) => post.id !== id),
+            })),
+          }
+        },
+      )
+
+      return {
+        previousAllPost,
+      }
+    },
+    onError: (err, variables, context) => {
+      tRpcUtils.blog.getAllUserPost.setInfiniteData(
+        { limit: LIMIT_ITEM },
+        { ...(context?.previousAllPost as any) },
+      )
+    },
+
+    // Alway Refresh after success or error
+    onSettled: () => {
+      tRpcUtils.blog.getAllUserPost.refetch()
+    },
     onSuccess: () => {
       setShowModal(false)
     },
   })
-  const getAllUserPost = api.blog.getAllUserPost.useQuery()
 
   const toggleShowModal = () => {
     setShowModal(!showModal)
@@ -78,7 +130,6 @@ const Card: FC<IPost> = ({ id, title, slug, createdAt, author, published }) => {
     await deletePostById.mutateAsync({
       postId: id,
     })
-    getAllUserPost.refetch()
   }
 
   return (

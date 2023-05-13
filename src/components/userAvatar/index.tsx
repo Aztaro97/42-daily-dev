@@ -17,11 +17,13 @@ export default function NavUserAvatar() {
   const router = useRouter()
   const { data: sessionData } = useSession()
 
+  console.log("sessionData", sessionData)
+
   return (
     <Dropdown end={true} vertical="bottom">
       <Button color="ghost" className="avatar" shape="circle">
         <ProfilePicture
-          src={sessionData?.user.image.link ?? ""}
+          src={sessionData?.user.image ?? ""}
           width={140}
           height={140}
           alt="Profile Picture"

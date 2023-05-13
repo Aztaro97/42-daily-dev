@@ -16,7 +16,7 @@ export const bookmarkRouter = createTRPCRouter({
 	)
 		.mutation(async ({ ctx, input }) => {
 			const { postId } = input;
-			const { prisma, session: { user } } = ctx;
+			const { prisma, session: { userId } } = ctx;
 
 			const post = await prisma.post.findUnique({
 				where: {
@@ -38,7 +38,7 @@ export const bookmarkRouter = createTRPCRouter({
 					},
 					user: {
 						connect: {
-							id: user.id
+							id: userId
 						}
 					}
 				}
