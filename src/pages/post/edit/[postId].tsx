@@ -1,10 +1,12 @@
 import React from "react"
+import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
 
 import { api } from "@/utils/api"
 import Editor from "@/components/editor"
 import Layout from "@/components/layout"
+import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 
 export default function CreateNewPost() {
   const { data: session } = useSession()
@@ -16,20 +18,16 @@ export default function CreateNewPost() {
     postId,
   })
 
+  //   if (!session) {
+  //     return {
+  //       redirect: {
+  //         destination: "/login",
+  //         permanent: false,
+  //       },
+  //     }
+  //   }
+
   console.log("data", data)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    }
-  }
-
-  if (!data) {
-    return <div>Page Not Fund...</div>
-  }
 
   if (isLoading) {
     return (
@@ -43,14 +41,39 @@ export default function CreateNewPost() {
     <Layout>
       <Editor
         post={{
-          id: data?.id,
-          title: data?.title,
-          content: data?.content,
-          tags: data?.tags,
-          published: data.published,
-          coverImage: data?.image,
+          id: data?.id || "",
+          title: data?.title || "",
+          content: (data?.content as string) || "",
+          tags: data?.tags || [],
+          published: data?.published || false,
+          coverImage: data?.image ? [data?.image] : [],
         }}
       />
     </Layout>
   )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const ssg = generateSSGHelper()
+
+  const postId = params?.postId as string
+
+  if (typeof postId !== "string")
+    throw new Error("The Post Id should be a string")
+
+  await ssg.blog.getPostForUserById.prefetch({ postId })
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      postId,
+    },
+  }
 }

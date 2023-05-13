@@ -22,10 +22,9 @@ import CustomButton from "@/components/ui/customButton"
 import { postSchema } from "@/schema/postSchema"
 import { successAlert } from "../alert"
 import CoverImageUploader from "../coverImageUploader"
+import MarkdownEditor from "../markdownEditor"
 import SelectInput from "../ui/SelectInput"
 
-// const DragDrop = dynamic(() => import("editorjs-drag-drop"), { ssr: false })
-// const Undo = dynamic(() => import("editorjs-undo"), { ssr: false })
 interface editorProps {
   post: z.infer<typeof postSchema>
 }
@@ -55,6 +54,7 @@ export default function Editor({ post }: editorProps) {
       coverImage: post.coverImage,
       tags: post.tags,
       published: post.published,
+	  content: post.content
     },
   })
 
@@ -62,118 +62,117 @@ export default function Editor({ post }: editorProps) {
   const deleteEditorImage = api.blog.deleteEditorImage.useMutation()
   const updatePost = api.blog.updatePost.useMutation()
 
-  const onChangeImage = (imageList: ImageListType) => {
-    console.log(imageList)
-    setImageFile(imageList)
-  }
+  //   const onChangeImage = (imageList: ImageListType) => {
+  //     console.log(imageList)
+  //     setImageFile(imageList)
+  //   }
 
-  const handleChange = () => {
-    const currentImages: string[] = []
+  //   const handleChange = () => {
+  //     const currentImages: string[] = []
 
-    document
-      .querySelectorAll(".image-tool__image-picture")
-      .forEach((x: any) => {
-        const path = x.src.match(/\/*.*$/g)[0]
-        currentImages.push(path)
-      })
+  //     document
+  //       .querySelectorAll(".image-tool__image-picture")
+  //       .forEach((x: any) => {
+  //         const path = x.src.match(/\/*.*$/g)[0]
+  //         currentImages.push(path)
+  //       })
 
-    if (allImageUploaded.length > currentImages.length) {
-      allImageUploaded.forEach(async (img) => {
-        if (!currentImages.includes(img)) {
-          const url = new URL(img)
-          const public_id = url.pathname.split("/").pop().split(".")[0] as string
-          // Mutate to remove img from server
-          await deleteEditorImage.mutateAsync({ public_id })
+  //     if (allImageUploaded.length > currentImages.length) {
+  //       allImageUploaded.forEach(async (img) => {
+  //         if (!currentImages.includes(img)) {
+  //           const url = new URL(img)
+  //           const public_id = url.pathname.split("/").pop().split(".")[0] as string
+  //           // Mutate to remove img from server
+  //           await deleteEditorImage.mutateAsync({ public_id })
 
-          // if success, remove from allImageUploaded
-          let filterImage = allImageUploaded.filter((x) => x != img)
-          allImageUploaded = filterImage
-        }
-      })
-    }
-  }
+  //           // if success, remove from allImageUploaded
+  //           let filterImage = allImageUploaded.filter((x) => x != img)
+  //           allImageUploaded = filterImage
+  //         }
+  //       })
+  //     }
+  //   }
 
-  const initializeEditor = useCallback(async () => {
-    // const EditorJs = (await import("@editorjs/editorjs")).default
+  //   const initializeEditor = useCallback(async () => {
+  //     // const EditorJs = (await import("@editorjs/editorjs")).default
 
-    // const Header = (await import("@editorjs/header")).default
-    // const Embed = (await import("@editorjs/embed")).default
-    // const Table = (await import("@editorjs/table")).default
-    // const List = (await import("@editorjs/list")).default
-    // // const Code = (await import("@editorjs/code")).default
-    // const CodeFlask = (await import("@calumk/editorjs-codeflask")).default
-    // const LinkTool = (await import("@editorjs/link")).default
-    // const InlineCode = (await import("@editorjs/inline-code")).default
-    // const Quote = (await import("@editorjs/quote")).default
-    // const Marker = (await import("@editorjs/marker")).default
-    // const Delimiter = (await import("@editorjs/marker")).default
-    // const Checklist = (await import("@editorjs/checklist")).default
-    const ImageTool = (await import("@editorjs/image")).default
-    const { EDITOR_JS_TOOLS } = await import("@editorjs/image")
-    // const simpleImage = (await import("@editorjs/simple-image")).default
-    // const Paragraph = (await import("@editorjs/paragraph")).default
-    // const Underline = (await import("@editorjs/underline")).default
-    // const RawTool = (await import("@editorjs/raw")).default
-    // const Warning = (await import("@editorjs/warning")).default
-    // const AlignmentTuneTool = (
-    //   await import("editorjs-text-alignment-blocktune")
-    // ).default
-    const DragDrop = (await import("editorjs-drag-drop")).default
-    const Undo = (await import("editorjs-undo")).default
+  //     // const Header = (await import("@editorjs/header")).default
+  //     // const Embed = (await import("@editorjs/embed")).default
+  //     // const Table = (await import("@editorjs/table")).default
+  //     // const List = (await import("@editorjs/list")).default
+  //     // // const Code = (await import("@editorjs/code")).default
+  //     // const CodeFlask = (await import("@calumk/editorjs-codeflask")).default
+  //     // const LinkTool = (await import("@editorjs/link")).default
+  //     // const InlineCode = (await import("@editorjs/inline-code")).default
+  //     // const Quote = (await import("@editorjs/quote")).default
+  //     // const Marker = (await import("@editorjs/marker")).default
+  //     // const Delimiter = (await import("@editorjs/marker")).default
+  //     // const Checklist = (await import("@editorjs/checklist")).default
+  //     const ImageTool = (await import("@editorjs/image")).default
+  //     const { EDITOR_JS_TOOLS } = await import("@editorjs/image")
+  //     // const simpleImage = (await import("@editorjs/simple-image")).default
+  //     // const Paragraph = (await import("@editorjs/paragraph")).default
+  //     // const Underline = (await import("@editorjs/underline")).default
+  //     // const RawTool = (await import("@editorjs/raw")).default
+  //     // const Warning = (await import("@editorjs/warning")).default
+  //     // const AlignmentTuneTool = (
+  //     //   await import("editorjs-text-alignment-blocktune")
+  //     // ).default
+  //     const DragDrop = (await import("editorjs-drag-drop")).default
+  //     const Undo = (await import("editorjs-undo")).default
 
-    const body = postSchema.parse(post)
+  //     const body = postSchema.parse(post)
 
-    if (!ref.current) {
-      const editor = new EditorJS({
-        holder: EDITOR_HOLDER_ID,
-        onChange: handleChange,
-        onReady() {
-          ref.current = editor
-            new Undo({ editor })
-            new DragDrop(editor)
-        },
-        data: body.content,
-        placeholder: "Type Your Content Here...",
-        inlineToolbar: true,
-        tools: {
-          ...EDITOR_JS_TOOLS,
-          image: {
-            class: ImageTool,
-            config: {
-              field: "image",
-              types: "image/*",
-              uploader: {
-                uploadByFile: async (fileImg: File) => {
-                  const file = (await convertToBase64(fileImg)) as string
-                  const result = await uploadEditorImage.mutateAsync({ file })
-                  // keep track of images, add the url of each new image to our array
-                  allImageUploaded.push(result.url)
-                  console.log("result.url", result.url)
-                  return {
-                    success: 1,
-                    file: {
-                      url: result.url,
-                    },
-                  }
-                },
-              },
-            },
-          },
-        },
-      })
-    }
-  }, [post])
+  //     if (!ref.current) {
+  //       const editor = new EditorJS({
+  //         holder: EDITOR_HOLDER_ID,
+  //         onChange: handleChange,
+  //         onReady() {
+  //           ref.current = editor
+  //             new Undo({ editor })
+  //             new DragDrop(editor)
+  //         },
+  //         data: body.content,
+  //         placeholder: "Type Your Content Here...",
+  //         inlineToolbar: true,
+  //         tools: {
+  //           ...EDITOR_JS_TOOLS,
+  //           image: {
+  //             class: ImageTool,
+  //             config: {
+  //               field: "image",
+  //               types: "image/*",
+  //               uploader: {
+  //                 uploadByFile: async (fileImg: File) => {
+  //                   const file = (await convertToBase64(fileImg)) as string
+  //                   const result = await uploadEditorImage.mutateAsync({ file })
+  //                   // keep track of images, add the url of each new image to our array
+  //                   allImageUploaded.push(result.url)
+  //                   console.log("result.url", result.url)
+  //                   return {
+  //                     success: 1,
+  //                     file: {
+  //                       url: result.url,
+  //                     },
+  //                   }
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //       })
+  //     }
+  //   }, [post])
 
   const onSubmit = async (formData: FormData) => {
-    const blockContent = await ref.current?.save()
     // const coverImageUrl = getValues(`coverImage`)[DATA_COVER_IMAGE_URL_KEY]
     const response = await updatePost.mutateAsync({
       id: formData.id,
       title: formData.title,
       tags: formData.tags,
-      published: false,
+      published: true,
       coverImage: formData.coverImage,
-      content: blockContent,
+      content: formData.content,
     })
     if (response) {
       successAlert("Post Published")
@@ -182,26 +181,6 @@ export default function Editor({ post }: editorProps) {
 
   const onPublish = () => {
     console.log(" on onPublish")
-  }
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsMounted(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (isMounted) {
-      initializeEditor()
-    }
-    return () => {
-      ref.current?.destroy()
-      ref.current = undefined
-    }
-  }, [isMounted, initializeEditor])
-
-  if (!isMounted) {
-    return null
   }
 
   return (
@@ -236,7 +215,15 @@ export default function Editor({ post }: editorProps) {
           )}
         />
         <Divider className="my-2" />
-        <EditorBox id={EDITOR_HOLDER_ID}></EditorBox>
+        {/* <EditorBox id={EDITOR_HOLDER_ID}></EditorBox> */}
+        <Controller
+          name={"content"}
+          control={control}
+          render={({ field: { value, ...rest } }) => (
+            <MarkdownEditor value={value} {...rest} />
+          )}
+        />
+
         <ActionButtonWrapper>
           <CustomButton
             bgColor="primary"

@@ -5,15 +5,16 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { Tabs } from "react-daisyui"
 import { FaFacebookSquare } from "react-icons/fa"
+import tw from "twin.macro"
 
 import { api } from "@/utils/api"
 import Layout from "@/components/layout"
 import PostContent from "@/components/postContent"
 import CustomButton from "@/components/ui/customButton"
+import FollowButton from "@/components/ui/followButton"
 import { IUser } from "@/@types/nextauth"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 import CustomPage404 from "../404"
-import tw from "twin.macro"
 
 const LIMIT_ITEM: number = 5
 const { Tab } = Tabs
@@ -30,6 +31,8 @@ export default function StudentProfile({ login }: { login: string }) {
   if (isLoading) {
     return <>Loading...</>
   }
+
+  console.log("userInfo", userInfo)
 
   if (!userInfo) {
     return <CustomPage404 title="Page Not Fund!" />
@@ -109,7 +112,20 @@ const PostLiked = ({ userId }: { userId: string }) => {
   )
 }
 
-const CardProfile: FC<IUser> = ({ email, image, name, login }) => {
+const CardProfile: FC<IUser> = ({
+  email,
+  image,
+  name,
+  login,
+  id,
+  followers,
+  _count,
+}) => {
+  const setFollowUser = api.follow.setFollowUser.useMutation()
+
+  //   Check if the user is following the profile user
+  const isFollowing = followers?.some((fol) => fol.followingId === id)
+
   return (
     <div className="grid items-start justify-center max-w-4xl grid-cols-2 gap-10 mx-auto">
       <figure>
@@ -124,7 +140,7 @@ const CardProfile: FC<IUser> = ({ email, image, name, login }) => {
       <div className="h-full">
         <div className="flex items-center justify-between gap-5">
           <h2 className="mb-1 text-3xl ">{name}</h2>
-          <CustomButton bgColor="primary">Folllow</CustomButton>
+          <FollowButton login={login} followingId={id} isFollowing={isFollowing} />
         </div>
         <p className="mb-3 text-primary">{`@${login}`}</p>
         <p className="p-4 mb-5 border-l border-primary">
@@ -139,11 +155,11 @@ const CardProfile: FC<IUser> = ({ email, image, name, login }) => {
               <p>Posts</p>
             </div>
             <div className="flex flex-col items-center justify-center w-24 h-24 shadow shadow-primary">
-              <h3 className="text-xl">50</h3>
+              <h3 className="text-xl">{_count.followers}</h3>
               <p>Followers</p>
             </div>
             <div className="flex flex-col items-center justify-center w-24 h-24 shadow shadow-primary">
-              <h3 className="text-xl">50</h3>
+              <h3 className="text-xl">{_count.following}</h3>
               <p>Following</p>
             </div>
           </div>
@@ -165,7 +181,9 @@ const CardProfile: FC<IUser> = ({ email, image, name, login }) => {
   )
 }
 
-const ProfileImage = tw(Image)`max-w-[600px] w-full h-[300px] object-cover object-center rounded-md`
+const ProfileImage = tw(
+  Image,
+)`max-w-[600px] w-full h-[300px] object-cover object-center rounded-md`
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const ssg = generateSSGHelper()

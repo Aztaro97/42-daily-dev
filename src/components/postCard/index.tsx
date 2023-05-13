@@ -14,6 +14,7 @@ import {
 } from "react-icons/ai"
 import { BiCommentDots } from "react-icons/bi"
 import { GrView } from "react-icons/gr"
+import { RiHeart2Fill, RiHeart2Line } from "react-icons/ri"
 import tw from "twin.macro"
 import { z } from "zod"
 
@@ -40,7 +41,7 @@ function PostCard({
 
   const { data } = api.blog.getPostBySlug.useQuery({ slug })
 
-  const createLike = api.like.createLike.useMutation({
+  const toggleLike = api.like.toggleLike.useMutation({
     onMutate: async ({ dislike, postId }) => {
       const dislikeCount = dislike ? 1 : -1
 
@@ -136,20 +137,17 @@ function PostCard({
         setShowModal(true)
         return
       }
-      await createLike.mutateAsync({
+      await toggleLike.mutateAsync({
         postId: id,
         dislike,
       })
     },
-    [createLike, id, userSession],
+    [toggleLike, id, userSession, setShowModal],
   )
 
-  //   const likeByMe = likes.map((like) => {
-  //     if (like.userId === userSession?.userId && like.dislike) {
-  //       return true
-  //     }
-  //     return false
-  //   })
+  //   const likeBy = !!likes.find(
+  //       (like) => like.userId == userSession?.userId && like.dislike,
+  //     ) || false
 
   useEffect(() => {
     // Check if the user have liked a post
@@ -162,68 +160,70 @@ function PostCard({
   }, [likeByMe, likes, userSession])
 
   return (
-    <Link href={`/${author.login}/${slug}`}>
-      <CardWrapper>
+    <CardWrapper>
+      <Link href={`/${author.login}/${slug}`}>
         <Card.Image src={image} tw="h-48 w-full object-cover" alt="Post" />
         {/* <CardImage src={image} width={300} height={300} tw="h-48 w-full object-cover" alt="Post" /> */}
         <CardBody>
           <CardDate>{dayjs(createdAt).format("MMM D, YYYY")}</CardDate>
           <CardTitle tag="h2">{title}</CardTitle>
-          <CardActions>
-            <CardAvatar
-              src={author.image?.link ?? ""}
-              height={60}
-              width={60}
-              alt="user avatar"
-            />
-            <CardRightAction>
-              <Tooltip color="primary" message="View">
-                <CardActionIcon>
-                  <GrView size={20} tw="!stroke-gray-400" />
-                  <span>{_count?.views}</span>
-                </CardActionIcon>
-              </Tooltip>
-              <Tooltip color="primary" message="Comment">
-                <CardActionIcon tw="border-x border-gray-400 border-opacity-40 px-3">
-                  <BiCommentDots size={20} />
-                  <span>{_count?.comments}</span>
-                </CardActionIcon>
-              </Tooltip>
-              <Tooltip color="primary" message="Like">
-                <CardActionIcon>
-                  {likeByMe ? (
-                    <AiTwotoneLike
-                      onClick={() => onLikeOrDislikePost(false)}
-                      tw="text-primary"
-                      size={20}
-                    />
-                  ) : (
-                    <AiOutlineLike
-                      onClick={() => onLikeOrDislikePost(true)}
-                      size={20}
-                    />
-                  )}
-
-                  <span>{_count.likes}</span>
-                </CardActionIcon>
-              </Tooltip>
-            </CardRightAction>
-          </CardActions>
         </CardBody>
-      </CardWrapper>
-    </Link>
+      </Link>
+      <CardActions>
+        <Link href={`/${author.login}`}>
+          <CardAvatar
+            src={author.image?.link ?? ""}
+            height={60}
+            width={60}
+            alt="user avatar"
+          />
+        </Link>
+        <CardRightAction>
+          <Tooltip color="primary" message="View">
+            <CardActionIcon>
+              <GrView size={20} tw="!stroke-gray-400" />
+              <span>{_count?.views}</span>
+            </CardActionIcon>
+          </Tooltip>
+          <Tooltip color="primary" message="Comment">
+            <CardActionIcon tw="border-x border-gray-400 border-opacity-40 px-3">
+              <BiCommentDots size={20} />
+              <span>{_count?.comments}</span>
+            </CardActionIcon>
+          </Tooltip>
+          <Tooltip color="primary" message="Like">
+            <CardActionIcon>
+              {likeByMe ? (
+                <RiHeart2Fill
+                  onClick={() => onLikeOrDislikePost(false)}
+                  tw="text-primary"
+                  size={20}
+                />
+              ) : (
+                <RiHeart2Line
+                  onClick={() => onLikeOrDislikePost(true)}
+                  size={20}
+                />
+              )}
+
+              <span>{_count.likes}</span>
+            </CardActionIcon>
+          </Tooltip>
+        </CardRightAction>
+      </CardActions>
+    </CardWrapper>
   )
 }
 
 const CardWrapper = tw(
   Card,
-)`border h-full min-h-max border-gray-700 hover:border-primary transition duration-500 ease-in-out cursor-pointer`
+)`border relative pb-14 h-full min-h-max border-gray-700 hover:border-primary transition duration-500 ease-in-out cursor-pointer`
 const CardTitle = tw(Card.Title)`line-clamp-3 text-white text-2xl mb-auto`
-const CardBody = tw(Card.Body)`px-6 pt-2  `
+const CardBody = tw(Card.Body)`px-6 pt-2`
 const CardDate = tw.p`text-gray-400 text-opacity-80 text-xs mt-2`
 const CardActions = tw(
   Card.Actions,
-)`flex justify-between items-center gap-3 mt-4`
+)`absolute bottom-6 px-6 w-full flex justify-between items-center gap-3 mt-4`
 const CardAvatar = tw(Image)`rounded-full w-8 h-8`
 const CardRightAction = tw.div`flex gap-2`
 const CardActionIcon = styled.div`

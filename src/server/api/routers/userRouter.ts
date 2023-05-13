@@ -21,6 +21,11 @@ export const userRouter = createTRPCRouter({
 		const profile = await prisma.user.findUnique({
 			where: {
 				login
+			},
+			include: {
+				following: true,
+				followers: true,
+				_count: true,
 			}
 		});
 

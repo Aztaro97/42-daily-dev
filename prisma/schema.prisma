@@ -103,7 +103,7 @@ model VerificationToken {
 model Post {
     id        String   @id @default(cuid())
     title     String
-    content   Json?
+    content   String?
     image     String?
     published Boolean  @default(false)
     slug      String

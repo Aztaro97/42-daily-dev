@@ -69,3 +69,9 @@ export interface IBookmark {
 	post: IPost
 	user: IUser
 }
+
+export interface Follow {
+	id: string
+	follower: IUser
+	following: IUser
+}

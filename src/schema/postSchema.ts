@@ -10,7 +10,7 @@ export const postSchema = z.object({
 	id: z.string(),
 	title: z.string().max(128),
 	coverImage: z.any().optional(),
-	content: z.any().optional(),
+	content: z.string().optional(),
 	published: z.boolean(),
 	tags: z.array(tagSchema).optional(),
 })

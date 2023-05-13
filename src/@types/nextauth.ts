@@ -2,7 +2,7 @@
 import { DefaultSession, Profile } from "next-auth";
 import { FortyTwoProfile } from "next-auth/providers/42-school";
 
-import { IUserImage } from "@/@types/types"
+import { Follow, IUserImage } from "@/@types/types"
 import { Prisma } from "@prisma/client";
 // Define a role enum
 export enum Role {
@@ -21,6 +21,38 @@ export interface IUser {
 	loginId?: number;
 	emailVerified?: boolean;
 	accessToken?: string;
+
+	followers: Prisma.FollowsGetPayload<{
+		include: {
+			follower: true;
+		}
+	}>;
+	following: Prisma.FollowsGetPayload<{
+		include: {
+			following: true;
+		}
+	}>;
+
+	posts: Prisma.PostGetPayload<{
+		include: {
+			likes: true;
+			comments: true;
+			views: true;
+			tags: true;
+		}
+	}>
+
+	// Count
+	_count: {
+		posts: number;
+		followers: number;
+		following: number;
+		likes: number;
+		comments: number;
+		views: number;
+	}
+
+
 }
 
 interface Profile42 {
