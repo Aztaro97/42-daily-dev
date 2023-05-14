@@ -1,6 +1,6 @@
 import React from "react"
 import Link from "next/link"
-import { allDocs } from "contentlayer/generated"
+// import { allDocs } from "contentlayer/generated"
 
 import Layout from "@/components/layout"
 

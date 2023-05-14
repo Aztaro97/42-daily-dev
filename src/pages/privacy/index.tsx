@@ -1,6 +1,6 @@
 import React from "react"
 import Link from "next/link"
-import { allDocs } from "contentlayer/generated"
+// import { allDocs } from "contentlayer/generated"
 import { useMDXComponent } from "next-contentlayer/hooks"
 
 // import { getTableOfContent } from "@/lib/toc"
@@ -10,7 +10,6 @@ export default function PrivacyPage({ doc }: { doc: any }) {
   //   const tableOfContent = getTableOfContent(doc.body.raw);
   //   const MdxContent = useMDXComponent(doc.body.code)
   //   console.log("tableOfContent", tableOfContent)
-  console.log("doc", allDocs)
   return (
     <Layout>
       <div className="text-lg">Hello Privacy Policy</div>
