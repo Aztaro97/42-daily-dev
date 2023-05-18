@@ -15,7 +15,10 @@ import ShareButton from "@/components/shareButton"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 
 export default function PostPage({ slug }: { slug: string }) {
-  const { data, isLoading } = api.blog.getPostBySlug.useQuery({ slug })
+  const {
+    data,
+    isLoading,
+  } = api.blog.getPostBySlug.useQuery({ slug })
 
   if (data && !isLoading) {
     console.log("Post Detail", data)
@@ -32,7 +35,7 @@ export default function PostPage({ slug }: { slug: string }) {
   return (
     <Layout>
       <Grid>
-        <PostWraper>
+        <PostWrapper>
           <BannerWrapper>
             <BannerImage
               src={data?.image as string}
@@ -68,8 +71,11 @@ export default function PostPage({ slug }: { slug: string }) {
             </TagStyled>
             <ShareButton />
           </FlexWrapper>
-          <CommentField />
-        </PostWraper>
+          <CommentField
+            commentData={data?.comments}
+            postId={data?.id}
+          />
+        </PostWrapper>
         <RightElement>Related Post</RightElement>
       </Grid>
     </Layout>
@@ -100,7 +106,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(180px, 1fr)_180px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`
-const PostWraper = tw.div`w-full`
+const PostWrapper = tw.div`w-full`
 const PostDate = tw.p`text-sm text-gray-400`
 const PostTitle = tw.h1`text-4xl text-white my-5`
 const BannerWrapper = tw.div``
@@ -112,7 +118,7 @@ const FlexWrapper = tw.div`flex items-center justify-between gap-5`
 const TagStyled = styled.p`
   ${tw`text-lg text-white`}
   & span {
-    ${tw`border-b border-secondary text-secondary mx-1`}
+    ${tw`mx-1 border-b border-secondary text-secondary`}
   }
 `
 const RightElement = tw.div``

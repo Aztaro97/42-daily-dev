@@ -450,6 +450,21 @@ export const blogRouter = createTRPCRouter({
 				createdAt: true,
 				updatedAt: true,
 				tags: true,
+				comments: {
+					select: {
+						id: true,
+						content: true,
+						author: {
+							select: {
+								id: true,
+								name: true,
+								image: true,
+								login: true,
+							}
+						},
+						createdAt: true,
+					}
+				},
 				likes: {
 					select: {
 						userId: true,

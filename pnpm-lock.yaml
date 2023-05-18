@@ -13,6 +13,7 @@ specifiers:
   '@emotion/css': ^11.10.6
   '@emotion/react': ^11.10.6
   '@emotion/styled': ^11.10.6
+  '@hookform/error-message': ^2.0.1
   '@hookform/resolvers': ^3.0.1
   '@ianvs/prettier-plugin-sort-imports': ^3.7.2
   '@next-auth/prisma-adapter': ^1.0.5
@@ -99,6 +100,7 @@ dependencies:
   '@emotion/css': 11.10.6
   '@emotion/react': 11.10.6_3mjolpizrsjgnt7s4ahgoveqvu
   '@emotion/styled': 11.10.6_rlilcownqunxqatkw62yi3egci
+  '@hookform/error-message': 2.0.1_3vs6kel7arqr4fuhyz2geipx74
   '@hookform/resolvers': 3.1.0_react-hook-form@7.43.9
   '@next-auth/prisma-adapter': 1.0.6_frn5qpxffbyvohns2s2fks3bke
   '@paralleldrive/cuid2': 2.2.0
@@ -1323,6 +1325,18 @@ packages:
       long: 4.0.0
       protobufjs: 7.2.3
       yargs: 16.2.0
+    dev: false
+
+  /@hookform/error-message/2.0.1_3vs6kel7arqr4fuhyz2geipx74:
+    resolution: {integrity: sha512-U410sAr92xgxT1idlu9WWOVjndxLdgPUHEB8Schr27C9eh7/xUnITWpCMF93s+lGiG++D4JnbSnrb5A21AdSNg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      react-hook-form: ^7.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-hook-form: 7.43.9_react@18.2.0
     dev: false
 
   /@hookform/resolvers/3.1.0_react-hook-form@7.43.9:

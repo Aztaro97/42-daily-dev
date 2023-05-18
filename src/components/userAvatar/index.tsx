@@ -26,7 +26,7 @@ export default function NavUserAvatar() {
           src={sessionData?.user.image ?? ""}
           width={140}
           height={140}
-          alt="Profile Picture"
+          alt={sessionData?.user.name ?? ""}
         />
       </Button>
       <Dropdown.Menu

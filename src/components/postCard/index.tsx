@@ -35,20 +35,14 @@ function PostCard({
 }: IPost) {
   const [likeByMe, setLikeByMe] = useState<boolean>(false)
   const { data: userSession } = useSession()
-  const { showModal, setShowModal } = useStore()
 
   const tRpcUtils = api.useContext()
-
-  const { data } = api.blog.getPostBySlug.useQuery({ slug })
 
   const toggleLike = api.like.toggleLike.useMutation({
     onMutate: async ({ dislike, postId }) => {
       const dislikeCount = dislike ? 1 : -1
 
       await tRpcUtils.blog.getAllPosts.cancel()
-      await tRpcUtils.blog.getPostBySlug.cancel()
-
-      const previousPost = tRpcUtils.blog.getPostBySlug.getData({ slug })
 
       //   Update Like Count from list all post
       const previousAllPost = tRpcUtils.blog.getAllPosts.getInfiniteData({
@@ -99,7 +93,6 @@ function PostCard({
       )
 
       return {
-        previousPost,
         previousAllPost,
       }
     },
@@ -108,10 +101,6 @@ function PostCard({
     // We'll use the context to returned from onMutate to roll back
     onError: (error, newData, context) => {
       console.log(error)
-      tRpcUtils.blog.getPostBySlug.setData(
-        { slug },
-        { ...(context?.previousPost as any) },
-      )
       tRpcUtils.blog.getAllPosts.setInfiniteData(
         { limit: 8, published: true },
         { ...(context?.previousAllPost as any) },
@@ -120,8 +109,7 @@ function PostCard({
 
     // Alway Refresh after success or error
     onSettled: () => {
-      //   console.log("like settled")
-      tRpcUtils.blog.getPostBySlug.invalidate({ slug })
+      tRpcUtils.blog.getAllPosts.invalidate({ limit: 8 })
     },
 
     onSuccess: (data) => {
@@ -227,7 +215,7 @@ const CardDate = tw.p`text-gray-400 text-opacity-80 text-xs mt-2`
 const CardActions = tw(
   Card.Actions,
 )`absolute bottom-6 px-6 w-full flex justify-between items-center gap-3 mt-4`
-const CardAvatar = tw(Image)`rounded-full w-8 h-8`
+const CardAvatar = tw(Image)`rounded-full w-8 h-8 object-cover`
 const CardRightAction = tw.div`flex gap-2`
 const CardActionIcon = styled.div`
   ${tw`flex items-center gap-1 px-1 text-gray-400`}

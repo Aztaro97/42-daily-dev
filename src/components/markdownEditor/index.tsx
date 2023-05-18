@@ -16,6 +16,10 @@ const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
 
 export type FieldType = ControllerRenderProps<FieldValues, string>
 
+interface markdownProps extends FieldType {
+  className?: string
+}
+
 const enabledPlugins = [
   "header",
   "font-bold",
@@ -36,7 +40,7 @@ const enabledPlugins = [
   // "full-screen",
 ]
 
-const MarkdownEditor: FC<FieldType> = ({ value, ...rest }) => {
+const MarkdownEditor: FC<markdownProps> = ({ value, className, ...rest }) => {
   const mdParser = marked.setOptions({
     smartypants: true,
     langPrefix: "hljs language-", // highlight.js css expects a top-level 'hljs' class.
@@ -65,7 +69,7 @@ const MarkdownEditor: FC<FieldType> = ({ value, ...rest }) => {
     <MdEditorStyled
       {...rest}
       plugins={enabledPlugins}
-      style={{ height: "500px" }}
+      className={className}
       defaultValue={value}
       placeholder="Write your content here..."
       onChange={handleChange(rest as FieldType)}

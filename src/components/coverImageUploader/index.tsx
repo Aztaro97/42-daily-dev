@@ -22,6 +22,8 @@ const CoverImageUploader = ({
   imageUrl,
   ...rest
 }: props) => {
+
+
   const ExistingImage = () => (
     <Image
       src={imageUrl}
