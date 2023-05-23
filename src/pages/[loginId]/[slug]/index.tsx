@@ -15,10 +15,12 @@ import ShareButton from "@/components/shareButton"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 
 export default function PostPage({ slug }: { slug: string }) {
-  const {
-    data,
-    isLoading,
-  } = api.blog.getPostBySlug.useQuery({ slug })
+  const { data, isLoading } = api.blog.getPostBySlug.useQuery(
+    { slug },
+    {
+      enabled: !!slug,
+    },
+  )
 
   if (data && !isLoading) {
     console.log("Post Detail", data)
@@ -71,10 +73,7 @@ export default function PostPage({ slug }: { slug: string }) {
             </TagStyled>
             <ShareButton />
           </FlexWrapper>
-          <CommentField
-            commentData={data?.comments}
-            postId={data?.id}
-          />
+          <CommentField postId={data?.id} />
         </PostWrapper>
         <RightElement>Related Post</RightElement>
       </Grid>
@@ -109,12 +108,12 @@ const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(180px, 1fr)_180px] 2xl
 const PostWrapper = tw.div`w-full`
 const PostDate = tw.p`text-sm text-gray-400`
 const PostTitle = tw.h1`text-4xl text-white my-5`
-const BannerWrapper = tw.div``
+const BannerWrapper = tw.div`mb-4`
 const BannerImage = tw(Image)`w-full h-[400px] object-cover object-center mb-4`
-const BodyWraper = tw.div`mb-4 text-gray-400 w-full mx-0 prose lg:prose-lg`
+const BodyWraper = tw.div`mb-5 text-gray-400 w-full mx-0 prose lg:prose-lg`
 const AuthorLink = tw(Link)`flex items-center gap-3`
 const Box = tw.div`flex justify-between gap-x-5 mb-4`
-const FlexWrapper = tw.div`flex items-center justify-between gap-5`
+const FlexWrapper = tw.div`flex items-center justify-between gap-5 mb-7`
 const TagStyled = styled.p`
   ${tw`text-lg text-white`}
   & span {

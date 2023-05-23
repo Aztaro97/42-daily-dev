@@ -34,7 +34,9 @@ export default function NavUserAvatar() {
         className="w-52"
         dataTheme={theme}
       >
-        <Dropdown.Item onClick={() => router.push("/profile")}>
+        <Dropdown.Item
+          onClick={() => router.push(`/${sessionData?.user.login}`)}
+        >
           <HiOutlineUser size={20} />
           Profile
         </Dropdown.Item>

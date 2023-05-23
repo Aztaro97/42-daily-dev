@@ -1,21 +1,11 @@
 import cloudinary from "@/lib/cloudinary";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { tagSchema } from "@/schema/postSchema"
+import { tagSchema, updatePostSchema } from "@/schema/postSchema"
 import { z } from "zod";
 import slugify from "slugify"
 import { uidGenerator } from "@/lib/uidGenerator";
 import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
 import { TRPCError } from "@trpc/server";
-
-export const createPostSchema = z.object({
-	id: z.string(),
-	title: z.string(),
-	slug: z.string().optional(),
-	tags: z.array(tagSchema).optional(),
-	coverImage: z.any().optional(),
-	content: z.any().optional(),
-	published: z.boolean().optional(),
-})
 
 
 const createImage = async (base64Image: string) => {
@@ -49,7 +39,6 @@ export const blogRouter = createTRPCRouter({
 	).mutation(async ({ ctx, input }) => {
 		try {
 			const { file: base64Image } = input;
-
 
 			// Generate Image Url from Cloudinadry
 			const cloudImage = await createImage(base64Image)
@@ -104,22 +93,16 @@ export const blogRouter = createTRPCRouter({
 
 	// Update Post By Id
 	updatePost: protectedProcedure
-		.input(createPostSchema)
+		.input(updatePostSchema)
 		.mutation(async ({ ctx, input }) => {
-			const { content, published, tags, title, coverImage, id: postId } = input
+			const { content, published, tags, title, id: postId } = input
 			const authorId = ctx.session.userId;
 
 			// Generate Post Slug
 			const slug = slugify(title, { lower: true }) + "-" + uidGenerator()
 
-			// Get Cover Image Url
-			const coverImageUrl = coverImage[0][DATA_COVER_IMAGE_URL_KEY] as string
-
 			// console.log("coverImageUrl", coverImageUrl)
 			console.log("slug", slug)
-
-			// Create Image 
-			const cloudImage = await createImage(coverImageUrl)
 
 			const newPost = await ctx.prisma.post.update({
 				where: {
@@ -130,7 +113,6 @@ export const blogRouter = createTRPCRouter({
 					content,
 					published,
 					slug,
-					image: cloudImage.secure_url,
 					tags: {
 						// Existing tags have id, connect them. New tags don't, create them.
 						connect: tags?.filter(t => ("id" in t)).map(t => ({ id: t.id })) ?? [],
@@ -216,6 +198,7 @@ export const blogRouter = createTRPCRouter({
 			},
 			select: {
 				id: true,
+				image: true,
 				author: {
 					select: {
 						id: true,
@@ -226,6 +209,12 @@ export const blogRouter = createTRPCRouter({
 
 		if (post?.author?.id !== authorId) {
 			throw new TRPCError({ code: "FORBIDDEN", message: "You are not allowed to delete this post" })
+		}
+
+		// Destroy Image from the cloud
+		if (post?.image) {
+			const publicId = post.image.split(".")[0]
+			await deleteImage(publicId as string);
 		}
 
 		await ctx.prisma.post.delete({
@@ -450,21 +439,6 @@ export const blogRouter = createTRPCRouter({
 				createdAt: true,
 				updatedAt: true,
 				tags: true,
-				comments: {
-					select: {
-						id: true,
-						content: true,
-						author: {
-							select: {
-								id: true,
-								name: true,
-								image: true,
-								login: true,
-							}
-						},
-						createdAt: true,
-					}
-				},
 				likes: {
 					select: {
 						userId: true,

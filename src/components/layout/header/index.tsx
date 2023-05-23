@@ -9,6 +9,7 @@ import SwitchTheme from "@/components/switchTheme"
 import CustomButton from "@/components/ui/customButton"
 import NavUserAvatar from "@/components/userAvatar"
 import useStore from "@/stores/useStore"
+import InputSearchField from "@/components/inputSearchField"
 
 const AppHeader = () => {
   const { showModal, setShowModal } = useStore()
@@ -27,9 +28,7 @@ const AppHeader = () => {
           </Link>
         </div>
         <RightNav>
-          <Form>
-            <Input bordered tw="h-[40px]" type="text" placeholder="Search" />
-          </Form>
+          <InputSearchField />
           <SwitchTheme />
           {session ? (
             <>
@@ -51,7 +50,7 @@ const AppHeader = () => {
   )
 }
 
-const HeaderContainer = tw.header`w-full top-0 flex justify-between items-center h-[65px] px-20 gap-10 border-b border-gray-400 border-opacity-40 z-30`
+const HeaderContainer = tw.header`w-full absolute top-0 flex justify-between items-center h-[65px] px-10 lg:px-20 gap-10 border-b border-gray-400 border-opacity-40 z-30 bg-slate-900`
 const RightNav = tw.div`flex-none items-center gap-2`
 
 export default AppHeader

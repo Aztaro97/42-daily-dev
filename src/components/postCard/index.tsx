@@ -133,9 +133,10 @@ function PostCard({
     [toggleLike, id, userSession],
   )
 
-  //   const likeBy = !!likes.find(
-  //       (like) => like.userId == userSession?.userId && like.dislike,
-  //     ) || false
+//   const likeBy =
+//     !!likes.find(
+//       (like) => like.userId == userSession?.userId && like.dislike,
+//     ) || false
 
   useEffect(() => {
     // Check if the user have liked a post

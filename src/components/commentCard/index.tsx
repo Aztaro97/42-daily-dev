@@ -2,6 +2,8 @@ import React, { FC, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import { useSession } from "next-auth/react"
 import { Button, Dropdown, Modal } from "react-daisyui"
 import { TbDotsVertical } from "react-icons/tb"
@@ -11,11 +13,14 @@ import { api } from "@/utils/api"
 import { IUser } from "@/@types/nextauth"
 import { successAlert } from "../alert"
 
+dayjs.extend(relativeTime)
+
 export interface commenterProps {
   id: string
   content: string
   author: IUser
   createdAt: Date
+  postId: string
 }
 
 const CommentCard: FC<commenterProps> = ({
@@ -23,44 +28,42 @@ const CommentCard: FC<commenterProps> = ({
   content,
   author,
   createdAt,
+  postId,
 }) => {
   const [showModal, setShowModal] = useState(false)
 
   const tRpcUtils = api.useContext()
-  const router = useRouter()
-
-  const slug = router.query?.slug as string
 
   const deleteComment = api.comment.deleteComment.useMutation({
     onMutate: async () => {
-      await tRpcUtils.blog.getPostBySlug.cancel({ slug })
+      await tRpcUtils.comment.getCommentsByPostId.cancel({ postId })
 
-      const previousPost = tRpcUtils.blog.getPostBySlug.getData({ slug })
-
-      tRpcUtils.blog.getPostBySlug.setData({ slug }, (oldData: any) => {
-        return {
-          ...oldData,
-          comments: oldData.comments.filter(
-            (comment: { id: string }) => comment.id !== id,
-          ),
-        }
+      const previousComments = tRpcUtils.comment.getCommentsByPostId.getData({
+        postId,
       })
 
-      return { previousPost }
+      tRpcUtils.comment.getCommentsByPostId.setData(
+        { postId },
+        (oldData: any) => {
+          return oldData.filter((comment: any) => comment.id !== id)
+        },
+      )
+
+      return { previousComments }
     },
     // If the mutate fails
     // We'll use the context to returned from onMutate to roll back
     onError: (error, newDate, context) => {
-      tRpcUtils.blog.getPostBySlug.setData(
-        { slug },
+      tRpcUtils.comment.getCommentsByPostId.setData(
+        { postId },
         {
-          ...(context?.previousPost as any),
+          ...(context?.previousComments as any),
         },
       )
     },
     // Alway Refresh after success or error
     onSettled: () => {
-      tRpcUtils.blog.getPostBySlug.invalidate({ slug })
+      tRpcUtils.comment.getCommentsByPostId.invalidate({ postId })
     },
     onSuccess: () => {
       successAlert("Commenter Delete")
@@ -94,7 +97,7 @@ const CommentCard: FC<commenterProps> = ({
                 <CommentAuthor>{author.name}</CommentAuthor>
               </Link>
               <span>-</span>
-              <CommentDate>2 hours ago</CommentDate>
+              <CommentDate>{dayjs().to(dayjs(createdAt))}</CommentDate>
             </CommentHeaderLeft>
             <CommentHeaderRight>
               <Dropdown horizontal="left">

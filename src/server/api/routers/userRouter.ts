@@ -37,6 +37,19 @@ export const userRouter = createTRPCRouter({
 		}
 
 		return profile
+	}),
+
+	getMyProfile: protectedProcedure.query(({ ctx }) => {
+		const { session: { userId } } = ctx;
+
+		return ctx.prisma.user.findUnique({
+			where: {
+				id: userId
+			},
+			include: {
+				url: true,
+			}
+		})
 	})
 
 })

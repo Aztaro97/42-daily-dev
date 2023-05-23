@@ -44,6 +44,7 @@ export default function PostPage() {
         dataLength={(data?.pages.length || 0) * LIMIT_ITEM}
         next={fetchNextPage}
         hasMore={hasNextPage as boolean}
+		className=" !h-full"
         loader={<>Loading ...</>}
       >
         <CardWrapper>

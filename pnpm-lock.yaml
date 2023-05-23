@@ -28,6 +28,7 @@ specifiers:
   '@trpc/server': ^10.18.0
   '@types/dompurify': ^3.0.2
   '@types/eslint': ^8.21.3
+  '@types/file-saver': ^2.0.5
   '@types/howler': ^2.2.7
   '@types/jsonwebtoken': ^9.0.1
   '@types/marked': ^4.3.0
@@ -41,6 +42,7 @@ specifiers:
   autoprefixer: ^10.4.14
   babel-loader: ^9.1.2
   babel-plugin-macros: ^3.1.0
+  blob-util: ^2.0.2
   cloudinary: ^1.36.2
   contentlayer: ^0.3.1
   cross-env: ^7.0.3
@@ -112,10 +114,12 @@ dependencies:
   '@trpc/react-query': 10.21.1_hciipccbbcnhzb3qrp7tni6kf4
   '@trpc/server': 10.21.1
   '@types/dompurify': 3.0.2
+  '@types/file-saver': 2.0.5
   '@types/howler': 2.2.7
   '@types/jsonwebtoken': 9.0.1
   '@types/marked': 4.3.0
   '@types/react-howler': 5.2.0
+  blob-util: 2.0.2
   cloudinary: 1.36.2
   contentlayer: 0.3.2_esbuild@0.17.18
   daisyui: 2.51.6_3nau3chwaskv2dtdtzzur6h7oq
@@ -2054,6 +2058,10 @@ packages:
     resolution: {integrity: sha512-R1g/VyKFFI2HLC1QGAeTtCBWCo6n75l41OnsVYNbmKG+kempOESaodf6BeJyUM3Q0rKa/NQcTHbB2+66lNnxLw==}
     dev: false
 
+  /@types/file-saver/2.0.5:
+    resolution: {integrity: sha512-zv9kNf3keYegP5oThGLaPk8E081DFDuwfqjtiTzm6PoxChdJ1raSuADf2YGCVIyrSynLrgc8JWv296s7Q7pQSQ==}
+    dev: false
+
   /@types/hast/2.3.4:
     resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
     dependencies:
@@ -2676,6 +2684,10 @@ packages:
   /binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
+
+  /blob-util/2.0.2:
+    resolution: {integrity: sha512-T7JQa+zsXXEa6/8ZhHcQEW1UFfVM49Ts65uBkFL6fz2QmrElqmbajIDJvuA0tEhRe5eIjpV9ZF+0RfZR9voJFQ==}
+    dev: false
 
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}

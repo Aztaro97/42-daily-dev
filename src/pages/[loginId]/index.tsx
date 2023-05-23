@@ -3,6 +3,7 @@ import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { useSession } from "next-auth/react"
 import { Tabs } from "react-daisyui"
 import { FaFacebookSquare } from "react-icons/fa"
 import tw from "twin.macro"
@@ -135,6 +136,7 @@ const CardProfile: FC<cardProfileProps> = ({
   _count,
 }) => {
   const setFollowUser = api.follow.setFollowUser.useMutation()
+  const { data: userSession } = useSession()
 
   //   Check if the user is following the profile user
   //   @ts-ignore
@@ -154,11 +156,17 @@ const CardProfile: FC<cardProfileProps> = ({
       <div className="h-full">
         <div className="flex items-center justify-between gap-5">
           <h2 className="mb-1 text-3xl ">{name}</h2>
-          <FollowButton
-            login={login}
-            followingId={id as string}
-            isFollowing={isFollowing}
-          />
+          {userSession?.userId === id ? (
+            <Link href={"/settings"}>
+              <CustomButton bgColor="primary" className="tracking-wider">Edit</CustomButton>
+            </Link>
+          ) : (
+            <FollowButton
+              login={login}
+              followingId={id as string}
+              isFollowing={isFollowing}
+            />
+          )}
         </div>
         <p className="mb-3 text-primary">{`@${login}`}</p>
         <p className="p-4 mb-5 border-l border-primary">

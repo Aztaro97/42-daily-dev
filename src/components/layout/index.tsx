@@ -18,7 +18,7 @@ export default function Layout({ children }: props) {
     setVisible(!visible)
   }
   return (
-    <>
+    <Container>
       <AppHeader />
       <Drawer
         side={
@@ -30,16 +30,16 @@ export default function Layout({ children }: props) {
         open={visible}
         mobile={visible}
         onClickOverlay={toggleVisible}
-        tw="!h-[100vh - 65px]"
-        contentClassName={"py-5 px-20 relative top-[65px] mb-20 mt-10"}
-        sideClassName="w-48 relative top-[65px]"
+        tw="!h-full relative top-[65px] !overflow-y-hidden"
+        contentClassName={"px-10 lg:px-20 pb-20 pt-10 overflow-y-hidden"}
+        sideClassName="w-48"
       >
         <main>{children}</main>
+        <AuthModal />
       </Drawer>
       {/* <Footer /> */}
-      <AuthModal />
-    </>
+    </Container>
   )
 }
 
-const Container = tw.div`w-full`
+const Container = tw.div`w-full h-screen overflow-y-hidden`

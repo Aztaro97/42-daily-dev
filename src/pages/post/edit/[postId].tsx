@@ -18,17 +18,6 @@ export default function CreateNewPost() {
     postId,
   })
 
-  //   if (!session) {
-  //     return {
-  //       redirect: {
-  //         destination: "/login",
-  //         permanent: false,
-  //       },
-  //     }
-  //   }
-
-  console.log("data", data)
-
   if (isLoading) {
     return (
       <Layout>
@@ -40,13 +29,13 @@ export default function CreateNewPost() {
   return (
     <Layout>
       <Editor
-        post={{
+        postData={{
           id: data?.id || "",
           title: data?.title || "",
           content: (data?.content as string) || "",
           tags: data?.tags || [],
+          image: data?.image || "",
           published: data?.published || false,
-          coverImage: data?.image,
         }}
       />
     </Layout>

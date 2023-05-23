@@ -12,6 +12,7 @@ import MarkdownEditor from "@/components/markdownEditor"
 import CustomButton from "@/components/ui/customButton"
 import { commentSchema } from "@/schema/postSchema"
 import { IUser } from "@/@types/nextauth"
+import { IComment } from "@/@types/types"
 import CommentCard from "../commentCard"
 
 type FormData = z.infer<typeof commentSchema>
@@ -25,26 +26,50 @@ interface commenterProps {
 interface props {
   postId: string
   slug: string
-  commentData: commenterProps[]
 }
 
-const CommentField: FC<props> = ({ postId, commentData, slug }) => {
+const CommentField: FC<props> = ({ postId, slug }) => {
+  const { data: commentData, isLoading } =
+    api.comment.getCommentsByPostId.useQuery(
+      { postId },
+      {
+        enabled: !!postId,
+      },
+    )
+
+  console.log("commentData", commentData)
+
+  if (isLoading) {
+    return (
+      <div>
+        <h2>Loading...</h2>
+      </div>
+    )
+  }
+
   return (
     <div>
       <CommentForm postId={postId} slug={slug} />
-      {commentData.length > 0 ? (
-        <CommentWrapper>
-          {commentData.map((comment) => (
-            <CommentCard key={comment.id} {...comment} />
-          ))}
-        </CommentWrapper>
-      ) : null}
+      {isLoading ? (
+        <h2>Loading...</h2>
+      ) : (
+        <>
+          {commentData && commentData?.length > 0 ? (
+            <CommentWrapper>
+              {commentData.map((comment: any) => (
+                <CommentCard key={comment.id} {...comment} postId={postId} />
+              ))}
+            </CommentWrapper>
+          ) : null}
+        </>
+      )}
     </div>
   )
 }
 
 const CommentForm = ({ postId }: { postId: string; slug: string }) => {
   const { data: userSession } = useSession()
+  const tRpcUtils = api.useContext()
 
   const {
     handleSubmit,
@@ -58,7 +83,10 @@ const CommentForm = ({ postId }: { postId: string; slug: string }) => {
 
   const createComment = api.comment.createComment.useMutation({
     onSuccess: () => {
-      
+      reset()
+
+      //   This will refresh the comments
+      tRpcUtils.comment.getCommentsByPostId.invalidate({ postId })
     },
   })
 
@@ -74,7 +102,7 @@ const CommentForm = ({ postId }: { postId: string; slug: string }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h1 className="mb-2 text-xl text-white">Comments</h1>
+      <h1 className="mb-2 text-2xl text-white">Comments</h1>
       <div>
         <FieldErrorMessage errors={errors} name="content">
           <Controller

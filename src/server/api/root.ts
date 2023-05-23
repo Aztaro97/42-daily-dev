@@ -4,6 +4,7 @@ import { likeRouter } from "./routers/likeRouter";
 import { userRouter } from "./routers/userRouter";
 import { followersRouter } from "./routers/followersRouter";
 import { commentRouter } from "./routers/commentRouter";
+import { uploadRouter } from "./routers/uploadRouter";
 
 /**
  * This is the primary router for your server.
@@ -15,7 +16,8 @@ export const appRouter = createTRPCRouter({
 	like: likeRouter,
 	user: userRouter,
 	follow: followersRouter,
-	comment: commentRouter
+	comment: commentRouter,
+	upload: uploadRouter
 });
 
 

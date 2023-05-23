@@ -1,45 +1,52 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import { AiOutlineDelete } from "react-icons/ai"
 import { FiUploadCloud } from "react-icons/fi"
 import ImageUploading, { ImageListType } from "react-images-uploading"
 import tw from "twin.macro"
 
+import { api } from "@/utils/api"
+
 interface props {
-  onChangeImage: (
-    imageList: ImageListType,
-    addUpdateIndex: number[] | undefined,
-  ) => void
-  value: ImageListType
+  postId: string
   imageUrl: string
 }
 
 export const DATA_COVER_IMAGE_URL_KEY = "image_url" as string
 
-const CoverImageUploader = ({
-  onChangeImage,
-  value,
-  imageUrl,
-  ...rest
-}: props) => {
+const CoverImageUploader = ({ imageUrl, postId, ...rest }: props) => {
+  const [imageUpload, setImageUpload] = useState<ImageListType>([])
+  const [imgUrl, setImgUrl] = useState<string>("")
 
+  const { mutate: uploadImage, isLoading: uploading } =
+    api.upload.uploadPostImage.useMutation()
 
-  const ExistingImage = () => (
-    <Image
-      src={imageUrl}
-      alt=""
-      width={900}
-      height={500}
-      className="max-h-[300px] mr-auto  my-0 object-contain object-center"
-    />
-  )
+  const { mutate: destroyImage, isLoading: destroying } =
+    api.upload.destroyPostImage.useMutation()
+
+  const onChangeImage = (imageList: ImageListType) => {
+    setImageUpload(imageList)
+    if (imageList.length) {
+      uploadImage({ files: imageList, postId })
+    }
+  }
+
+  const handleDestroyImage = () => {
+    destroyImage({ postId })
+  }
+
+  useEffect(() => {
+    if (imageUrl) {
+      setImgUrl(imageUrl)
+    }
+  }, [imageUrl])
 
   return (
     <ImageUploading
       {...rest}
       onChange={onChangeImage}
       maxNumber={1}
-      value={value}
+      value={imageUpload}
       dataURLKey={DATA_COVER_IMAGE_URL_KEY}
       acceptType={["jpg", "gif", "png", "jpeg"]}
     >
@@ -53,34 +60,62 @@ const CoverImageUploader = ({
       }) => {
         return (
           <div className="relative flex items-center justify-center min-h-16">
-            {!imageList.length ? (
-              <div
-                style={isDragging ? { color: "red" } : undefined}
-                className="flex flex-col items-center justify-center w-full h-full gap-2 py-5 border rounded-md cursor-pointer border-primary"
-                onClick={onImageUpload}
-                {...dragProps}
-              >
-                <h2 className="m-0 text-3xl font-medium">Add a cover image</h2>
-                <FiUploadCloud size={40} />
-                <p className="m-0">Upload or Drag & Drop</p>
-              </div>
+            {imgUrl ? (
+              <>
+                {" "}
+                {
+                  <ImageWrapper>
+                    <ImageStyled src={imgUrl} alt="" width={900} height={500} />
+                    <DeleteBtn
+                      onClick={() => {
+                        setImgUrl("")
+                        destroyImage({ postId })
+                      }}
+                    >
+                      <AiOutlineDelete size={20} />
+                    </DeleteBtn>
+                  </ImageWrapper>
+                }
+              </>
             ) : (
               <>
-                {imageList.map((image, index) => (
-                  <Box key={index}>
-                    <ImageWrapper>
-                      <ImageStyled
-                        src={image[DATA_COVER_IMAGE_URL_KEY]}
-                        alt=""
-                        width={900}
-                        height={500}
-                      />
-                      <DeleteBtn onClick={() => onImageRemove(index)}>
-                        <AiOutlineDelete size={20} />
-                      </DeleteBtn>
-                    </ImageWrapper>
-                  </Box>
-                ))}
+                {!imageList.length ? (
+                  <div
+                    style={isDragging ? { color: "red" } : undefined}
+                    className="flex flex-col items-center justify-center w-full h-full gap-2 py-5 border rounded-md cursor-pointer border-primary"
+                    onClick={onImageUpload}
+                    {...dragProps}
+                  >
+                    <h2 className="m-0 text-3xl font-medium">
+                      Add a cover image
+                    </h2>
+                    <FiUploadCloud size={40} />
+                    <p className="m-0">Upload or Drag & Drop</p>
+                  </div>
+                ) : (
+                  <>
+                    {imageList.map((image, index) => (
+                      <Box key={index}>
+                        <ImageWrapper>
+                          <ImageStyled
+                            src={image[DATA_COVER_IMAGE_URL_KEY]}
+                            alt=""
+                            width={900}
+                            height={500}
+                          />
+                          <DeleteBtn
+                            onClick={() => {
+                              onImageRemove(index)
+                              destroyImage({ postId })
+                            }}
+                          >
+                            <AiOutlineDelete size={20} />
+                          </DeleteBtn>
+                        </ImageWrapper>
+                      </Box>
+                    ))}
+                  </>
+                )}
               </>
             )}
           </div>

@@ -1,8 +1,5 @@
 import React from "react"
-import Link from "next/link"
-import { useSession } from "next-auth/react"
 import { Button, Progress } from "react-daisyui"
-import InfiniteScroll from "react-infinite-scroll-component"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
@@ -27,8 +24,6 @@ function HomePage() {
       },
     )
 
-
-	console.log("data:::", data)
 
   if (isLoading) {
     return (
