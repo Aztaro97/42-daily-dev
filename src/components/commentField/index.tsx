@@ -36,8 +36,6 @@ const CommentField: FC<props> = ({ postId }) => {
       },
     )
 
-  console.log("commentData", commentData)
-
   if (isLoading) {
     return (
       <div>

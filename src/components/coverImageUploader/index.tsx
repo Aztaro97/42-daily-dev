@@ -62,10 +62,9 @@ const CoverImageUploader = ({ imageUrl, postId, ...rest }: props) => {
           <div className="relative flex items-center justify-center min-h-16">
             {imgUrl ? (
               <>
-                {" "}
                 {
                   <ImageWrapper>
-                    <ImageStyled src={imgUrl} alt="" width={900} height={500} />
+                    <ImageStyled src={imgUrl} alt="" width={900} height={500} priority />
                     <DeleteBtn
                       onClick={() => {
                         setImgUrl("")

@@ -12,6 +12,7 @@ import tw from "twin.macro"
 import { api } from "@/utils/api"
 import { IUser } from "@/@types/nextauth"
 import { successAlert } from "../alert"
+import MdRendering from "../mdRendering"
 
 dayjs.extend(relativeTime)
 
@@ -123,7 +124,9 @@ const CommentCard: FC<commenterProps> = ({
               </Dropdown>
             </CommentHeaderRight>
           </CommentHeader>
-          <CommentContent>{content}</CommentContent>
+          <CommentContent>
+            <MdRendering data={content} />
+          </CommentContent>
         </CommentBox>
       </Container>
       <Modal open={showModal} onClickBackdrop={toggleShowModal}>

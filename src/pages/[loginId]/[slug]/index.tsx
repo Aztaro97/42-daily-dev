@@ -5,12 +5,14 @@ import Link from "next/link"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
 import { Avatar } from "react-daisyui"
+import { MdOutlineAccessTime } from "react-icons/md"
+import ReadingTime from "reading-time"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
-import BlockEditorRendering from "@/components/EditorRendering"
 import CommentField from "@/components/commentField"
 import Layout from "@/components/layout"
+import MdRendering from "@/components/mdRendering"
 import ShareButton from "@/components/shareButton"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 
@@ -54,15 +56,23 @@ export default function PostPage({ slug }: { slug: string }) {
                   size="xs"
                   border={true}
                 />
-                <span tw="text-gray-400">{data?.author?.name}</span>
+                <div>
+                  <span tw="text-white">{data?.author?.name}</span>
+                  <PostDate>
+                    Posted on {dayjs(data?.createdAt).format("MMMM DD, YYYY")}
+                  </PostDate>
+                </div>
               </AuthorLink>
-              <PostDate>
-                Published: {dayjs(data?.createdAt).format("MMMM DD, YYYY")}
-              </PostDate>
+              {/*  */}
+              <ReadingTimeStyled>
+                <MdOutlineAccessTime tw="text-secondary" size={30} />
+                <span>{ReadingTime(data?.content as string).text}</span>
+              </ReadingTimeStyled>
             </Box>
           </BannerWrapper>
+
           <BodyWraper>
-            <BlockEditorRendering data={data?.content} />
+            <MdRendering data={data?.content} />
           </BodyWraper>
           <FlexWrapper>
             <TagStyled>
@@ -106,14 +116,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(180px, 1fr)_180px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`
 const PostWrapper = tw.div`w-full`
-const PostDate = tw.p`text-sm text-gray-400`
+const PostDate = tw.p`text-xs text-gray-400`
 const PostTitle = tw.h1`text-4xl text-white my-5`
-const BannerWrapper = tw.div`mb-4`
+const BannerWrapper = tw.div`mb-10`
 const BannerImage = tw(Image)`w-full h-[400px] object-cover object-center mb-4`
-const BodyWraper = tw.div`mb-5 text-gray-400 w-full mx-0 prose lg:prose-lg`
+const BodyWraper = tw.div`mb-10 text-gray-400 w-full mx-0 prose lg:prose-lg`
 const AuthorLink = tw(Link)`flex items-center gap-3`
 const Box = tw.div`flex justify-between gap-x-5 mb-4`
-const FlexWrapper = tw.div`flex items-center justify-between gap-5 mb-7`
+const FlexWrapper = tw.div`flex items-center justify-between gap-5 mb-14`
 const TagStyled = styled.p`
   ${tw`text-lg text-white`}
   & span {
@@ -121,3 +131,4 @@ const TagStyled = styled.p`
   }
 `
 const RightElement = tw.div``
+const ReadingTimeStyled = tw.div`flex items-center gap-1 text-sm`
