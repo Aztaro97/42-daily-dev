@@ -25,10 +25,9 @@ interface commenterProps {
 
 interface props {
   postId: string
-  slug: string
 }
 
-const CommentField: FC<props> = ({ postId, slug }) => {
+const CommentField: FC<props> = ({ postId }) => {
   const { data: commentData, isLoading } =
     api.comment.getCommentsByPostId.useQuery(
       { postId },
@@ -49,7 +48,7 @@ const CommentField: FC<props> = ({ postId, slug }) => {
 
   return (
     <div>
-      <CommentForm postId={postId} slug={slug} />
+      <CommentForm postId={postId} />
       {isLoading ? (
         <h2>Loading...</h2>
       ) : (
@@ -67,7 +66,7 @@ const CommentField: FC<props> = ({ postId, slug }) => {
   )
 }
 
-const CommentForm = ({ postId }: { postId: string; slug: string }) => {
+const CommentForm = ({ postId }: { postId: string }) => {
   const { data: userSession } = useSession()
   const tRpcUtils = api.useContext()
 

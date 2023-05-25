@@ -73,7 +73,7 @@ export default function PostPage({ slug }: { slug: string }) {
             </TagStyled>
             <ShareButton />
           </FlexWrapper>
-          <CommentField postId={data?.id} />
+          <CommentField postId={data?.id as string} />
         </PostWrapper>
         <RightElement>Related Post</RightElement>
       </Grid>

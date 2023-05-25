@@ -33,6 +33,7 @@ const CommentCard: FC<commenterProps> = ({
   const [showModal, setShowModal] = useState(false)
 
   const tRpcUtils = api.useContext()
+  const router = useRouter()
 
   const deleteComment = api.comment.deleteComment.useMutation({
     onMutate: async () => {
