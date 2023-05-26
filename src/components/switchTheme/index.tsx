@@ -5,8 +5,6 @@ import {Swap, useTheme} from "react-daisyui";
 
 export default function SwitchTheme() {
   const [theme, setTheme] = useLocalStorage("theme", "night");
-//   const {theme,setTheme } = useTheme("night");
-
   
   const toggleTheme = () => {
     setTheme(theme === 'night' ? 'light' : 'night');

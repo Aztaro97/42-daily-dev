@@ -114,7 +114,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 }
 
-const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(180px, 1fr)_180px] 2xl:grid-cols-[minmax(300px, 1fr)_450px] gap-10`
+const Grid = tw.div`grid grid-cols-1 lg:grid-cols-[minmax(180px, 1fr)_200px] gap-10`
 const PostWrapper = tw.div`w-full`
 const PostDate = tw.p`text-xs text-gray-400`
 const PostTitle = tw.h1`text-4xl text-white my-5`
@@ -123,9 +123,9 @@ const BannerImage = tw(Image)`w-full h-[400px] object-cover object-center mb-4`
 const BodyWraper = tw.div`mb-10 text-gray-400 w-full mx-0 prose lg:prose-lg`
 const AuthorLink = tw(Link)`flex items-center gap-3`
 const Box = tw.div`flex justify-between gap-x-5 mb-4`
-const FlexWrapper = tw.div`flex items-center justify-between gap-5 mb-14`
+const FlexWrapper = tw.div`flex flex-col gap-5 mb-14`
 const TagStyled = styled.p`
-  ${tw`text-lg text-white`}
+  ${tw`text-lg text-white flex-wrap`}
   & span {
     ${tw`mx-1 border-b border-secondary text-secondary`}
   }

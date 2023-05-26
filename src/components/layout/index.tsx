@@ -6,6 +6,7 @@ import AuthModal from "@/components/authModal"
 import AsideBar from "./asideBar"
 import Footer from "./footer"
 import AppHeader from "./header"
+import MobileAsideBar from "./mobileAsideBar"
 
 interface props {
   children: React.ReactNode
@@ -18,28 +19,21 @@ export default function Layout({ children }: props) {
     setVisible(!visible)
   }
   return (
-    <Container>
+    <>
       <AppHeader />
-      <Drawer
-        side={
-          <AsideBar
-            toggleVisible={toggleVisible}
-            isSidebarExtended={isSidebarExtended}
-          />
-        }
-        open={visible}
-        mobile={visible}
-        onClickOverlay={toggleVisible}
-        tw="!h-full relative top-[65px] !overflow-y-hidden"
-        contentClassName={"px-10 lg:px-20 pb-20 pt-10 overflow-y-hidden"}
-        sideClassName="w-48"
-      >
-        <main>{children}</main>
-        <AuthModal />
-      </Drawer>
+      <Container>
+        <AsideBar
+          toggleVisible={toggleVisible}
+          isSidebarExtended={isSidebarExtended}
+        />
+        <Main>{children}</Main>
+      </Container>
       {/* <Footer /> */}
-    </Container>
+      <AuthModal />
+    </>
   )
 }
 
-const Container = tw.div`w-full h-screen overflow-y-hidden`
+const LayoutStyled = tw.div`relative`
+const Container = tw.div`w-full overflow-hidden h-screen pt-[65px] grid grid-cols-1 md:grid-cols-[minmax(90px, 200px)_1fr] max-w-7xl mx-auto`
+const Main = tw.main`h-full px-5 lg:px-10 py-10 overflow-x-hidden overflow-y-scroll`

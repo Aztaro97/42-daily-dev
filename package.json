@@ -47,6 +47,8 @@
     "daisyui": "^2.51.5",
     "dayjs": "^1.11.7",
     "dompurify": "^3.0.3",
+    "framer-motion": "^10.12.16",
+    "hamburger-react": "^2.5.0",
     "highlight.js": "^11.8.0",
     "howler": "^2.2.3",
     "jsonwebtoken": "^9.0.0",

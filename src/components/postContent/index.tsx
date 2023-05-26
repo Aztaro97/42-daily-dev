@@ -20,6 +20,7 @@ const PostContent: FC<postContentProps> = ({
 }) => {
   return (
     <InfiniteScroll
+      className="h-full"
       dataLength={(data?.pages.length || 0) * limitItem}
       next={fetchNextPage}
       hasMore={hasNextPage as boolean}
@@ -38,6 +39,6 @@ const PostContent: FC<postContentProps> = ({
   )
 }
 
-const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-7`
+const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-between gap-7`
 
 export default PostContent
