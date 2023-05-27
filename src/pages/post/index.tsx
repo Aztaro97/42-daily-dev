@@ -1,31 +1,38 @@
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
 import { Button, Dropdown, Modal } from "react-daisyui"
 import { TbDotsVertical } from "react-icons/tb"
-import InfiniteScroll from "react-infinite-scroll-component"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
+import useScreenView from "@/lib/useScreenView"
 import CreatePostButton from "@/components/createPostButton"
 import Layout from "@/components/layout"
-import { IUser } from "@/@types/nextauth"
-import { IPost } from "@/@types/types"
 
-const LIMIT_ITEM: number = 5
+const LIMIT_ITEM: number = 8
 
 export default function PostPage() {
-  const { data, isLoading, fetchNextPage, hasNextPage } =
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const isReachedBottom = useScreenView(bottomRef)
+
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     api.blog.getAllUserPost.useInfiniteQuery(
       {
         limit: LIMIT_ITEM,
       },
       {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        getNextPageParam: (lastPage: any) => lastPage.nextCursor,
       },
     )
+
+  useEffect(() => {
+    if (isReachedBottom && hasNextPage) {
+      fetchNextPage()
+    }
+  }, [isReachedBottom])
 
   if (isLoading) {
     return <Layout>Loading...</Layout>
@@ -40,23 +47,18 @@ export default function PostPage() {
         </div>
         <CreatePostButton />
       </Box>
-      <InfiniteScroll
-        dataLength={(data?.pages.length || 0) * LIMIT_ITEM}
-        next={fetchNextPage}
-        hasMore={hasNextPage as boolean}
-        className="h-full overflow-hidden"
-        loader={<>Loading ...</>}
-      >
-        <CardWrapper>
-          {data?.pages.map((page) => (
-            <>
-              {page.posts.map((post) => (
-                <Card key={post.id} {...post} />
-              ))}
-            </>
-          ))}
-        </CardWrapper>
-      </InfiniteScroll>
+
+      <CardWrapper>
+        {data?.pages.map((page) => (
+          <>
+            {page.posts.map((post: cardProps) => (
+              <Card key={post.id} {...post} />
+            ))}
+          </>
+        ))}
+      </CardWrapper>
+      {isFetchingNextPage && <h1>Loading more data...</h1>}
+      <div ref={bottomRef} />
     </Layout>
   )
 }

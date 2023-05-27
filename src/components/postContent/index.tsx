@@ -1,5 +1,4 @@
-import React, { FC } from "react"
-import InfiniteScroll from "react-infinite-scroll-component"
+import React, { FC, useRef } from "react"
 import tw from "twin.macro"
 
 import { IPost } from "@/@types/types"
@@ -7,25 +6,12 @@ import PostCard from "../postCard"
 
 interface postContentProps {
   data: any
-  fetchNextPage: any
-  hasNextPage: boolean | undefined
-  limitItem: number
+  isFetchingNextPage: boolean
 }
 
-const PostContent: FC<postContentProps> = ({
-  data,
-  fetchNextPage,
-  hasNextPage,
-  limitItem,
-}) => {
+const PostContent: FC<postContentProps> = ({ data, isFetchingNextPage }) => {
   return (
-    <InfiniteScroll
-      className="h-full"
-      dataLength={(data?.pages.length || 0) * limitItem}
-      next={fetchNextPage}
-      hasMore={hasNextPage as boolean}
-      loader={<>Loading ...</>}
-    >
+    <>
       <GridWrapper>
         {data?.pages.map((page: any) => (
           <>
@@ -35,7 +21,9 @@ const PostContent: FC<postContentProps> = ({
           </>
         ))}
       </GridWrapper>
-    </InfiniteScroll>
+
+      {isFetchingNextPage && <h1>Loading more data...</h1>}
+    </>
   )
 }
 

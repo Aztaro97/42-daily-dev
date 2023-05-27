@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useRef, useState } from "react"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,6 +9,7 @@ import { FaFacebookSquare } from "react-icons/fa"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
+import useScreenView from "@/lib/useScreenView"
 import Layout from "@/components/layout"
 import PostContent from "@/components/postContent"
 import CustomButton from "@/components/ui/customButton"
@@ -17,7 +18,7 @@ import { IUser } from "@/@types/nextauth"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 import CustomPage404 from "../404"
 
-const LIMIT_ITEM: number = 5
+const LIMIT_ITEM: number = 6
 const { Tab } = Tabs
 
 export default function StudentProfile({ login }: { login: string }) {
@@ -61,7 +62,9 @@ export default function StudentProfile({ login }: { login: string }) {
 }
 
 const PostCreated = ({ userId }: { userId: string }) => {
-  const { data, isLoading, fetchNextPage, hasNextPage } =
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const isReachedBottom = useScreenView(bottomRef)
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     api.blog.getAllPosts.useInfiniteQuery(
       {
         limit: LIMIT_ITEM,
@@ -73,23 +76,30 @@ const PostCreated = ({ userId }: { userId: string }) => {
       },
     )
 
+  useEffect(() => {
+    if (isReachedBottom && hasNextPage) {
+      fetchNextPage()
+    }
+  }, [isReachedBottom])
+
   if (isLoading) {
     return <>Loading...</>
   }
   return (
-    <PostContent
-      data={data as any}
-      fetchNextPage={fetchNextPage}
-      hasNextPage={hasNextPage}
-      limitItem={LIMIT_ITEM}
-    />
+    <>
+      <PostContent data={data as any} isFetchingNextPage={isFetchingNextPage} />
+      <div ref={bottomRef} />
+    </>
   )
 }
 
 const PostLiked = ({ userId }: { userId: string }) => {
   const router = useRouter()
   const login = router.query?.loginId as string
-  const { data, isLoading, fetchNextPage, hasNextPage } =
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const isReachedBottom = useScreenView(bottomRef)
+
+  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     api.blog.getPostsLiked.useInfiniteQuery(
       { userId, limit: LIMIT_ITEM, published: false },
       {
@@ -97,18 +107,20 @@ const PostLiked = ({ userId }: { userId: string }) => {
       },
     )
 
-  console.log("data==", data)
+  useEffect(() => {
+    if (isReachedBottom && hasNextPage) {
+      fetchNextPage()
+    }
+  }, [isReachedBottom])
 
   if (isLoading) {
     return <>Loading...</>
   }
   return (
-    <PostContent
-      data={data as any}
-      fetchNextPage={fetchNextPage}
-      hasNextPage={hasNextPage}
-      limitItem={LIMIT_ITEM}
-    />
+    <>
+      <PostContent data={data as any} isFetchingNextPage={isFetchingNextPage} />
+      <div ref={bottomRef} />
+    </>
   )
 }
 
@@ -143,7 +155,7 @@ const CardProfile: FC<cardProfileProps> = ({
   const isFollowing = followers.some((fol) => fol.followingId === id)
 
   return (
-    <div className="grid items-start justify-center max-w-4xl grid-cols-2 gap-10 mx-auto">
+    <div className="grid items-start justify-center max-w-4xl grid-cols-1 gap-10 mx-auto lg:grid-cols-2">
       <figure>
         <ProfileImage
           src={image}
@@ -158,7 +170,9 @@ const CardProfile: FC<cardProfileProps> = ({
           <h2 className="mb-1 text-3xl ">{name}</h2>
           {userSession?.userId === id ? (
             <Link href={"/settings"}>
-              <CustomButton bgColor="primary" className="tracking-wider">Edit</CustomButton>
+              <CustomButton bgColor="primary" className="tracking-wider">
+                Edit
+              </CustomButton>
             </Link>
           ) : (
             <FollowButton
@@ -176,15 +190,15 @@ const CardProfile: FC<cardProfileProps> = ({
 
         <div className="flex items-center justify-between gap-5">
           <div className="flex items-center justify-start gap-5">
-            <div className="flex flex-col items-center justify-center w-24 h-24 shadow shadow-primary">
+            <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
               <h3 className="text-xl">{_count.posts}</h3>
               <p>Posts</p>
             </div>
-            <div className="flex flex-col items-center justify-center w-24 h-24 shadow shadow-primary">
+            <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
               <h3 className="text-xl">{_count.followers}</h3>
               <p>Followers</p>
             </div>
-            <div className="flex flex-col items-center justify-center w-24 h-24 shadow shadow-primary">
+            <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
               <h3 className="text-xl">{_count.following}</h3>
               <p>Following</p>
             </div>
