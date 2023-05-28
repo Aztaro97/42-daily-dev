@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import Hamburger from "hamburger-react"
 import { useSession } from "next-auth/react"
-import { Button, Dropdown, Form, Input, Navbar } from "react-daisyui"
+import { Navbar } from "react-daisyui"
 import tw from "twin.macro"
 
 import CreatePostButton from "@/components/createPostButton"
@@ -11,11 +11,9 @@ import SwitchTheme from "@/components/switchTheme"
 import CustomButton from "@/components/ui/customButton"
 import NavUserAvatar from "@/components/userAvatar"
 import useStore from "@/stores/useStore"
-import MobileAsideBar from "../mobileAsideBar"
 
 const AppHeader = () => {
-  const { showModal, setShowModal } = useStore()
-  const [isOpen, setOpen] = useState<boolean>(false)
+  const { showModal, setShowModal, showAsideBar, setShowAsideBar } = useStore()
   const [windowWidth, setWindowWidth] = useState<number | null>(null)
   const { data: session, status } = useSession()
 
@@ -38,51 +36,48 @@ const AppHeader = () => {
   }
 
   return (
-    <>
-      <HeaderContainer>
-        <NavBarStyled>
-          <div className="flex-1">
-            <div className="z-50">
-              {windowWidth! < 786 && (
-                <HamburgerStyled
-                  color="#fff"
-                  toggled={isOpen}
-                  toggle={setOpen}
-                />
-              )}
-            </div>
-            <Link href="/" className="text-xl normal-case" color="ghost">
-              <h1>Logo</h1>
-            </Link>
-          </div>
-          <RightNav>
-            <InputSearchField />
-            {windowWidth! > 786 && <SwitchTheme />}
-            {session ? (
-              <>
-                <CreatePostButton />
-                <NavUserAvatar />
-              </>
-            ) : (
-              <CustomButton
-                tw="py-1"
-                onClick={() => setShowModal(true)}
-                bgColor="primary"
-              >
-                Login
-              </CustomButton>
-            )}
-          </RightNav>
-        </NavBarStyled>
-      </HeaderContainer>
-      <MobileAsideBar isOpen={isOpen} />
-    </>
+    <HeaderContainer>
+      <NavBarStyled>
+        <LeftNav>	
+          <HamburgerWrapper>
+            <Hamburger
+              color="#ffffffaf"
+              toggled={showAsideBar}
+              toggle={setShowAsideBar as any}
+            />
+          </HamburgerWrapper>
+          <Link href="/" className="hidden md:block" color="ghost">
+            <h1>Logo</h1>
+          </Link>
+        </LeftNav>
+        <RightNav>
+          <InputSearchField />
+          <SwitchThemeStyled />
+          {session ? (
+            <>
+              <CreatePostButton />
+              <NavUserAvatar />
+            </>
+          ) : (
+            <CustomButton
+              tw="py-1"
+              onClick={() => setShowModal(true)}
+              bgColor="primary"
+            >
+              Login
+            </CustomButton>
+          )}
+        </RightNav>
+      </NavBarStyled>
+    </HeaderContainer>
   )
 }
 
-const HeaderContainer = tw.header`w-full absolute top-0 flex justify-between items-center h-[65px] px-5 lg:px-10 gap-10 border-b border-gray-400 border-opacity-40 z-30 bg-slate-900`
+const HeaderContainer = tw.header`w-full fixed top-0 flex justify-between items-center h-[65px] px-5 lg:px-10 gap-10 border-b border-gray-400 border-opacity-40 z-30 bg-slate-900`
+const LeftNav = tw.div`flex-1`
 const RightNav = tw.div`flex-none items-center gap-2`
 const NavBarStyled = tw(Navbar)` max-w-7xl mx-auto`
-const HamburgerStyled = tw(Hamburger)`!z-50 relative`
+const HamburgerWrapper = tw.div`!z-50 block md:!hidden`
+const SwitchThemeStyled = tw(SwitchTheme)`hidden md:block`
 
 export default AppHeader

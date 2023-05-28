@@ -8,19 +8,28 @@ import { SlEarphonesAlt } from "react-icons/sl"
 import { TfiWrite } from "react-icons/tfi"
 import tw from "twin.macro"
 
+import useStore from "@/stores/useStore"
+
 const NavMenu = () => {
+  const { showAsideBar, setShowAsideBar } = useStore()
+
+  const onCloseAsideBar = () => {
+    if (!showAsideBar) return
+    setShowAsideBar(false)
+  }
+
   return (
     <Menu>
       <MenuTitle>
         <span>Discover</span>
       </MenuTitle>
       <MenuItem>
-        <Link href="/">
+        <Link href="/" onClick={onCloseAsideBar}>
           <IoBookOutline size={20} /> Blogs
         </Link>
       </MenuItem>
       <MenuItem>
-        <Link href="/podcast">
+        <Link href="/podcast" onClick={onCloseAsideBar}>
           <MdOutlinePodcasts size={20} /> Podcast
         </Link>
       </MenuItem>
@@ -29,23 +38,23 @@ const NavMenu = () => {
         <span>Others</span>
       </MenuTitle>
       <MenuItem>
-        <Link href="/about">
+        <Link href="/about" onClick={onCloseAsideBar}>
           <HiOutlineUserGroup size={20} /> About
         </Link>
       </MenuItem>
       <MenuItem>
-        <Link href="/contact">
+        <Link href="/contact" onClick={onCloseAsideBar}>
           <SlEarphonesAlt size={20} />
           Contact
         </Link>
       </MenuItem>
       <MenuItem>
-        <Link href="/privacy">
+        <Link href="/privacy" onClick={onCloseAsideBar}>
           <MdOutlinePrivacyTip size={20} /> Privacy Policy
         </Link>
       </MenuItem>
       <MenuItem>
-        <Link href="/terms">
+        <Link href="/terms" onClick={onCloseAsideBar}>
           <TfiWrite size={20} />
           Terms of Use
         </Link>

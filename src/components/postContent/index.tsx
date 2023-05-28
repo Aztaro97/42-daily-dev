@@ -27,6 +27,6 @@ const PostContent: FC<postContentProps> = ({ data, isFetchingNextPage }) => {
   )
 }
 
-const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-between gap-7`
+const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-between gap-5 w-full`
 
 export default PostContent
