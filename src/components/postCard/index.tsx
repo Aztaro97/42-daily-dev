@@ -5,22 +5,16 @@ import Link from "next/link"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
 import { useSession } from "next-auth/react"
-import { Button, Card, Tooltip } from "react-daisyui"
-import {
-  AiFillLike,
-  AiOutlineDislike,
-  AiOutlineLike,
-  AiTwotoneLike,
-} from "react-icons/ai"
+import { Card, Tooltip } from "react-daisyui"
 import { BiCommentDots } from "react-icons/bi"
 import { GrView } from "react-icons/gr"
 import { RiHeart2Fill, RiHeart2Line } from "react-icons/ri"
 import tw from "twin.macro"
-import { z } from "zod"
 
 import { api } from "@/utils/api"
 import { IPost } from "@/@types/types"
-import useStore from "@/stores/useStore"
+import { DefaultPostImg, DefaultProfileImg } from "@/assets"
+import { LIMIT_ITEMS_PER_PAGE } from "@/pages"
 import { infoAlert } from "../alert"
 
 function PostCard({
@@ -46,12 +40,12 @@ function PostCard({
 
       //   Update Like Count from list all post
       const previousAllPost = tRpcUtils.blog.getAllPosts.getInfiniteData({
-        limit: 8,
+        limit: LIMIT_ITEMS_PER_PAGE,
         published: true,
       })
 
       tRpcUtils.blog.getAllPosts.setInfiniteData(
-        { limit: 8, published: true },
+        { limit: LIMIT_ITEMS_PER_PAGE, published: true },
         (oldData: any) => {
           return {
             ...oldData,
@@ -102,7 +96,7 @@ function PostCard({
     onError: (error, newData, context) => {
       console.log(error)
       tRpcUtils.blog.getAllPosts.setInfiniteData(
-        { limit: 8, published: true },
+        { limit: LIMIT_ITEMS_PER_PAGE, published: true },
         { ...(context?.previousAllPost as any) },
       )
     },
@@ -133,10 +127,10 @@ function PostCard({
     [toggleLike, id, userSession],
   )
 
-//   const likeBy =
-//     !!likes.find(
-//       (like) => like.userId == userSession?.userId && like.dislike,
-//     ) || false
+  //   const likeBy =
+  //     !!likes.find(
+  //       (like) => like.userId == userSession?.userId && like.dislike,
+  //     ) || false
 
   useEffect(() => {
     // Check if the user have liked a post
@@ -154,8 +148,11 @@ function PostCard({
         href={`/${author.login}/${slug}`}
         tw="rounded-ss-2xl rounded-se-2xl overflow-hidden"
       >
-        <Card.Image src={image} tw="h-48 w-full object-cover" alt="Post" />
-        {/* <CardImage src={image} width={300} height={300} tw="h-48 w-full object-cover" alt="Post" /> */}
+        <Card.Image
+          src={image ?? DefaultPostImg.src}
+          tw="h-48 w-full object-cover"
+          alt="Post"
+        />
         <CardBody>
           <CardDate>{dayjs(createdAt).format("MMM D, YYYY")}</CardDate>
           <CardTitle tag="h2">{title}</CardTitle>
@@ -164,7 +161,7 @@ function PostCard({
       <CardActions>
         <Link href={`/${author.login}`}>
           <CardAvatar
-            src={author.image ?? ""}
+            src={author.image ?? DefaultProfileImg.src}
             height={60}
             width={60}
             alt="user avatar"
@@ -173,13 +170,13 @@ function PostCard({
         <CardRightAction>
           <Tooltip color="primary" message="View">
             <CardActionIcon>
-              <GrView size={20} tw="!stroke-gray-400" />
+              <GrView size={25} tw="!stroke-gray-400" />
               <span>{_count?.views}</span>
             </CardActionIcon>
           </Tooltip>
           <Tooltip color="primary" message="Comment">
             <CardActionIcon tw="border-x border-gray-400 border-opacity-40 px-3">
-              <BiCommentDots size={20} />
+              <BiCommentDots size={25} />
               <span>{_count?.comments}</span>
             </CardActionIcon>
           </Tooltip>
@@ -189,12 +186,12 @@ function PostCard({
                 <RiHeart2Fill
                   onClick={() => onLikeOrDislikePost(false)}
                   tw="text-primary"
-                  size={20}
+                  size={25}
                 />
               ) : (
                 <RiHeart2Line
                   onClick={() => onLikeOrDislikePost(true)}
-                  size={20}
+                  size={25}
                 />
               )}
 

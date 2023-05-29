@@ -15,6 +15,7 @@ import PostContent from "@/components/postContent"
 import CustomButton from "@/components/ui/customButton"
 import FollowButton from "@/components/ui/followButton"
 import { IUser } from "@/@types/nextauth"
+import { DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 import CustomPage404 from "../404"
 
@@ -158,7 +159,7 @@ const CardProfile: FC<cardProfileProps> = ({
     <div className="grid items-start justify-center max-w-4xl grid-cols-1 gap-10 mx-auto lg:grid-cols-2">
       <figure>
         <ProfileImage
-          src={image}
+          src={image ?? DefaultProfileImg.src}
           width={900}
           height={900}
           alt="Picture"

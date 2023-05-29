@@ -1,15 +1,12 @@
 import React, { useEffect, useRef } from "react"
-import { Button, Progress } from "react-daisyui"
-import tw from "twin.macro"
+import { Progress } from "react-daisyui"
 
 import { api } from "@/utils/api"
 import useScreenView from "@/lib/useScreenView"
 import Layout from "@/components/layout"
-import PostCard from "@/components/postCard"
 import PostContent from "@/components/postContent"
-import { IPost } from "@/@types/types"
 
-const LIMIT_ITEMS_PER_PAGE: number = 9
+export const LIMIT_ITEMS_PER_PAGE: number = 9
 
 function HomePage() {
   const bottomRef = useRef<HTMLDivElement>(null)
