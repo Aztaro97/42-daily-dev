@@ -6,11 +6,11 @@ import { Navbar } from "react-daisyui"
 import tw from "twin.macro"
 
 import CreatePostButton from "@/components/createPostButton"
-import InputSearchField from "@/components/inputSearchField"
 import SwitchTheme from "@/components/switchTheme"
 import CustomButton from "@/components/ui/customButton"
 import NavUserAvatar from "@/components/userAvatar"
 import useStore from "@/stores/useStore"
+import { BsSearch } from "react-icons/bs"
 
 const AppHeader = () => {
   const { showModal, setShowModal, showAsideBar, setShowAsideBar } = useStore()
@@ -38,7 +38,7 @@ const AppHeader = () => {
   return (
     <HeaderContainer>
       <NavBarStyled>
-        <LeftNav>	
+        <LeftNav>
           <HamburgerWrapper>
             <Hamburger
               color="#ffffffaf"
@@ -51,7 +51,9 @@ const AppHeader = () => {
           </Link>
         </LeftNav>
         <RightNav>
-          <InputSearchField />
+          <Link href="/search">
+            <BsSearch size={22} />
+          </Link>
           <SwitchThemeStyled />
           {session ? (
             <>
