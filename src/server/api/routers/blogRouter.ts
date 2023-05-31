@@ -101,9 +101,6 @@ export const blogRouter = createTRPCRouter({
 			// Generate Post Slug
 			const slug = slugify(title, { lower: true }) + "-" + uidGenerator()
 
-			// console.log("coverImageUrl", coverImageUrl)
-			console.log("slug", slug)
-
 			const newPost = await ctx.prisma.post.update({
 				where: {
 					id: postId
@@ -450,6 +447,86 @@ export const blogRouter = createTRPCRouter({
 		})
 
 		return post
+	}),
+
+	// Filter Post by name and tags
+	getPosts: publicProcedure.input(z.object({
+		query: z.string(),
+		limit: z.number(),
+		cursor: z.string().nullish(),
+	})).query(async ({ ctx, input }) => {
+		const { query, limit, cursor } = input;
+
+		const posts = await ctx.prisma.post.findMany({
+			take: limit + 1,
+			cursor: cursor ? { id: cursor } : undefined,
+			orderBy: {
+				createdAt: "desc"
+			},
+			where: {
+				OR: [
+					{
+						title: {
+							contains: query
+						}
+					},
+					{
+						tags: {
+							some: {
+								name: {
+									contains: query
+								}
+							}
+						}
+					}
+				]
+			},
+			select: {
+				id: true,
+				title: true,
+				image: true,
+				slug: true,
+				createdAt: true,
+				author: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+						image: true,
+						login: true
+					}
+				},
+				likes: {
+					select: {
+						userId: true,
+						dislike: true,
+
+					}
+				},
+				// Count Number of View and Comment
+				_count: {
+					select: {
+						comments: true,
+						views: true,
+						tags: true,
+						likes: true
+					}
+				}
+			}
+		})
+
+		let nextCursor: typeof cursor | undefined = undefined
+		if (posts.length > limit) {
+			const nextPost = posts.pop()
+			nextCursor = nextPost!?.id
+		}
+
+		return {
+			posts,
+			hasMore: posts.length > limit,
+			nextCursor,
+		};
+
 	})
 
 })
