@@ -14,7 +14,7 @@ import CommentField from "@/components/commentField"
 import Layout from "@/components/layout"
 import MdRendering from "@/components/mdRendering"
 import ShareButton from "@/components/shareButton"
-import { DefaultProfileImg } from "@/assets"
+import { DefaultPostImg, DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 
 export default function PostPage({ slug }: { slug: string }) {
@@ -43,7 +43,7 @@ export default function PostPage({ slug }: { slug: string }) {
         <PostWrapper>
           <BannerWrapper>
             <BannerImage
-              src={data?.image as string}
+              src={(data?.image ?? DefaultPostImg.src) as string}
               width={900}
               height={400}
               alt={data?.title as string}
@@ -128,7 +128,7 @@ const FlexWrapper = tw.div`flex flex-col gap-5 mb-14`
 const TagStyled = styled.p`
   ${tw`text-lg text-white flex-wrap break-words`}
   & .tag_title {
-	${tw`mr-1 font-medium`}
+    ${tw`mr-1 font-medium`}
   }
   & .tag {
     ${tw`mx-1 border-b border-secondary text-secondary`}
