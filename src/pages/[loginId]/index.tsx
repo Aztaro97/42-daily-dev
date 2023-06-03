@@ -48,10 +48,10 @@ export default function StudentProfile({ login }: { login: string }) {
         title={userInfo?.name as string}
         description="Description about the user"
         openGraph={{
-          url: buildCanonical({
-            origin: window?.location.origin,
-            path: window?.location.pathname,
-          }),
+          //   url: buildCanonical({
+          //     origin: window?.location.origin,
+          //     path: window?.location.pathname,
+          //   }),
           title: userInfo.name as string,
           description: "Home Page",
           images: [

@@ -8,13 +8,11 @@ export const buildCanonical = ({ origin, path }: { origin: Location["origin"]; p
 
 export const NEXT_SEO_DEFAULT = {
 	title: APP_NAME,
-	titleTemplate: "%s | daily",
+	titleTemplate: "%s | Home Page",
 	description: "42 Daily Dev App",
-	// canonical: buildCanonical({ origin: window.location.origin, path: window.location.pathname }),
 	openGraph: {
 		type: "website",
 		locale: "en_US",
-		// url: buildCanonical({ origin: window.location.origin, path: window.location.pathname }),
 		site_name: APP_NAME,
 		images: [
 			{
@@ -27,7 +25,7 @@ export const NEXT_SEO_DEFAULT = {
 			}]
 	},
 	twitter: {
-		handle: "@handle",
+		handle: "@aztaro97",
 		site: "@aztaro97",
 		cardType: "summary_large_image",
 	}
