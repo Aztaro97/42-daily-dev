@@ -52,7 +52,7 @@ export default function StudentProfile({ login }: { login: string }) {
           description: "Home Page",
           images: [
             {
-              url: userInfo.image,
+              url: userInfo?.image ?? "" ,
               width: 800,
               height: 600,
               alt: "Home Page",
