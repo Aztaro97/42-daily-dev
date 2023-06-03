@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
+import { buildCanonical } from "next-seo.config"
 import { Tabs } from "react-daisyui"
 import { FaFacebookSquare } from "react-icons/fa"
 import tw from "twin.macro"
@@ -11,7 +12,8 @@ import tw from "twin.macro"
 import { api } from "@/utils/api"
 import useScreenView from "@/lib/useScreenView"
 import Layout from "@/components/layout"
-import NextSeo from "@/components/nextSeo"
+import NextSeo from "@/components/nextSeoWrapper"
+import NextSeoWrapper from "@/components/nextSeoWrapper"
 import PostContent from "@/components/postContent"
 import CustomButton from "@/components/ui/customButton"
 import FollowButton from "@/components/ui/followButton"
@@ -42,20 +44,22 @@ export default function StudentProfile({ login }: { login: string }) {
 
   return (
     <>
-      <NextSeo
-        title="Home"
-        description="Home"
-        canonical=""
+      <NextSeoWrapper
+        title={userInfo?.name as string}
+        description="Description about the user"
         openGraph={{
-          url: "",
-          title: "Home Page",
+          url: buildCanonical({
+            origin: window?.location.origin,
+            path: window?.location.pathname,
+          }),
+          title: userInfo.name as string,
           description: "Home Page",
           images: [
             {
-              url: userInfo?.image ?? "" ,
+              url: (userInfo.image ?? DefaultProfileImg.src) as string,
               width: 800,
               height: 600,
-              alt: "Home Page",
+              alt: userInfo.name as string,
             },
           ],
         }}

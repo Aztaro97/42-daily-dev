@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from "react"
+import { buildCanonical } from "next-seo.config"
 import { Progress } from "react-daisyui"
 
 import { api } from "@/utils/api"
 import useScreenView from "@/lib/useScreenView"
 import Layout from "@/components/layout"
-import NextSeo from "@/components/nextSeo"
+import NextSeoWrapper from "@/components/nextSeoWrapper"
 import PostContent from "@/components/postContent"
+import { DefaultPostImg } from "@/assets"
 
 export const LIMIT_ITEMS_PER_PAGE: number = 9
 
@@ -40,17 +42,15 @@ function HomePage() {
 
   return (
     <>
-      <NextSeo
-        title="Home"
+      <NextSeoWrapper
+        title="Home Page"
         description="Home"
-        canonical=""
         openGraph={{
-          url: "",
           title: "Home Page",
           description: "Home Page",
           images: [
             {
-              url: "https://picsum.photos/200/300",
+              url: DefaultPostImg.src,
               width: 800,
               height: 600,
               alt: "Home Page",

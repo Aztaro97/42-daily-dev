@@ -1,23 +1,17 @@
 import { type AppType } from "next/app"
-import { log } from 'next-axiom'
-import { Roboto } from "next/font/google"
 import { type Session } from "next-auth"
 import { SessionProvider } from "next-auth/react"
-import { ToastContainer } from "react-toastify"
-
-export { reportWebVitals } from 'next-axiom'
+import { log } from "next-axiom"
 
 import { api } from "@/utils/api"
 import GlobalStyles from "@/styles/globalStyles"
 import "@/styles/globals.css"
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"
+import AppWrapper from "@/components/appWrapper"
 
-log.info('Hello from frontend', { foo: 'bar' })
+export { reportWebVitals } from "next-axiom"
 
-const robotoFont = Roboto({
-  weight: ["300", "400", "500", "700"],
-  subsets: ["latin"],
-})
+log.info("Hello from frontend", { foo: "bar" })
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -25,11 +19,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <main className={robotoFont.className}>
-        <GlobalStyles />
+      <AppWrapper>
         <Component {...pageProps} />
-        <ToastContainer autoClose={3000} hideProgressBar />
-      </main>
+      </AppWrapper>
     </SessionProvider>
   )
 }

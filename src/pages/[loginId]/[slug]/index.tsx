@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
+import { buildCanonical } from "next-seo.config"
 import { Avatar } from "react-daisyui"
 import { MdOutlineAccessTime } from "react-icons/md"
 import ReadingTime from "reading-time"
@@ -13,6 +14,7 @@ import { api } from "@/utils/api"
 import CommentField from "@/components/commentField"
 import Layout from "@/components/layout"
 import MdRendering from "@/components/mdRendering"
+import NextSeoWrapper from "@/components/nextSeoWrapper"
 import ShareButton from "@/components/shareButton"
 import { DefaultPostImg, DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
@@ -25,8 +27,12 @@ export default function PostPage({ slug }: { slug: string }) {
     },
   )
 
-  if (data && !isLoading) {
-    console.log("Post Detail", data)
+  if (!data) {
+    return (
+      <Layout>
+        <h2>Post not found</h2>
+      </Layout>
+    )
   }
 
   if (isLoading) {
@@ -38,57 +44,87 @@ export default function PostPage({ slug }: { slug: string }) {
   }
 
   return (
-    <Layout>
-      <Grid>
-        <PostWrapper>
-          <BannerWrapper>
-            <BannerImage
-              src={(data?.image ?? DefaultPostImg.src) as string}
-              width={900}
-              height={400}
-              alt={data?.title as string}
-            />
-            <PostTitle>{data?.title}</PostTitle>
-            <Box>
-              <AuthorLink href={`/${data?.author?.login}`}>
-                <Avatar
-                  src={data?.author?.image ?? DefaultProfileImg.src}
-                  shape="circle"
-                  size="xs"
-                  border={true}
-                />
-                <div>
-                  <span tw="text-white">{data?.author?.name}</span>
-                  <PostDate>
-                    Posted on {dayjs(data?.createdAt).format("MMMM DD, YYYY")}
-                  </PostDate>
-                </div>
-              </AuthorLink>
-              {/*  */}
-              <ReadingTimeStyled>
-                <MdOutlineAccessTime tw="text-secondary" size={30} />
-                <span>{ReadingTime(data?.content as string).text}</span>
-              </ReadingTimeStyled>
-            </Box>
-          </BannerWrapper>
+    <>
+      <NextSeoWrapper
+        title={data?.title}
+        description="Description about the post"
+        openGraph={{
+          url: buildCanonical({
+            origin: window.location.origin,
+            path: window.location.pathname,
+          }),
+          title: data?.title,
+          description: "Home Page",
+          type: "article",
+          article: {
+            publishedTime: dayjs(data?.createdAt).toISOString(),
+            authors: [
+              `${data?.author?.name} <${data?.author?.email}> (${data?.author?.login})`,
+            ],
+            tags: data?.tags.map((tag: any) => tag.name),
+          },
+          images: [
+            {
+              url: (data?.image ?? DefaultPostImg.src) as string,
+              width: 800,
+              height: 600,
+              alt: data?.title,
+            },
+          ],
+        }}
+      />
+      <Layout>
+        <Grid>
+          <PostWrapper>
+            <BannerWrapper>
+              <BannerImage
+                src={(data?.image ?? DefaultPostImg.src) as string}
+                width={900}
+                height={400}
+                alt={data?.title as string}
+              />
+              <PostTitle>{data?.title}</PostTitle>
+              <Box>
+                <AuthorLink href={`/${data?.author?.login}`}>
+                  <Avatar
+                    src={(data?.author?.image ?? DefaultProfileImg.src) as string}
+                    shape="circle"
+                    size="xs"
+                    border={true}
+                  />
+                  <div>
+                    <span tw="text-white">{data?.author?.name}</span>
+                    <PostDate>
+                      Posted on {dayjs(data?.createdAt).format("MMMM DD, YYYY")}
+                    </PostDate>
+                  </div>
+                </AuthorLink>
+                {/*  */}
+                <ReadingTimeStyled>
+                  <MdOutlineAccessTime tw="text-secondary" size={30} />
+                  <span>{ReadingTime(data?.content as string).text}</span>
+                </ReadingTimeStyled>
+              </Box>
+            </BannerWrapper>
 
-          <BodyWraper>
-            <MdRendering data={data?.content} />
-          </BodyWraper>
-          <FlexWrapper>
-            <TagStyled>
-              <span className="tag_title">Tag:</span>
-              {data?.tags.map((tag) => (
-                <span className="tag">{`#${tag.name}`}</span>
-              ))}
-            </TagStyled>
-            <ShareButton />
-          </FlexWrapper>
-          <CommentField postId={data?.id as string} />
-        </PostWrapper>
-        <RightElement>Related Post</RightElement>
-      </Grid>
-    </Layout>
+            <BodyWraper>
+              <MdRendering data={data?.content} />
+            </BodyWraper>
+            <FlexWrapper>
+              <TagStyled>
+                <span className="tag_title">Tag:</span>
+                {data?.tags.map((tag) => (
+                  <span className="tag">{`#${tag.name}`}</span>
+                ))}
+              </TagStyled>
+              <ShareButton />
+            </FlexWrapper>
+            <CommentField postId={data?.id as string} />
+          </PostWrapper>
+          <RightElement>Related Post</RightElement>
+        </Grid>
+      </Layout>
+    </>
   )
 }
 
