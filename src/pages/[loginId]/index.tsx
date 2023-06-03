@@ -11,6 +11,7 @@ import tw from "twin.macro"
 import { api } from "@/utils/api"
 import useScreenView from "@/lib/useScreenView"
 import Layout from "@/components/layout"
+import NextSeo from "@/components/nextSeo"
 import PostContent from "@/components/postContent"
 import CustomButton from "@/components/ui/customButton"
 import FollowButton from "@/components/ui/followButton"
@@ -40,25 +41,46 @@ export default function StudentProfile({ login }: { login: string }) {
   }
 
   return (
-    <Layout>
-      {/* @ts-ignore */}
-      <CardProfile {...userInfo} />
-      <Tabs
-        variant="bordered"
-        size="lg"
-        value={tabValue}
-        onChange={setTabValue}
-        className="flex justify-center mx-auto mt-12 mb-8"
-      >
-        <Tab value={0}>Post</Tab>
-        <Tab value={1}>Likes</Tab>
-      </Tabs>
-      {tabValue === 0 ? (
-        <PostCreated userId={userInfo?.id} />
-      ) : (
-        <PostLiked userId={userInfo?.id} />
-      )}
-    </Layout>
+    <>
+      <NextSeo
+        title="Home"
+        description="Home"
+        canonical=""
+        openGraph={{
+          url: "",
+          title: "Home Page",
+          description: "Home Page",
+          images: [
+            {
+              url: userInfo.image,
+              width: 800,
+              height: 600,
+              alt: "Home Page",
+            },
+          ],
+        }}
+      />
+
+      <Layout>
+        {/* @ts-ignore */}
+        <CardProfile {...userInfo} />
+        <Tabs
+          variant="bordered"
+          size="lg"
+          value={tabValue}
+          onChange={setTabValue}
+          className="flex justify-center mx-auto mt-12 mb-8"
+        >
+          <Tab value={0}>Post</Tab>
+          <Tab value={1}>Likes</Tab>
+        </Tabs>
+        {tabValue === 0 ? (
+          <PostCreated userId={userInfo?.id} />
+        ) : (
+          <PostLiked userId={userInfo?.id} />
+        )}
+      </Layout>
+    </>
   )
 }
 
