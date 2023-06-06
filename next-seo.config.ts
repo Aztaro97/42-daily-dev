@@ -2,10 +2,6 @@ import { APP_NAME } from "@/constants/constants";
 import { Router } from "next/router";
 
 
-export const buildCanonical = ({ origin, path }: { origin: Location["origin"]; path: Router["asPath"] }) => {
-	return `${origin}${path === "/" ? "" : path}`.split("?")[0];
-};
-
 export const NEXT_SEO_DEFAULT = {
 	title: APP_NAME,
 	titleTemplate: "%s | Home Page",

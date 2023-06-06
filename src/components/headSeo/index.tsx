@@ -4,35 +4,26 @@ import { DefaultSeo, NextSeo } from "next-seo"
 import { NEXT_SEO_DEFAULT, buildCanonical } from "next-seo.config"
 import { OpenGraph } from "next-seo/lib/types"
 
+import { getBrowserInfo } from "@/lib/getBrowserInfo"
+
 interface props {
   title: string
   description: string
   openGraph: OpenGraph
 }
 
-const NextSeoWrapper: FC<props> = ({ description, openGraph, title }) => {
-  const origin =
-    typeof window !== "undefined" && window.location.origin
-      ? window.location.origin
-      : ""
-
-  const path =
-    typeof window !== "undefined" && window.location.pathname
-      ? window.location.pathname
-      : ""
+const HeadSEO: FC<props> = ({ description, openGraph, title }) => {
+  const url = getBrowserInfo().url
 
   return (
     <NextSeo
       {...NEXT_SEO_DEFAULT}
       title={title}
       description={description}
-      canonical={buildCanonical({
-        origin,
-        path,
-      })}
+      canonical={url}
       openGraph={openGraph}
     />
   )
 }
 
-export default NextSeoWrapper
+export default HeadSEO

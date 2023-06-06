@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react"
-import { buildCanonical } from "next-seo.config"
 import { Progress } from "react-daisyui"
 
 import { api } from "@/utils/api"
+import { getBrowserInfo } from "@/lib/getBrowserInfo"
 import useScreenView from "@/lib/useScreenView"
+import HeadSEO from "@/components/headSeo"
 import Layout from "@/components/layout"
-import NextSeoWrapper from "@/components/nextSeoWrapper"
 import PostContent from "@/components/postContent"
 import { DefaultPostImg } from "@/assets"
 
@@ -42,10 +42,11 @@ function HomePage() {
 
   return (
     <>
-      <NextSeoWrapper
+      <HeadSEO
         title="Home Page"
         description="Home"
         openGraph={{
+          url: getBrowserInfo().url,
           title: "Home Page",
           description: "Home Page",
           images: [

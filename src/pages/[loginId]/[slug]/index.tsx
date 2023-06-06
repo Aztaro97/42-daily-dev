@@ -4,17 +4,17 @@ import Image from "next/image"
 import Link from "next/link"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
-import { buildCanonical } from "next-seo.config"
 import { Avatar } from "react-daisyui"
 import { MdOutlineAccessTime } from "react-icons/md"
 import ReadingTime from "reading-time"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
+import { getBrowserInfo } from "@/lib/getBrowserInfo"
 import CommentField from "@/components/commentField"
+import HeadSEO from "@/components/headSeo"
 import Layout from "@/components/layout"
 import MdRendering from "@/components/mdRendering"
-import NextSeoWrapper from "@/components/nextSeoWrapper"
 import ShareButton from "@/components/shareButton"
 import { DefaultPostImg, DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
@@ -45,14 +45,11 @@ export default function PostPage({ slug }: { slug: string }) {
 
   return (
     <>
-      <NextSeoWrapper
+      <HeadSEO
         title={data?.title}
         description="Description about the post"
         openGraph={{
-          url: buildCanonical({
-            origin: window.location.origin,
-            path: window.location.pathname,
-          }),
+          url: getBrowserInfo().url,
           title: data?.title,
           description: "Home Page",
           type: "article",
@@ -87,7 +84,9 @@ export default function PostPage({ slug }: { slug: string }) {
               <Box>
                 <AuthorLink href={`/${data?.author?.login}`}>
                   <Avatar
-                    src={(data?.author?.image ?? DefaultProfileImg.src) as string}
+                    src={
+                      (data?.author?.image ?? DefaultProfileImg.src) as string
+                    }
                     shape="circle"
                     size="xs"
                     border={true}
