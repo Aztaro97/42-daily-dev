@@ -1,7 +1,7 @@
 import React, { FC } from "react"
 import Head from "next/head"
 import { DefaultSeo, NextSeo } from "next-seo"
-import { NEXT_SEO_DEFAULT, buildCanonical } from "next-seo.config"
+import { NEXT_SEO_DEFAULT } from "next-seo.config"
 import { OpenGraph } from "next-seo/lib/types"
 
 import { getBrowserInfo } from "@/lib/getBrowserInfo"
