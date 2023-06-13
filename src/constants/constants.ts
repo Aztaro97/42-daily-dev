@@ -10,3 +10,8 @@ export const SEO_IMG_TYPE_DEFAULT = "image/png"
 
 
 
+export const colors = {
+	PRIMARY: "#7100FE",
+	SECONDARY: "#00E5FC",
+	ACCENT: "#FF5E4F",
+}

@@ -1,5 +1,7 @@
+import { colors } from "./src/constants/constants"
+
 /** @type {import('tailwindcss').Config} */
-const config =  {
+const config = {
 	content: [
 		"./src/**/*.{js,ts,jsx,tsx}",
 		"node_modules/daisyui/dist/**/*.js",
@@ -13,9 +15,9 @@ const config =  {
 			{
 				night: {
 					...require("daisyui/src/colors/themes")["[data-theme=night]"],
-					primary: "#7100FE",
-					secondary: "#00E5FC",
-					accent: "#FF5E4F"
+					primary: colors.PRIMARY,
+					secondary: colors.SECONDARY,
+					accent: colors.ACCENT
 				}
 			},
 			"light"
