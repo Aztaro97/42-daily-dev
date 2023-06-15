@@ -1,6 +1,5 @@
 import React from "react"
 import { Roboto } from "next/font/google"
-import { SessionProvider } from "next-auth/react"
 import NextProgress from "next-progress"
 import { DefaultSeo } from "next-seo"
 import { NEXT_SEO_DEFAULT } from "next-seo.config"
@@ -18,7 +17,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <DefaultSeo {...NEXT_SEO_DEFAULT} />
-      <NextProgress color={colors.PRIMARY} />
+      <NextProgress color={colors.PRIMARY} options={{ showSpinner: false }} />
       <main className={robotoFont.className}>
         <GlobalStyles />
         {children}
