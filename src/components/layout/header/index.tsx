@@ -54,7 +54,7 @@ const AppHeader = () => {
 
           {status === "loading" ? (
             <Skeleton height={30} width={90} />
-          ) : status ? (
+          ) : session ? (
             <>
               <CreatePostButton />
               <NavUserAvatar />
