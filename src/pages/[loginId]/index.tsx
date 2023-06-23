@@ -106,12 +106,13 @@ const PostCreated = ({ userId }: { userId: string }) => {
     }
   }, [isReachedBottom])
 
-  if (isLoading) {
-    return <>Loading...</>
-  }
   return (
     <>
-      <PostContent data={data as any} isFetchingNextPage={isFetchingNextPage} />
+      <PostContent
+        data={data as any}
+        isFetchingNextPage={isFetchingNextPage}
+        isLoading={isLoading}
+      />
       <div ref={bottomRef} />
     </>
   )
@@ -137,12 +138,13 @@ const PostLiked = ({ userId }: { userId: string }) => {
     }
   }, [isReachedBottom])
 
-  if (isLoading) {
-    return <>Loading...</>
-  }
   return (
     <>
-      <PostContent data={data as any} isFetchingNextPage={isFetchingNextPage} />
+      <PostContent
+        data={data as any}
+        isFetchingNextPage={isFetchingNextPage}
+        isLoading={isLoading}
+      />
       <div ref={bottomRef} />
     </>
   )

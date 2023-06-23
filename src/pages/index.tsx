@@ -32,14 +32,6 @@ function HomePage() {
     }
   }, [isReachedBottom])
 
-  if (isLoading) {
-    return (
-      <Layout>
-        <Progress />
-      </Layout>
-    )
-  }
-
   return (
     <>
       <HeadSEO
@@ -63,6 +55,7 @@ function HomePage() {
         <PostContent
           data={data as any}
           isFetchingNextPage={isFetchingNextPage}
+          isLoading={isLoading}
         />
         <div ref={bottomRef} />
       </Layout>

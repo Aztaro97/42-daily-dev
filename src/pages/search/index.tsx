@@ -47,7 +47,7 @@ export default function SearchPage() {
     <Layout>
       <Wrapper>
         <SearchInput query={query} setQuery={setQuery} />
-        <PostContent data={data} isFetchingNextPage={isFetchingNextPage} />
+        <PostContent data={data} isFetchingNextPage={isFetchingNextPage} isLoading={isLoading} />
         <div ref={bottomRef} />
       </Wrapper>
     </Layout>

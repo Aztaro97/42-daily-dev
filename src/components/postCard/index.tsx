@@ -9,6 +9,7 @@ import { Card, Tooltip } from "react-daisyui"
 import { BiCommentDots } from "react-icons/bi"
 import { GrView } from "react-icons/gr"
 import { RiHeart2Fill, RiHeart2Line } from "react-icons/ri"
+import Skeleton from "react-loading-skeleton"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
@@ -17,7 +18,7 @@ import { DefaultPostImg, DefaultProfileImg } from "@/assets"
 import { LIMIT_ITEMS_PER_PAGE } from "@/pages"
 import { infoAlert } from "../alert"
 
-function PostCard({
+export default function PostCard({
   id,
   title,
   image,
@@ -204,6 +205,26 @@ function PostCard({
   )
 }
 
+PostCard.Skeleton = function PostCardSkeleton() {
+  return (
+    <CardWrapper>
+      <Skeleton tw="h-48 w-full" className="relative bottom-1 !rounded-t-2xl" />
+      <CardBody>
+        <Skeleton height={10} width={50} />
+        <Skeleton count={2} />
+      </CardBody>
+      <CardActions>
+        <Skeleton circle={true} height={40} width={40} />
+        <CardRightAction>
+          <Skeleton height={20} width={50} />
+          <Skeleton height={20} width={50} />
+          <Skeleton height={20} width={50} />
+        </CardRightAction>
+      </CardActions>
+    </CardWrapper>
+  )
+}
+
 const CardWrapper = tw(
   Card,
 )`border relative pb-14 h-full min-h-max border-gray-700 hover:border-primary transition duration-500 ease-in-out cursor-pointer`
@@ -223,5 +244,3 @@ const CardActionIcon = styled.div`
   }
 `
 const CardImage = tw(Image)``
-
-export default PostCard

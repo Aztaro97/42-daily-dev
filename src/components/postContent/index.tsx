@@ -7,9 +7,24 @@ import PostCard from "../postCard"
 interface postContentProps {
   data: any
   isFetchingNextPage: boolean
+  isLoading: boolean
 }
 
-const PostContent: FC<postContentProps> = ({ data, isFetchingNextPage }) => {
+const PostContent: FC<postContentProps> = ({
+  data,
+  isFetchingNextPage,
+  isLoading,
+}) => {
+  if (isLoading) {
+    return (
+      <GridWrapper>
+        {[...Array(6).keys()].map((_, index) => (
+          <PostCard.Skeleton key={index} />
+        ))}
+      </GridWrapper>
+    )
+  }
+
   return (
     <>
       <GridWrapper>
@@ -21,8 +36,13 @@ const PostContent: FC<postContentProps> = ({ data, isFetchingNextPage }) => {
           </>
         ))}
       </GridWrapper>
-
-      {isFetchingNextPage && <h1>Loading more data...</h1>}
+      {isFetchingNextPage && (
+        <GridWrapper>
+          {[...Array(3).keys()].map((_, index) => (
+            <PostCard.Skeleton key={index} />
+          ))}
+        </GridWrapper>
+      )}
     </>
   )
 }

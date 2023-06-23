@@ -3,6 +3,7 @@ import { Roboto } from "next/font/google"
 import NextProgress from "next-progress"
 import { DefaultSeo } from "next-seo"
 import { NEXT_SEO_DEFAULT } from "next-seo.config"
+import { SkeletonTheme } from "react-loading-skeleton"
 import { ToastContainer } from "react-toastify"
 
 import GlobalStyles from "@/styles/globalStyles"
@@ -20,7 +21,9 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
       <NextProgress color={colors.PRIMARY} options={{ showSpinner: false }} />
       <main className={robotoFont.className}>
         <GlobalStyles />
-        {children}
+        <SkeletonTheme baseColor={"#1e293b"} highlightColor="#334155">
+          {children}
+        </SkeletonTheme>
         <ToastContainer autoClose={3000} hideProgressBar />
       </main>
     </>

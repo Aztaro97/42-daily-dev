@@ -9,25 +9,30 @@ import { BsBookmark } from "react-icons/bs"
 import { HiOutlineUser } from "react-icons/hi"
 import { IoBookOutline } from "react-icons/io5"
 import { MdOutlineLogout } from "react-icons/md"
+import Skeleton from "react-loading-skeleton"
 import tw from "twin.macro"
 import { useLocalStorage } from "usehooks-ts"
 
 export default function NavUserAvatar() {
   const [theme] = useLocalStorage("theme", "night")
   const router = useRouter()
-  const { data: sessionData } = useSession()
+  const { data: sessionData, status } = useSession()
 
   console.log("sessionData", sessionData)
 
   return (
     <Dropdown end={true} vertical="bottom">
       <Button color="ghost" className="avatar" shape="circle">
-        <ProfilePicture
-          src={sessionData?.user.image ?? ""}
-          width={140}
-          height={140}
-          alt={sessionData?.user.name ?? ""}
-        />
+        {status == "loading" ? (
+          <Skeleton circle width={140} height={140} />
+        ) : (
+          <ProfilePicture
+            src={sessionData?.user.image ?? ""}
+            width={140}
+            height={140}
+            alt={sessionData?.user.name ?? ""}
+          />
+        )}
       </Button>
       <Dropdown.Menu
         tw="border border-gray-400 border-opacity-50 menu-compact"
