@@ -14,6 +14,10 @@ interface StateProps {
 	setShowEditModal: (val: boolean) => void;
 	toggleShowEditModal: () => void;
 
+	// Edit Profile Modal
+	showPictureModal: boolean;
+	setShowPictureModal: (val: boolean) => void;
+
 }
 
 const useStore = create<StateProps>((set) => ({
@@ -27,6 +31,9 @@ const useStore = create<StateProps>((set) => ({
 	showEditModal: false,
 	setShowEditModal: (showEditModal) => set({ showEditModal }),
 	toggleShowEditModal: () => set((state) => ({ showEditModal: !state.showEditModal })),
+
+	showPictureModal: false,
+	setShowPictureModal: (showPictureModal) => set({ showPictureModal }),
 }))
 
 export default useStore;

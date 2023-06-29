@@ -47,20 +47,6 @@ model Session {
     @@map("sessions")
 }
 
-model UserLink {
-    id String @id @default(cuid())
-
-    title       String
-    url         String
-    description String?
-    icon        String?
-    userId      String  @unique
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@map("user_links")
-}
-
 model User {
     id    String  @id @default(cuid())
     name  String?
@@ -70,17 +56,19 @@ model User {
 
     loginId       Int?      @unique @map("login_id")
     bio           String?
+    githubUrl     String?
+    twitterUrl    String?
+    websiteUrl    String?
     role          String?   @default("user")
     emailVerified DateTime? @map("email_verified")
     followers     Follows[] @relation("following")
     following     Follows[] @relation("follower")
-    url           UserLink?
 
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-    accounts Account[]
-    sessions Session[]
+    accounts  Account[]
+    sessions  Session[]
     posts     Post[]
     comments  Comment[]
     bookmarks Bookmark[]
@@ -111,7 +99,7 @@ model Post {
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-    author   User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    author    User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
     comments  Comment[]
     views     View[]
     bookmarks Bookmark[]

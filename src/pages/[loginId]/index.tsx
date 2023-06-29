@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
 import { Tabs } from "react-daisyui"
+import { BiCamera } from "react-icons/bi"
 import { FaFacebookSquare } from "react-icons/fa"
 import tw from "twin.macro"
 
@@ -18,6 +19,7 @@ import Layout from "@/components/layout"
 import PostContent from "@/components/postContent"
 import CustomButton from "@/components/ui/customButton"
 import FollowButton from "@/components/ui/followButton"
+import UploadUserPicture from "@/components/uploadUserPicture"
 import { IUser } from "@/@types/nextauth"
 import { DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
@@ -29,6 +31,7 @@ const { Tab } = Tabs
 
 export default function StudentProfile({ login }: { login: string }) {
   const [tabValue, setTabValue] = useState(0)
+  const [showPictureModal, setShowPictureModal] = useState<boolean>(false)
 
   const { data: userInfo, isLoading } = api.user.getUserProfileByLogin.useQuery(
     {
@@ -83,6 +86,11 @@ export default function StudentProfile({ login }: { login: string }) {
           <PostLiked userId={userInfo?.id} />
         )}
       </Layout>
+      <EditProfileModal />
+      <UploadUserPicture
+        currentImage={userInfo.image!}
+        login={userInfo.login!}
+      />
     </>
   )
 }
@@ -178,7 +186,7 @@ const CardProfile: FC<cardProfileProps> = ({
 }) => {
   const setFollowUser = api.follow.setFollowUser.useMutation()
   const { data: userSession } = useSession()
-  const { setShowEditModal } = useStore()
+  const { setShowEditModal, setShowPictureModal } = useStore()
 
   //   Check if the user is following the profile user
   //   @ts-ignore
@@ -187,14 +195,22 @@ const CardProfile: FC<cardProfileProps> = ({
   return (
     <>
       <div className="grid items-start justify-center max-w-4xl grid-cols-1 gap-10 mx-auto lg:grid-cols-2">
-        <figure>
+        <figure className="relative max-w-xl mx-auto">
           <ProfileImage
             src={image ?? DefaultProfileImg.src}
             width={900}
             height={900}
-            alt="Picture"
+            alt={name}
             className=""
           />
+          {userSession?.userId === id && (
+            <CustomButton
+              className="absolute top-2 right-2"
+              onClick={() => setShowPictureModal(true)}
+            >
+              <BiCamera size={25} />
+            </CustomButton>
+          )}
         </figure>
         <div className="h-full">
           <div className="flex items-center justify-between gap-5">
@@ -248,7 +264,6 @@ const CardProfile: FC<cardProfileProps> = ({
           </div>
         </div>
       </div>
-      <EditProfileModal />
     </>
   )
 }

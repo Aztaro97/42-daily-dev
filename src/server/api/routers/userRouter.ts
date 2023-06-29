@@ -6,6 +6,7 @@ import slugify from "slugify"
 import { uidGenerator } from "@/lib/uidGenerator";
 import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
 import { TRPCError } from "@trpc/server";
+import { createImage, deleteImage } from "./uploadRouter";
 
 
 
@@ -46,16 +47,13 @@ export const userRouter = createTRPCRouter({
 			where: {
 				id: userId
 			},
-			include: {
-				url: true,
-			}
 		})
 	}),
 
 	updateMyProfile: protectedProcedure.input(editProfileSchema).mutation(async ({ ctx, input }) => {
 		const { prisma, session: { userId } } = ctx;
 
-		const { name, email, login, bio } = input;
+		const { name, email, login, bio, githubUrl, twitterUrl, websiteUrl } = input;
 
 		const user = await prisma.user.findUnique({
 			where: {
@@ -75,11 +73,53 @@ export const userRouter = createTRPCRouter({
 				id: userId
 			},
 			data: {
-				name, email, login, bio
+				name, email, login, bio, githubUrl, twitterUrl, websiteUrl
 			}
 		})
 
 		return updatedUser
-	})
+	}),
+
+
+	updateUserPicture: protectedProcedure.input(z.object({
+		base64Image: z.string()
+	})).mutation(async ({ ctx, input }) => {
+		const { session: { userId }, prisma } = ctx;
+		const { base64Image } = input;
+
+
+
+		const user = await prisma.user.findFirst({
+			where: {
+				id: userId
+			}
+		})
+
+		if (!user) {
+			throw new TRPCError({
+				code: "NOT_FOUND",
+				message: "Post Not Fund"
+			})
+		}
+
+		// Destroy if existing Image Exist
+		if (user.image) {
+			const publicId = user.image.split(".")[0]
+			await deleteImage(publicId as string);
+		}
+
+		// Upload new Image to the Cloud
+		const cloudImage = await createImage(base64Image)
+
+		// Updated Post Image Cover
+		return prisma.user.update({
+			where: {
+				id: userId
+			},
+			data: {
+				image: cloudImage.secure_url
+			}
+		})
+	}),
 
 })

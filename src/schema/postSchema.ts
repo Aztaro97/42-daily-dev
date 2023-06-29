@@ -34,15 +34,6 @@ export const commentSchema = z.object({
 })
 
 
-export const socialLinkSchema = z.object({
-	name: z.string({
-		required_error: "The Name is required"
-	}),
-	link: z.string({
-		required_error: "The Link is required"
-	}).url(),
-})
-
 export const editProfileSchema = z.object({
 	name: z.string({
 		required_error: "The Full Name is required"
@@ -54,5 +45,7 @@ export const editProfileSchema = z.object({
 		required_error: "The Email is required"
 	}),
 	bio: z.string().optional(),
-	socialLink: z.array(socialLinkSchema).optional(),
+	githubUrl: z.string().url().optional(),
+	twitterUrl: z.string().url().optional(),
+	websiteUrl: z.string().url().optional(),
 })

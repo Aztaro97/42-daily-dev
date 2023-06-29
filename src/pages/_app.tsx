@@ -7,6 +7,7 @@ import { api } from "@/utils/api"
 import GlobalStyles from "@/styles/globalStyles"
 import "@/styles/globals.css"
 import "react-toastify/dist/ReactToastify.css"
+import 'react-advanced-cropper/dist/style.css'
 import "react-loading-skeleton/dist/skeleton.css"
 import AppWrapper from "@/components/appWrapper"
 

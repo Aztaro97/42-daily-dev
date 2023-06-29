@@ -3,7 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Form, Input, InputGroup, Modal, Textarea } from "react-daisyui"
 import { useForm } from "react-hook-form"
 import { AiOutlineLink } from "react-icons/ai"
-import { FaGithub, FaTwitter } from "react-icons/fa"
+import { FaGithub, FaTwitter, FaUser } from "react-icons/fa"
+import { MdAlternateEmail, MdOutlineMail } from "react-icons/md"
 import Skeleton from "react-loading-skeleton"
 import tw from "twin.macro"
 import { z } from "zod"
@@ -75,10 +76,13 @@ const EditProfileForm = ({ data }: Props) => {
     formState: { isValid, errors },
   } = useForm<TEditForm>({
     defaultValues: {
-      name: data.name,
-      email: data.email,
-      login: data.login,
-      bio: data.bio,
+      name: data?.name,
+      email: data?.email,
+      login: data?.login,
+      bio: data?.bio,
+      githubUrl: data?.githubUrl,
+      twitterUrl: data?.twitterUrl,
+      websiteUrl: data?.websiteUrl,
     },
     resolver: zodResolver(editProfileSchema),
   })
@@ -93,34 +97,53 @@ const EditProfileForm = ({ data }: Props) => {
       <FieldErrorMessage errors={errors} name="name">
         <FormGroup>
           <Form.Label htmlFor="name" title="Full Name" />
-          <Input
-            id="name"
-            placeholder="Enter Your Full Name"
-            {...register("name")}
-          />
+          <InputGroup>
+            <span>
+              <FaUser />
+            </span>
+            <Input
+              id="name"
+              placeholder="Enter Your Full Name"
+              className="w-full"
+              {...register("name")}
+            />
+          </InputGroup>
         </FormGroup>
       </FieldErrorMessage>
 
       <FieldErrorMessage errors={errors} name="login">
         <FormGroup>
           <Form.Label htmlFor="login" title="login ID" />
-          <Input
-            id="login"
-            disabled
-            placeholder="Enter login Name"
-            {...register("login")}
-          />
+
+          <InputGroup>
+            <span>
+              <MdAlternateEmail />
+            </span>
+            <Input
+              id="login"
+              disabled
+              placeholder="Enter login Name"
+              className="w-full"
+              {...register("login")}
+            />
+          </InputGroup>
         </FormGroup>
       </FieldErrorMessage>
       <FieldErrorMessage errors={errors} name="email">
         <FormGroup>
           <Form.Label htmlFor="email" title="Email" />
-          <Input
-            id="email"
-            disabled
-            placeholder="Email Adress"
-            {...register("email")}
-          />
+          <InputGroup>
+            <span>
+              <MdOutlineMail />
+            </span>
+            <Input
+              id="email"
+              disabled
+              placeholder="Email Adress"
+              className="w-full"
+              {...register("email")}
+            />
+          </InputGroup>
         </FormGroup>
       </FieldErrorMessage>
       <FieldErrorMessage errors={errors} name="bio">
@@ -135,50 +158,53 @@ const EditProfileForm = ({ data }: Props) => {
         </FormGroup>
       </FieldErrorMessage>
 
-      <FieldErrorMessage errors={errors} name="github">
+      <FieldErrorMessage errors={errors} name="githubUrl">
         <FormGroup>
-          <Form.Label htmlFor="github" title="Github" />
+          <Form.Label htmlFor="githubUrl" title="Github" />
           <InputGroup>
             <span>
               <FaGithub />
             </span>
             <Input
               type="url"
-              id="github"
-              placeholder="sample@email.com"
+              id="githubUrl"
+              placeholder="Enter url"
               className="w-full"
+              {...register("githubUrl")}
             />
           </InputGroup>
         </FormGroup>
       </FieldErrorMessage>
-      <FieldErrorMessage errors={errors} name="twitter">
+      <FieldErrorMessage errors={errors} name="twitterUrl">
         <FormGroup>
-          <Form.Label htmlFor="twitter" title="Twitter" />
+          <Form.Label htmlFor="twitterUrl" title="Twitter" />
           <InputGroup>
             <span>
               <FaTwitter />
             </span>
             <Input
               type="url"
-              id="twitter"
-              placeholder="sample@email.com"
+              id="twitterUrl"
+              placeholder="Enter url"
               className="w-full"
+              {...register("twitterUrl")}
             />
           </InputGroup>
         </FormGroup>
       </FieldErrorMessage>
-      <FieldErrorMessage errors={errors} name="website">
+      <FieldErrorMessage errors={errors} name="websiteUrl">
         <FormGroup>
-          <Form.Label htmlFor="website" title="WebSite" />
+          <Form.Label htmlFor="websiteUrl" title="WebSite" />
           <InputGroup>
             <span>
               <AiOutlineLink />
             </span>
             <Input
               type="url"
-              id="website"
-              placeholder="sample@email.com"
+              id="websiteUrl"
+              placeholder="https://yoursite.com"
               className="w-full"
+              {...register("websiteUrl")}
             />
           </InputGroup>
         </FormGroup>

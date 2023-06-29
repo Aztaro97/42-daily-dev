@@ -28,4 +28,10 @@
 	::-webkit-scrollbar-track:active {
 	  @apply rounded-none bg-transparent /*color track on click*/;
 	}
+
+
+	/* Add Blur to the backdrop behin modal */
+	.modal {
+		@apply backdrop-filter backdrop-blur-sm;
+	}
 }

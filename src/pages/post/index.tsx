@@ -1,8 +1,10 @@
 import React, { FC, useEffect, useRef, useState } from "react"
+import { GetServerSideProps } from "next"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
+import { getSession } from "next-auth/react"
 import { Button, Dropdown, Modal } from "react-daisyui"
 import { TbDotsVertical } from "react-icons/tb"
 import tw from "twin.macro"
@@ -11,6 +13,7 @@ import { api } from "@/utils/api"
 import useScreenView from "@/lib/useScreenView"
 import CreatePostButton from "@/components/createPostButton"
 import Layout from "@/components/layout"
+import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 
 const LIMIT_ITEM: number = 8
 
@@ -192,6 +195,25 @@ const Card: FC<cardProps> = ({
       </Modal>
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const ssg = generateSSGHelper()
+  const userSession = await getSession({ req })
+  //   ssg.setCache("settings", "settings")
+
+  if (!userSession?.user) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
 }
 
 const Box = tw.div`flex items-center justify-between gap-5 mb-8`

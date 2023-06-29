@@ -5,7 +5,7 @@ import cloudinary from "@/lib/cloudinary";
 import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
 
 
-const createImage = async (base64Image: string) => {
+export const createImage = async (base64Image: string) => {
 	try {
 		const imageResponse = await cloudinary.v2.uploader.upload(base64Image, { resource_type: 'image' });
 		return imageResponse
@@ -19,7 +19,7 @@ const createImage = async (base64Image: string) => {
 	}
 }
 
-const deleteImage = async (publicId: string) => {
+export const deleteImage = async (publicId: string) => {
 	try {
 		await cloudinary.v2.uploader.destroy(publicId)
 	} catch (error) {
@@ -110,5 +110,5 @@ export const uploadRouter = createTRPCRouter({
 				image: null
 			}
 		})
-	})
+	}),
 })

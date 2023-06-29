@@ -3,13 +3,13 @@ import { useRouter } from "next/router"
 import { signIn, signOut, useSession } from "next-auth/react"
 import tw from "twin.macro"
 
+import CustomButton from "@/components/ui/customButton"
+
 export default function LoginPage() {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
 
   const callbackUrl = decodeURI((router.query?.callbackUrl as string) ?? "/")
-
-  console.log("callbackUrl", callbackUrl)
 
   const handleLogin = async () => {
     await signIn("42-school", {
@@ -18,33 +18,31 @@ export default function LoginPage() {
     })
   }
 
-  //   console.log("session", session)
-
-  //   useEffect(() => {
-  //     console.log(session);
-  //     if (session) {
-  //       router.push(callbackUrl);
-  //     }
-  //   }, [session]);
+  useEffect(() => {
+    if (session) {
+      router.push(callbackUrl)
+    }
+  }, [session, router, callbackUrl])
 
   return (
     <Container>
-      {/* <button onClick={handleLogin}>Login </button> */}
-
       {session ? (
         <>
           Sign in as {session?.user?.email} <br />
-          <button onClick={() => signOut()}>Sign out</button>
+          <CustomButton variants="primary" onClick={() => signOut()}>
+            Sign out
+          </CustomButton>
         </>
       ) : (
         <>
-          <h1>Not signed in</h1>
-          <br />
-          <button onClick={handleLogin}>Sign in</button>
+          <h1 className="text-2xl mb-3">Not signed in</h1>
+          <CustomButton variants="primary" onClick={handleLogin}>
+            Click to Sign in
+          </CustomButton>
         </>
       )}
     </Container>
   )
 }
 
-const Container = tw.div`min-h-screen w-full flex items-center justify-center `
+const Container = tw.div`min-h-screen w-full flex flex-col items-center justify-center `
