@@ -111,7 +111,7 @@ const CommentForm = ({ postId }: { postId: string }) => {
           />
         </FieldErrorMessage>
       </div>
-      <CustomButton bgColor="primary" loading={createComment.isLoading}>
+      <CustomButton variants="primary" loading={createComment.isLoading}>
         Send
       </CustomButton>
     </form>

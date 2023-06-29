@@ -1,6 +1,6 @@
 import cloudinary from "@/lib/cloudinary";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { tagSchema } from "@/schema/postSchema"
+import { editProfileSchema, tagSchema } from "@/schema/postSchema"
 import { z } from "zod";
 import slugify from "slugify"
 import { uidGenerator } from "@/lib/uidGenerator";
@@ -50,6 +50,36 @@ export const userRouter = createTRPCRouter({
 				url: true,
 			}
 		})
+	}),
+
+	updateMyProfile: protectedProcedure.input(editProfileSchema).mutation(async ({ ctx, input }) => {
+		const { prisma, session: { userId } } = ctx;
+
+		const { name, email, login, bio } = input;
+
+		const user = await prisma.user.findUnique({
+			where: {
+				id: userId
+			}
+		})
+
+		if (!user) {
+			throw new TRPCError({
+				code: "NOT_FOUND",
+				message: "User not found"
+			})
+		}
+
+		const updatedUser = await prisma.user.update({
+			where: {
+				id: userId
+			},
+			data: {
+				name, email, login, bio
+			}
+		})
+
+		return updatedUser
 	})
 
 })

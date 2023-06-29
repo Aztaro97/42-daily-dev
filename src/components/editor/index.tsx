@@ -111,7 +111,7 @@ export default function Editor({ postData }: { postData: editorProps }) {
 
       <ActionButtonWrapper>
         <CustomButton
-          bgColor="primary"
+          variants="primary"
           type="submit"
           loading={updatePost.isLoading}
           onClick={onPublish}

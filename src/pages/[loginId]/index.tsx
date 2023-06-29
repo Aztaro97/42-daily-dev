@@ -11,6 +11,7 @@ import tw from "twin.macro"
 import { api } from "@/utils/api"
 import { getBrowserInfo } from "@/lib/getBrowserInfo"
 import useScreenView from "@/lib/useScreenView"
+import EditProfileModal from "@/components/editProfileModal"
 import NextSeo from "@/components/headSeo"
 import HeadSEO from "@/components/headSeo"
 import Layout from "@/components/layout"
@@ -20,6 +21,7 @@ import FollowButton from "@/components/ui/followButton"
 import { IUser } from "@/@types/nextauth"
 import { DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
+import useStore from "@/stores/useStore"
 import CustomPage404 from "../404"
 
 const LIMIT_ITEM: number = 6
@@ -166,6 +168,7 @@ interface cardProfileProps extends IUser {
 
 const CardProfile: FC<cardProfileProps> = ({
   email,
+  bio,
   image,
   name,
   login,
@@ -175,75 +178,78 @@ const CardProfile: FC<cardProfileProps> = ({
 }) => {
   const setFollowUser = api.follow.setFollowUser.useMutation()
   const { data: userSession } = useSession()
+  const { setShowEditModal } = useStore()
 
   //   Check if the user is following the profile user
   //   @ts-ignore
   const isFollowing = followers.some((fol) => fol.followingId === id)
 
   return (
-    <div className="grid items-start justify-center max-w-4xl grid-cols-1 gap-10 mx-auto lg:grid-cols-2">
-      <figure>
-        <ProfileImage
-          src={image ?? DefaultProfileImg.src}
-          width={900}
-          height={900}
-          alt="Picture"
-          className=""
-        />
-      </figure>
-      <div className="h-full">
-        <div className="flex items-center justify-between gap-5">
-          <h2 className="mb-1 text-3xl ">{name}</h2>
-          {userSession?.userId === id ? (
-            <Link href={"/settings"}>
-              <CustomButton bgColor="primary" className="tracking-wider">
+    <>
+      <div className="grid items-start justify-center max-w-4xl grid-cols-1 gap-10 mx-auto lg:grid-cols-2">
+        <figure>
+          <ProfileImage
+            src={image ?? DefaultProfileImg.src}
+            width={900}
+            height={900}
+            alt="Picture"
+            className=""
+          />
+        </figure>
+        <div className="h-full">
+          <div className="flex items-center justify-between gap-5">
+            <h2 className="mb-1 text-3xl ">{name}</h2>
+            {userSession?.userId === id ? (
+              <CustomButton
+                onClick={() => setShowEditModal(true)}
+                variants="primary"
+                className="tracking-wider"
+              >
                 Edit
               </CustomButton>
-            </Link>
-          ) : (
-            <FollowButton
-              login={login}
-              followingId={id as string}
-              isFollowing={isFollowing}
-            />
-          )}
-        </div>
-        <p className="mb-3 text-primary">{`@${login}`}</p>
-        <p className="p-4 mb-5 border-l border-primary">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis
-          aspernatur saepe vero?
-        </p>
-
-        <div className="flex items-center justify-between gap-5">
-          <div className="flex items-center justify-start gap-5">
-            <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
-              <h3 className="text-xl">{_count.posts}</h3>
-              <p>Posts</p>
-            </div>
-            <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
-              <h3 className="text-xl">{_count.followers}</h3>
-              <p>Followers</p>
-            </div>
-            <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
-              <h3 className="text-xl">{_count.following}</h3>
-              <p>Following</p>
-            </div>
+            ) : (
+              <FollowButton
+                login={login}
+                followingId={id as string}
+                isFollowing={isFollowing}
+              />
+            )}
           </div>
+          <p className="mb-3 text-primary">{`@${login}`}</p>
+          {bio && <p className="p-4 mb-5 border-l border-primary">{bio}</p>}
 
-          <div className="flex flex-col items-center justify-center gap-2">
-            <Link href={"/"}>
-              <FaFacebookSquare size={27} />
-            </Link>
-            <Link href={"/"}>
-              <FaFacebookSquare size={27} />
-            </Link>
-            <Link href={"/"}>
-              <FaFacebookSquare size={27} />
-            </Link>
+          <div className="flex items-center justify-between gap-5">
+            <div className="flex items-center justify-start gap-5">
+              <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
+                <h3 className="text-xl">{_count.posts}</h3>
+                <p>Posts</p>
+              </div>
+              <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
+                <h3 className="text-xl">{_count.followers}</h3>
+                <p>Followers</p>
+              </div>
+              <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
+                <h3 className="text-xl">{_count.following}</h3>
+                <p>Following</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center gap-2">
+              <Link href={"/"}>
+                <FaFacebookSquare size={27} />
+              </Link>
+              <Link href={"/"}>
+                <FaFacebookSquare size={27} />
+              </Link>
+              <Link href={"/"}>
+                <FaFacebookSquare size={27} />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <EditProfileModal />
+    </>
   )
 }
 

@@ -49,11 +49,11 @@ export default function NavUserAvatar() {
           <IoBookOutline size={20} /> My Post
         </Dropdown.Item>
         <Dropdown.Item onClick={() => router.push("/bookmark")}>
-          <BsBookmark size={20} /> My Bookmarks
+          <BsBookmark size={20} />Bookmarks
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => router.push("/settings")}>
+        {/* <Dropdown.Item onClick={() => router.push("/settings")}>
           <AiOutlineSetting size={20} /> Settings
-        </Dropdown.Item>
+        </Dropdown.Item> */}
         <Divider tw="my-0 py-0" />
         <Dropdown.Item onClick={() => signOut()}>
           <MdOutlineLogout size={20} />

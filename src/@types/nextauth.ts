@@ -15,6 +15,7 @@ export interface IUser {
 	id: string | null;
 	name: string;
 	email: string;
+	bio: string;
 	image: string;
 	role: Role;
 	login: string;

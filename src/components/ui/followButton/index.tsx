@@ -136,14 +136,14 @@ const FollowButton: FC<props> = ({ followingId, isFollowing, login }) => {
   return (
     <>
       {!isFollowing ? (
-        <CustomButton onClick={onFollowUser} bgColor="primary">
+        <CustomButton onClick={onFollowUser} variants="primary">
           follow
         </CustomButton>
       ) : (
         <CustomButton
           tw="bg-transparent"
           onClick={onUnFollowUser}
-          bgColor="primary"
+          variants="primary"
         >
           unfollow
         </CustomButton>

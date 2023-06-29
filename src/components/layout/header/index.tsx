@@ -63,7 +63,7 @@ const AppHeader = () => {
             <CustomButton
               tw="py-1"
               onClick={() => setShowModal(true)}
-              bgColor="primary"
+              variants="primary"
             >
               Login
             </CustomButton>

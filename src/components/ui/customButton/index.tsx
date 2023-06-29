@@ -3,8 +3,8 @@ import styled from "@emotion/styled"
 import { Button } from "react-daisyui"
 import tw from "twin.macro"
 
-type TbgColor = {
-  bgColor?: "primary" | "secondary" | "transparent" | undefined
+type Tvariant = {
+  variants?: "primary" | "secondary" | "transparent" | undefined
 }
 
 interface props {
@@ -12,7 +12,7 @@ interface props {
   onClick?: () => void;
   className?: string;
   type?: "button" | "submit" | "reset" | undefined;
-  bgColor?: TbgColor["bgColor"];
+  variants?: Tvariant["variants"];
   loading?: boolean;
   disabled?: boolean;
 }
@@ -22,7 +22,7 @@ const CustomButton = ({
   onClick,
   className,
   type,
-  bgColor,
+  variants,
   loading,
   disabled,
   ...rest
@@ -33,7 +33,7 @@ const CustomButton = ({
       type={type}
       onClick={onClick}
       className={className}
-      bgColor={bgColor}
+      variants={variants}
 	  loading={loading}
 	  disabled={disabled}
     >
@@ -43,12 +43,12 @@ const CustomButton = ({
 }
 
 const ButtonStyled = styled(Button)(
-  ({ bgColor }: { bgColor: TbgColor["bgColor"] }) => [
+  ({ variants }: { variants: Tvariant["variants"] }) => [
     tw`min-h-[40px] h-auto capitalize text-white py-0 text-sm font-normal transition-all duration-300 ease-in-out`,
-    bgColor === "primary" && tw`bg-primary`,
-    bgColor === "secondary" && tw`bg-secondary`,
-    bgColor === "transparent" && tw`bg-transparent`,
-    bgColor === undefined && tw`hover:bg-primary`,
+    variants === "primary" && tw`bg-primary`,
+    variants === "secondary" && tw`bg-secondary`,
+    variants === "transparent" && tw`bg-transparent`,
+    variants === undefined && tw`hover:bg-primary`,
   ],
 )
 

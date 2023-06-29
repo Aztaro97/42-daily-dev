@@ -9,6 +9,11 @@ interface StateProps {
 	showAsideBar: boolean;
 	setShowAsideBar: (val: boolean) => void;
 
+	// Edit Profile Modal
+	showEditModal: boolean;
+	setShowEditModal: (val: boolean) => void;
+	toggleShowEditModal: () => void;
+
 }
 
 const useStore = create<StateProps>((set) => ({
@@ -18,6 +23,10 @@ const useStore = create<StateProps>((set) => ({
 
 	showAsideBar: false,
 	setShowAsideBar: (showAsideBar) => set({ showAsideBar }),
+
+	showEditModal: false,
+	setShowEditModal: (showEditModal) => set({ showEditModal }),
+	toggleShowEditModal: () => set((state) => ({ showEditModal: !state.showEditModal })),
 }))
 
 export default useStore;
