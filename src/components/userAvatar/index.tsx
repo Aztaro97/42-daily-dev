@@ -18,8 +18,6 @@ export default function NavUserAvatar() {
   const router = useRouter()
   const { data: sessionData, status } = useSession()
 
-  console.log("sessionData", sessionData)
-
   return (
     <Dropdown end={true} vertical="bottom">
       <Button color="ghost" className="avatar" shape="circle">

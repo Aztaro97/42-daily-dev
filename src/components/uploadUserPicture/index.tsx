@@ -1,10 +1,7 @@
+import { fileURLToPath } from "url"
 import React, { ChangeEvent, useEffect, useRef, useState } from "react"
-import {
-  Coordinates,
-  Cropper,
-  CropperRef,
-  RawAspectRatio,
-} from "react-advanced-cropper"
+import { useSession } from "next-auth/react"
+import { Cropper, CropperRef } from "react-advanced-cropper"
 import { Button, FileInput, Modal } from "react-daisyui"
 
 import { api } from "@/utils/api"
@@ -19,28 +16,57 @@ interface props {
 
 const UploadUserPicture = ({ currentImage, login }: props) => {
   const [image, setImage] = useState<string>(currentImage)
-  const [coordinates, setCoordinates] = useState<Coordinates | null>()
-  const [croppedImage, setCroppedImage] = useState<string | undefined>("")
   const inputRef = useRef<HTMLInputElement | null>(null)
   const cropperRef = useRef<CropperRef>(null)
+
+  const { data: session, update: sessionUpdate } = useSession()
 
   const { showPictureModal, setShowPictureModal } = useStore()
 
   const tRPCUtils = api.useContext()
 
   const updateUserPicture = api.user.updateUserPicture.useMutation({
-    onSuccess: () => {
+    onSuccess: (newData) => {
       setShowPictureModal(false)
       successAlert("Picture Updated")
+      //   Updated Picture from the user session image
+      sessionUpdate({
+        user: {
+          image: newData.image,
+        },
+      })
+    },
+    onMutate: async (newData) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await tRPCUtils.user.getUserProfileByLogin.cancel({ login })
+      // Snapshot the previous value
+      const previousValue = tRPCUtils.user.getUserProfileByLogin.getData({
+        login,
+      })
+      // Optimistically update to the new value
+      if (previousValue) {
+        tRPCUtils.user.getUserProfileByLogin.setData({ login }, () => {
+          return {
+            ...previousValue,
+            image: newData.base64Image,
+          }
+        })
+      }
+      // Return a context object with the snapshotted value
+      return { previousValue }
+    },
+    onError: (error, newData, context) => {
+      tRPCUtils.user.getUserProfileByLogin.setData(
+        { login },
+        {
+          ...(context?.previousValue as any),
+        },
+      )
+    },
+    onSettled: () => {
       tRPCUtils.user.getUserProfileByLogin.invalidate({ login })
     },
   })
-
-  const onChange = (cropper: CropperRef) => {
-    console.log(cropper.getCoordinates(), cropper.getCanvas())
-    setCoordinates(cropper.getCoordinates())
-    setCroppedImage(cropper.getCanvas()?.toDataURL())
-  }
 
   const onCrop = () => {
     const cropper = cropperRef.current
@@ -48,7 +74,6 @@ const UploadUserPicture = ({ currentImage, login }: props) => {
       const canvas = cropper.getCanvas()
       //   Get the cropper in blog file
       const blob = canvas && canvas.toDataURL()
-      console.log("blob", blob)
       updateUserPicture.mutate({
         base64Image: blob as string,
       })
