@@ -19,19 +19,21 @@ const UploadUserPicture = ({ currentImage, login }: props) => {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const cropperRef = useRef<CropperRef>(null)
 
-  const { data: session, update: sessionUpdate } = useSession()
+  const { data: userSession, update: sessionUpdate } = useSession()
 
   const { showPictureModal, setShowPictureModal } = useStore()
 
   const tRPCUtils = api.useContext()
 
   const updateUserPicture = api.user.updateUserPicture.useMutation({
-    onSuccess: (newData) => {
+    onSuccess: async (newData) => {
       setShowPictureModal(false)
       successAlert("Picture Updated")
       //   Updated Picture from the user session image
-      sessionUpdate({
+      await sessionUpdate({
+        ...userSession,
         user: {
+          ...userSession?.user,
           image: newData.image,
         },
       })
@@ -130,7 +132,7 @@ const UploadUserPicture = ({ currentImage, login }: props) => {
           maxHeight={1080}
         />
       </Modal.Body>
-      <Modal.Actions className="grid grid-cols-2 items-center">
+      <Modal.Actions className="grid items-center grid-cols-2">
         <CustomButton onClick={onUpload}>Change</CustomButton>
         <CustomButton
           variants="primary"
