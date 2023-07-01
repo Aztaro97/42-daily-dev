@@ -8,10 +8,10 @@
 	  @apply bg-transparent shadow-sm;
 	}
 	::-webkit-scrollbar {
-	  @apply w-3 bg-transparent;
+	  @apply w-2 bg-transparent;
 	}
 	::-webkit-scrollbar-thumb {
-	  @apply rounded-none bg-gray-500 /*color trackbar*/;
+	  @apply rounded-full bg-gray-500 /*color trackbar*/;
 	}
 	::-webkit-scrollbar-thumb:hover {
 	  @apply bg-gray-500 /*color trackbar on hover*/;
@@ -20,13 +20,13 @@
 	  @apply bg-gray-600 /*color trackbar on click*/;
 	}
 	::-webkit-scrollbar-track {
-	  @apply rounded-none bg-transparent /*color track*/;
+	  @apply rounded-full bg-transparent /*color track*/;
 	}
 	::-webkit-scrollbar-track:hover {
-	  @apply rounded-none bg-transparent /*color track on hover*/;
+	  @apply rounded-full bg-transparent /*color track on hover*/;
 	}
 	::-webkit-scrollbar-track:active {
-	  @apply rounded-none bg-transparent /*color track on click*/;
+	  @apply rounded-full bg-transparent /*color track on click*/;
 	}
 
 
