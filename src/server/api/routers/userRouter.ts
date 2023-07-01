@@ -1,13 +1,9 @@
-import cloudinary from "@/lib/cloudinary";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { editProfileSchema, tagSchema } from "@/schema/postSchema"
+import { editProfileSchema } from "@/schema/postSchema"
 import { z } from "zod";
-import slugify from "slugify"
-import { uidGenerator } from "@/lib/uidGenerator";
-import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
 import { TRPCError } from "@trpc/server";
-import { createImage, deleteImage } from "./uploadRouter";
-
+import { createCloudImage, deleteCloudImage } from "@/lib/cloudUploading";
+import { extractPublicId } from 'cloudinary-build-url'
 
 
 export const userRouter = createTRPCRouter({
@@ -87,29 +83,31 @@ export const userRouter = createTRPCRouter({
 		const { session: { userId }, prisma } = ctx;
 		const { base64Image } = input;
 
-
-
 		const user = await prisma.user.findFirst({
 			where: {
 				id: userId
+			},
+			select: {
+				image: true,
+				id: true
 			}
 		})
 
 		if (!user) {
 			throw new TRPCError({
 				code: "NOT_FOUND",
-				message: "Post Not Fund"
+				message: "User Not Fund"
 			})
 		}
 
 		// Destroy if existing Image Exist
 		if (user.image) {
-			const publicId = user.image.split(".")[0]
-			await deleteImage(publicId as string);
+			const publicId = extractPublicId(user.image)
+			await deleteCloudImage(publicId);
 		}
 
 		// Upload new Image to the Cloud
-		const cloudImage = await createImage(base64Image)
+		const cloudImage = await createCloudImage(base64Image)
 
 		// Updated Post Image Cover
 		return prisma.user.update({

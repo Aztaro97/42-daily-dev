@@ -1,34 +1,10 @@
-import cloudinary from "@/lib/cloudinary";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { tagSchema, updatePostSchema } from "@/schema/postSchema"
+import { updatePostSchema } from "@/schema/postSchema"
 import { z } from "zod";
 import slugify from "slugify"
 import { uidGenerator } from "@/lib/uidGenerator";
-import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
 import { TRPCError } from "@trpc/server";
-
-
-const createImage = async (base64Image: string) => {
-	try {
-		const imageResponse = await cloudinary.v2.uploader.upload(base64Image, { resource_type: 'image' });
-		return imageResponse
-	} catch (error) {
-		console.log(error)
-		throw new TRPCError({
-			code: 'INTERNAL_SERVER_ERROR',
-			message: 'Error Uploading Image',
-		})
-
-	}
-}
-
-const deleteImage = async (publicId: string) => {
-	try {
-		await cloudinary.v2.uploader.destroy(publicId)
-	} catch (error) {
-		console.log(error);
-	}
-}
+import { createCloudImage, deleteCloudImage } from "@/lib/cloudUploading";
 
 
 export const blogRouter = createTRPCRouter({
@@ -41,7 +17,7 @@ export const blogRouter = createTRPCRouter({
 			const { file: base64Image } = input;
 
 			// Generate Image Url from Cloudinadry
-			const cloudImage = await createImage(base64Image)
+			const cloudImage = await createCloudImage(base64Image)
 
 			return {
 				url: cloudImage.secure_url,
@@ -56,7 +32,7 @@ export const blogRouter = createTRPCRouter({
 			const { public_id } = input;
 
 			// Delete Image from Cloudinary
-			await deleteImage(public_id);
+			await deleteCloudImage(public_id);
 			return {
 				message: "Image Delete"
 			};
@@ -211,7 +187,7 @@ export const blogRouter = createTRPCRouter({
 		// Destroy Image from the cloud
 		if (post?.image) {
 			const publicId = post.image.split(".")[0]
-			await deleteImage(publicId as string);
+			await deleteCloudImage(publicId as string);
 		}
 
 		await ctx.prisma.post.delete({

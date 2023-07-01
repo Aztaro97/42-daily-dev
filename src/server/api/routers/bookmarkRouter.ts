@@ -1,10 +1,6 @@
-import cloudinary from "@/lib/cloudinary";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { tagSchema } from "@/schema/postSchema"
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
-import slugify from "slugify"
-import { uidGenerator } from "@/lib/uidGenerator";
-import { DATA_COVER_IMAGE_URL_KEY } from "@/components/coverImageUploader";
+
 
 
 

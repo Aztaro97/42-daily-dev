@@ -1,4 +1,3 @@
-import { truncate } from "fs"
 import React, { memo, useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -7,8 +6,8 @@ import dayjs from "dayjs"
 import { useSession } from "next-auth/react"
 import { Card, Tooltip } from "react-daisyui"
 import { BiCommentDots } from "react-icons/bi"
-import { GrView } from "react-icons/gr"
 import { RiHeart2Fill, RiHeart2Line } from "react-icons/ri"
+import { SlEye } from "react-icons/sl"
 import Skeleton from "react-loading-skeleton"
 import tw from "twin.macro"
 
@@ -171,7 +170,7 @@ export default function PostCard({
         <CardRightAction>
           <Tooltip color="primary" message="View">
             <CardActionIcon>
-              <GrView size={25} tw="!stroke-gray-400" />
+              <SlEye size={25} tw="!stroke-gray-400" />
               <span>{_count?.views}</span>
             </CardActionIcon>
           </Tooltip>

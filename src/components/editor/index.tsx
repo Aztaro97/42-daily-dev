@@ -43,8 +43,6 @@ export default function Editor({ postData }: { postData: editorProps }) {
     },
   })
 
-  const uploadEditorImage = api.blog.uploadEditorImage.useMutation()
-  const deleteEditorImage = api.blog.deleteEditorImage.useMutation()
   const updatePost = api.blog.updatePost.useMutation()
 
   const onSubmit = async (formData: FormData) => {

@@ -210,7 +210,6 @@ const EditProfileForm = ({ data }: Props) => {
         </FormGroup>
       </FieldErrorMessage>
       <CustomButton
-        tw="mt-3"
         variants="primary"
         type="submit"
         loading={isLoading}
