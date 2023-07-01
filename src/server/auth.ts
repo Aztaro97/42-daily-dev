@@ -12,18 +12,26 @@ import { IFortyTwoProfile } from "@/@types/nextauth";
 
 export const authOptions: NextAuthOptions = {
 	callbacks: {
-		jwt({ token, profile, account, user }) {
+		jwt({ token, profile, account, user, trigger, session }) {
+
+
+
 			/* Step 1: update the token based on the user object */
 			if (profile && account && user) {
 				token.userId = user.id
-				token.loginId = user.loginId;
-				token.email = user.email;
-				token.login = user.login;
 				token.accessToken = account.access_token;
-				token.image = user.image as string;
 
 			}
-			return token;
+
+			// trigger when user update the session
+			if (trigger === "update") {
+				return {
+					...token,
+					...session.user,
+				}
+			}
+
+			return { ...token, ...user };
 		},
 		session({ session, token }) {
 			if (token && session.user) {
