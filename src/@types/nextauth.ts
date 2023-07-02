@@ -22,6 +22,10 @@ export interface IUser {
 	loginId?: number;
 	emailVerified?: boolean;
 	accessToken?: string;
+	websiteUrl?: string,
+	twitterUrl?: string,
+	githubUrl?: string,
+	createdAt?: string,
 
 	followers: Prisma.FollowsGetPayload<{
 		include: {

@@ -20,12 +20,12 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
       <DefaultSeo {...NEXT_SEO_DEFAULT} />
       <NextProgress color={colors.PRIMARY} options={{ showSpinner: false }} />
       <main className={robotoFont.className}>
-        <GlobalStyles />
         <SkeletonTheme baseColor={"#1e293b"} highlightColor="#334155">
           {children}
         </SkeletonTheme>
-        <ToastContainer autoClose={3000} hideProgressBar />
       </main>
+      <ToastContainer autoClose={3000} hideProgressBar />
+      <GlobalStyles />
     </>
   )
 }

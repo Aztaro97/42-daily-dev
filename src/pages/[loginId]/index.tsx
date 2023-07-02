@@ -1,26 +1,17 @@
 import React, { FC, useEffect, useRef, useState } from "react"
 import { GetStaticPaths, GetStaticProps } from "next"
-import Image from "next/image"
-import Link from "next/link"
 import { useRouter } from "next/router"
-import { useSession } from "next-auth/react"
 import { Tabs } from "react-daisyui"
-import { BiCamera } from "react-icons/bi"
-import { FaFacebookSquare } from "react-icons/fa"
-import tw from "twin.macro"
 
 import { api } from "@/utils/api"
 import { getBrowserInfo } from "@/lib/getBrowserInfo"
 import useScreenView from "@/lib/useScreenView"
 import EditProfileModal from "@/components/editProfileModal"
-import NextSeo from "@/components/headSeo"
 import HeadSEO from "@/components/headSeo"
 import Layout from "@/components/layout"
 import PostContent from "@/components/postContent"
-import CustomButton from "@/components/ui/customButton"
-import FollowButton from "@/components/ui/followButton"
 import UploadUserPicture from "@/components/uploadUserPicture"
-import { IUser } from "@/@types/nextauth"
+import UserProfile from "@/components/userProfile"
 import { DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
 import useStore from "@/stores/useStore"
@@ -39,11 +30,7 @@ export default function StudentProfile({ login }: { login: string }) {
     },
   )
 
-  if (isLoading) {
-    return <>Loading...</>
-  }
-
-  if (!userInfo) {
+  if (!userInfo && !isLoading) {
     return <CustomPage404 title="Page Not Fund!" />
   }
 
@@ -51,17 +38,17 @@ export default function StudentProfile({ login }: { login: string }) {
     <>
       <HeadSEO
         title={userInfo?.name as string}
-        description="Description about the user"
+        description={userInfo?.bio as string}
         openGraph={{
           url: getBrowserInfo().url,
-          title: userInfo.name as string,
-          description: "Home Page",
+          title: userInfo?.name as string,
+          description: userInfo?.bio as string,
           images: [
             {
-              url: (userInfo.image ?? DefaultProfileImg.src) as string,
+              url: (userInfo?.image ?? DefaultProfileImg.src) as string,
               width: 800,
               height: 600,
-              alt: userInfo.name as string,
+              alt: userInfo?.name as string,
             },
           ],
         }}
@@ -69,7 +56,8 @@ export default function StudentProfile({ login }: { login: string }) {
 
       <Layout>
         {/* @ts-ignore */}
-        <CardProfile {...userInfo} />
+        {isLoading ? <UserProfile.Skeleton /> : <UserProfile {...userInfo} />}
+
         <Tabs
           variant="bordered"
           size="lg"
@@ -81,15 +69,15 @@ export default function StudentProfile({ login }: { login: string }) {
           <Tab value={1}>Likes</Tab>
         </Tabs>
         {tabValue === 0 ? (
-          <PostCreated userId={userInfo?.id} />
+          <PostCreated userId={userInfo?.id as string} />
         ) : (
-          <PostLiked userId={userInfo?.id} />
+          <PostLiked userId={userInfo?.id as string} />
         )}
       </Layout>
       <EditProfileModal />
       <UploadUserPicture
-        currentImage={userInfo.image!}
-        login={userInfo.login!}
+        currentImage={userInfo?.image as string}
+        login={userInfo?.login as string}
       />
     </>
   )
@@ -159,118 +147,6 @@ const PostLiked = ({ userId }: { userId: string }) => {
     </>
   )
 }
-
-interface cardProfileProps extends IUser {
-  email: string
-  //   name: string
-  //   image: string
-  login: string
-  id: string | null
-  //   followers: any[]
-  //   _count: {
-  //     posts: number
-  //     followers: number
-  //     following: number
-  //   }
-}
-
-const CardProfile: FC<cardProfileProps> = ({
-  email,
-  bio,
-  image,
-  name,
-  login,
-  id,
-  followers,
-  _count,
-}) => {
-  const setFollowUser = api.follow.setFollowUser.useMutation()
-  const { data: userSession } = useSession()
-  const { setShowEditModal, setShowPictureModal } = useStore()
-
-  //   Check if the user is following the profile user
-  //   @ts-ignore
-  const isFollowing = followers.some((fol) => fol.followingId === id)
-
-  return (
-    <>
-      <div className="grid items-start justify-center max-w-4xl grid-cols-1 gap-10 mx-auto lg:grid-cols-2">
-        <figure className="relative max-w-xl mx-auto">
-          <ProfileImage
-            src={image ?? DefaultProfileImg.src}
-            width={900}
-            height={900}
-            alt={name}
-            className=""
-          />
-          {userSession?.userId === id && (
-            <CustomButton
-              className="absolute top-2 right-2"
-              onClick={() => setShowPictureModal(true)}
-            >
-              <BiCamera size={25} />
-            </CustomButton>
-          )}
-        </figure>
-        <div className="h-full">
-          <div className="flex items-center justify-between gap-5">
-            <h2 className="mb-1 text-3xl ">{name}</h2>
-            {userSession?.userId === id ? (
-              <CustomButton
-                onClick={() => setShowEditModal(true)}
-                variants="primary"
-                className="tracking-wider"
-              >
-                Edit
-              </CustomButton>
-            ) : (
-              <FollowButton
-                login={login}
-                followingId={id as string}
-                isFollowing={isFollowing}
-              />
-            )}
-          </div>
-          <p className="mb-3 text-primary">{`@${login}`}</p>
-          {bio && <p className="p-4 mb-5 border-l border-primary">{bio}</p>}
-
-          <div className="flex items-center justify-between gap-5">
-            <div className="flex items-center justify-start gap-5">
-              <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
-                <h3 className="text-xl">{_count.posts}</h3>
-                <p>Posts</p>
-              </div>
-              <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
-                <h3 className="text-xl">{_count.followers}</h3>
-                <p>Followers</p>
-              </div>
-              <div className="flex flex-col items-center justify-center w-[5.5rem] h-24 shadow lg:w-24 lg:h-24 shadow-primary">
-                <h3 className="text-xl">{_count.following}</h3>
-                <p>Following</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center justify-center gap-2">
-              <Link href={"/"}>
-                <FaFacebookSquare size={27} />
-              </Link>
-              <Link href={"/"}>
-                <FaFacebookSquare size={27} />
-              </Link>
-              <Link href={"/"}>
-                <FaFacebookSquare size={27} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-const ProfileImage = tw(
-  Image,
-)`max-w-[600px] w-full h-[300px] object-cover object-center rounded-md`
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const ssg = generateSSGHelper()

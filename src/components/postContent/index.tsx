@@ -47,6 +47,6 @@ const PostContent: FC<postContentProps> = ({
   )
 }
 
-const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-between gap-5 w-full`
+const GridWrapper = tw.div`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-between gap-5 w-full mb-5`
 
 export default PostContent

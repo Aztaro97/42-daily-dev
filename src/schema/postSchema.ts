@@ -44,7 +44,7 @@ export const editProfileSchema = z.object({
 	email: z.string({
 		required_error: "The Email is required"
 	}),
-	bio: z.string().optional(),
+	bio: z.string().max(170).optional(),
 	githubUrl: z.string().url().optional(),
 	twitterUrl: z.string().url().optional(),
 	websiteUrl: z.string().url().optional(),

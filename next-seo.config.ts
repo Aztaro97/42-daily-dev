@@ -4,7 +4,7 @@ import { Router } from "next/router";
 
 export const NEXT_SEO_DEFAULT = {
 	title: APP_NAME,
-	titleTemplate: "%s | Home Page",
+	titleTemplate: "%s",
 	description: "42 Daily Dev App",
 	openGraph: {
 		type: "website",
