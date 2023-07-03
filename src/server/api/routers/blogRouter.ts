@@ -503,6 +503,52 @@ export const blogRouter = createTRPCRouter({
 			nextCursor,
 		};
 
-	})
+	}),
 
+	// Get Posts related to the actual post by slugs name
+	getRelatedPosts: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
+		const { slug } = input;
+
+		const post = await ctx.prisma.post.findFirst({
+			where: {
+				slug
+			},
+			select: {
+				id: true,
+				tags: true
+			}
+		})
+
+		if (!post) {
+			throw new TRPCError({
+				code: "NOT_FOUND",
+				message: "Post Not Fund"
+			})
+		}
+
+		const posts = ctx.prisma.post.findMany({
+			orderBy: {
+				createdAt: "desc"
+			},
+			where: {
+				tags: {
+					some: {
+						name: {
+							in: post.tags.map(tag => tag.name)
+						}
+					}
+				}
+			},
+			select: {
+				id: true,
+				title: true,
+				slug: true,
+				tags: true,
+				author: true
+			},
+			take: 5
+		})
+
+		return posts
+	})
 })
