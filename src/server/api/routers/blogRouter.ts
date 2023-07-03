@@ -544,7 +544,14 @@ export const blogRouter = createTRPCRouter({
 				title: true,
 				slug: true,
 				tags: true,
-				author: true
+				author: true,
+				likes: {
+					select: {
+						userId: true,
+						dislike: true,
+
+					}
+				},
 			},
 			take: 5
 		})

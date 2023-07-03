@@ -21,7 +21,7 @@ interface props {
 const RelatedPosts = ({ relatedData, isLoadingRelated }: props) => {
   return (
     <Container>
-      <h1 className="mb-2 text-xl text-white">Related Post</h1>
+      <h1 className="mb-2 text-xl text-white">Related Posts</h1>
       <div className="flex flex-col gap-1">
         {relatedData &&
           relatedData.map((post, index) => (
