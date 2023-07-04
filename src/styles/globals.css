@@ -2,36 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
-	::-webkit-scrollbar-thumb {
-	  @apply bg-transparent shadow-sm;
-	}
-	::-webkit-scrollbar {
-	  @apply w-2 bg-transparent;
-	}
-	::-webkit-scrollbar-thumb {
-	  @apply rounded-full bg-gray-500 /*color trackbar*/;
-	}
-	::-webkit-scrollbar-thumb:hover {
-	  @apply bg-gray-500 /*color trackbar on hover*/;
-	}
-	::-webkit-scrollbar-thumb:active {
-	  @apply bg-gray-600 /*color trackbar on click*/;
-	}
-	::-webkit-scrollbar-track {
-	  @apply rounded-full bg-transparent /*color track*/;
-	}
-	::-webkit-scrollbar-track:hover {
-	  @apply rounded-full bg-transparent /*color track on hover*/;
-	}
-	::-webkit-scrollbar-track:active {
-	  @apply rounded-full bg-transparent /*color track on click*/;
-	}
+  ::-webkit-scrollbar-thumb {
+    @apply bg-transparent shadow-sm;
+  }
+  ::-webkit-scrollbar {
+    @apply w-2 bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply /*color trackbar*/ rounded-full bg-gray-500;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply /*color trackbar on hover*/ bg-gray-500;
+  }
+  ::-webkit-scrollbar-thumb:active {
+    @apply /*color trackbar on click*/ bg-gray-600;
+  }
+  ::-webkit-scrollbar-track {
+    @apply /*color track*/ rounded-full bg-transparent;
+  }
+  ::-webkit-scrollbar-track:hover {
+    @apply /*color track on hover*/ rounded-full bg-transparent;
+  }
+  ::-webkit-scrollbar-track:active {
+    @apply /*color track on click*/ rounded-full bg-transparent;
+  }
 
-
-	/* Add Blur to the backdrop behin modal */
-	.modal {
-		@apply backdrop-filter backdrop-blur-sm;
-	}
+  /* Add Blur to the backdrop behin modal */
+  .modal {
+    @apply backdrop-blur-sm backdrop-filter;
+  }
 }

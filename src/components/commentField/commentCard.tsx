@@ -86,12 +86,14 @@ const CommentCard: FC<commenterProps> = ({
   return (
     <>
       <Container>
-        <ProfilePicture
-          src={author.image ?? ""}
-          width={140}
-          height={140}
-          alt={author.name}
-        />
+        <Link href={`/${author.login}`}>
+          <ProfilePicture
+            src={author.image ?? ""}
+            width={140}
+            height={140}
+            alt={author.name}
+          />
+        </Link>
         <CommentBox>
           <CommentHeader>
             <CommentHeaderLeft>
@@ -151,7 +153,9 @@ const CommentCard: FC<commenterProps> = ({
 }
 
 const Container = tw.div`flex gap-2 w-full`
-const ProfilePicture = tw(Image)`w-10 h-10 rounded-full`
+const ProfilePicture = tw(
+  Image,
+)`w-10 h-10 rounded-full object-cover object-center`
 const CommentBox = tw.div`border border-gray-400 border-opacity-50 rounded-md p-3 w-full`
 const CommentHeader = tw.div`flex items-center justify-between gap-3 mb-3`
 const CommentHeaderLeft = tw.div`flex items-center gap-3`

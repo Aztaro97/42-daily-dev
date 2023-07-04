@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react"
+import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import styled from "@emotion/styled"
@@ -21,6 +21,7 @@ interface props {
 }
 
 export default function PostDetails({ data }: props) {
+  const commentRef = useRef<null>(null)
   return (
     <PostWrapper>
       <BannerWrapper>
@@ -57,7 +58,7 @@ export default function PostDetails({ data }: props) {
 
       <Divider className="m-0" />
       <div className="flex items-center justify-between">
-        <PostAction data={data} />
+        <PostAction data={data} commentRef={commentRef} />
         <ShareButton />
       </div>
       <Divider className="m-0" />
@@ -72,7 +73,7 @@ export default function PostDetails({ data }: props) {
           ))}
         </TagStyled>
       </FlexWrapper>
-      <CommentField postId={data?.id as string} />
+      <CommentField postId={data?.id as string} commentRef={commentRef} />
     </PostWrapper>
   )
 }

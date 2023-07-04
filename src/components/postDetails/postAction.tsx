@@ -9,9 +9,10 @@ import { infoAlert } from "../alert"
 
 interface props {
   data: IPost | any
+  commentRef: React.RefObject<HTMLDivElement>
 }
 
-const PostAction = ({ data }: props) => {
+const PostAction = ({ data, commentRef }: props) => {
   const [likeByMe, setLikeByMe] = useState<boolean>(false)
 
   const { data: userSession } = useSession()
@@ -85,6 +86,15 @@ const PostAction = ({ data }: props) => {
     [toggleLike, data.id, userSession],
   )
 
+  const onScrollCommentView = () => {
+    if (!commentRef?.current) return
+    commentRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest",
+    })
+  }
+
   useEffect(() => {
     // Check if the user have liked a post
     // Set False by default if any post liked
@@ -95,17 +105,17 @@ const PostAction = ({ data }: props) => {
     setLikeByMe(liked)
   }, [likeByMe, data.likes, userSession])
   return (
-    <div className="flex space-x-3">
+    <div className="flex space-x-4">
       <div className="flex space-x-1">
         {likeByMe ? (
           <RiHeart2Fill
-            tw="text-primary cursor-pointer"
+            className="text-primary cursor-pointer"
             size={25}
             onClick={() => onLikeOrDislikePost(false)}
           />
         ) : (
           <RiHeart2Fill
-            tw="cursor-pointer"
+            className="cursor-pointer"
             size={25}
             onClick={() => onLikeOrDislikePost(true)}
           />
@@ -113,7 +123,11 @@ const PostAction = ({ data }: props) => {
         <span>{data._count.likes}</span>
       </div>
       <div className="flex space-x-1">
-        <BiCommentDots size={25} />
+        <BiCommentDots
+          size={25}
+          onClick={onScrollCommentView}
+          className="cursor-pointer"
+        />
         <span>{data._count.comments}</span>
       </div>
     </div>

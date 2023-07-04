@@ -37,7 +37,7 @@ const enabledPlugins = [
   "clear",
   "logger",
   "mode-toggle",
-  // "full-screen",
+  "full-screen",
 ]
 
 const MarkdownEditor: FC<markdownProps> = ({ value, className, ...rest }) => {
