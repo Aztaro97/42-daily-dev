@@ -3,111 +3,24 @@ import Image from "next/image"
 import Link from "next/link"
 import styled from "@emotion/styled"
 import dayjs from "dayjs"
-import { useSession } from "next-auth/react"
 import { Avatar, Divider } from "react-daisyui"
-import { BiCommentDots } from "react-icons/bi"
 import { MdOutlineAccessTime } from "react-icons/md"
-import { RiHeart2Fill } from "react-icons/ri"
 import Skeleton from "react-loading-skeleton"
 import ReadingTime from "reading-time"
 import tw from "twin.macro"
 
-import { api } from "@/utils/api"
 import CommentField from "@/components/commentField"
 import MdRendering from "@/components/mdRendering"
 import ShareButton from "@/components/shareButton"
 import { IPost } from "@/@types/types"
 import { DefaultPostImg, DefaultProfileImg } from "@/assets"
-import { infoAlert } from "../alert"
+import PostAction from "./postAction"
 
 interface props {
   data: IPost | any
 }
 
 export default function PostDetails({ data }: props) {
-  const [likeByMe, setLikeByMe] = useState<boolean>(false)
-
-  const { data: userSession } = useSession()
-  const tRpcUtils = api.useContext()
-  const toggleLike = api.like.toggleLike.useMutation({
-    onMutate: async ({ dislike, postId }) => {
-      const dislikeCount = dislike ? 1 : -1
-      await tRpcUtils.blog.getPostBySlug.cancel({ slug: data.slug })
-
-      const prevPost = tRpcUtils.blog.getPostBySlug.getData({ slug: data.slug })
-
-      //   Updated Like count from post
-      tRpcUtils.blog.getPostBySlug.setData(
-        { slug: data.slug },
-        (oldData: any) => {
-          return {
-            ...oldData,
-            likes: !oldData.likes.length
-              ? oldData.likes.concat({
-                  dislike: dislike,
-                  userId: userSession?.userId,
-                })
-              : oldData.likes.map((like: any) => {
-                  if (like.userId === userSession?.userId) {
-                    return {
-                      ...like,
-                      dislike: dislike,
-                      userId: like.userId,
-                    }
-                  }
-                  return like
-                }),
-            _count: {
-              ...oldData._count,
-              likes: oldData._count.likes + dislikeCount,
-            },
-          }
-        },
-      )
-      return {
-        prevPost,
-      }
-    },
-    onError(error, variables, context) {
-      tRpcUtils.blog.getPostBySlug.setData(
-        { slug: data.slug },
-        { ...(context?.prevPost as any) },
-      )
-    },
-    // Alway Refresh after success or error
-    onSettled: () => {
-      tRpcUtils.blog.getPostBySlug.invalidate({ slug: data.slug })
-    },
-    onSuccess: (data) => {
-      console.log("like success")
-    },
-  })
-
-  const onLikeOrDislikePost = useCallback(
-    async (dislike: boolean) => {
-      if (!userSession) {
-        infoAlert("You should login")
-      }
-      if (userSession && userSession.userId) {
-        toggleLike.mutate({
-          postId: data.id,
-          dislike,
-        })
-      }
-    },
-    [toggleLike, data.id, userSession],
-  )
-
-  useEffect(() => {
-    // Check if the user have liked a post
-    // Set False by default if any post liked
-    const liked =
-      !!data.likes.find(
-        (like: any) => like.userId == userSession?.userId && like.dislike,
-      ) || false
-    setLikeByMe(liked)
-  }, [likeByMe, data.likes, userSession])
-
   return (
     <PostWrapper>
       <BannerWrapper>
@@ -144,32 +57,10 @@ export default function PostDetails({ data }: props) {
 
       <Divider className="m-0" />
       <div className="flex items-center justify-between">
-        <div className="flex space-x-3">
-          <div className="flex space-x-1">
-            {likeByMe ? (
-              <RiHeart2Fill
-                tw="text-primary cursor-pointer"
-                size={25}
-                onClick={() => onLikeOrDislikePost(false)}
-              />
-            ) : (
-              <RiHeart2Fill
-			  tw="cursor-pointer"
-                size={25}
-                onClick={() => onLikeOrDislikePost(true)}
-              />
-            )}
-            <span>{data._count.likes}</span>
-          </div>
-          <div className="flex space-x-1">
-            <BiCommentDots size={25} />
-            <span>{data._count.comments}</span>
-          </div>
-        </div>
+        <PostAction data={data} />
         <ShareButton />
       </div>
       <Divider className="m-0" />
-
       <BodyWraper>
         <MdRendering data={data?.content} />
       </BodyWraper>
