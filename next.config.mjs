@@ -9,13 +9,16 @@ import withTwin from "./withTwin.cjs"
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  compiler: {
+    emotion: true,
+  },
   images: {
     domains: [
       "i.pravatar.cc",
       "daily-now-res.cloudinary.com",
       "res.cloudinary.com",
       "cdn.intra.42.fr",
-	  "picsum.photos"
+      "picsum.photos",
     ],
   },
 }
