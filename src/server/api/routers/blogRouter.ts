@@ -67,11 +67,11 @@ export const blogRouter = createTRPCRouter({
 	}),
 
 
-	// Update Post By Id
-	updatePost: protectedProcedure
+	// Updated Post as Draft By Id
+	createDraftPost: protectedProcedure
 		.input(updatePostSchema)
 		.mutation(async ({ ctx, input }) => {
-			const { content, published, tags, title, id: postId } = input
+			const { content, tags, title, id: postId } = input
 			const authorId = ctx.session.userId;
 
 			// Generate Post Slug
@@ -84,7 +84,7 @@ export const blogRouter = createTRPCRouter({
 				data: {
 					title,
 					content,
-					published,
+					published: false,
 					slug,
 					tags: {
 						// Existing tags have id, connect them. New tags don't, create them.
@@ -103,7 +103,44 @@ export const blogRouter = createTRPCRouter({
 			})
 
 			return newPost
+		}),
 
+	// Updated Post as Published By Id
+	publishedPost: protectedProcedure
+		.input(updatePostSchema)
+		.mutation(async ({ ctx, input }) => {
+			const { content, tags, title, id: postId } = input
+			const authorId = ctx.session.userId;
+
+			// Generate Post Slug
+			const slug = slugify(title, { lower: true }) + "-" + uidGenerator()
+
+			const newPost = await ctx.prisma.post.update({
+				where: {
+					id: postId
+				},
+				data: {
+					title,
+					content,
+					published: true,
+					slug,
+					tags: {
+						// Existing tags have id, connect them. New tags don't, create them.
+						connect: tags?.filter(t => ("id" in t)).map(t => ({ id: t.id })) ?? [],
+						create: tags?.filter(t => !("id" in t)).map(t => ({
+							name: t.name,
+							slug: `${slugify(t.name)}-${uidGenerator()}`,
+						})) ?? [],
+					},
+					author: {
+						connect: {
+							id: authorId
+						}
+					}
+				},
+			})
+
+			return newPost
 		}),
 
 	// Get All User Post

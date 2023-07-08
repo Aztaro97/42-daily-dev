@@ -15,7 +15,9 @@ export const postSchema = z.object({
 		required_error: "The content is required"
 	}).min(10),
 	published: z.boolean(),
-	tags: z.array(tagSchema).optional(),
+	tags: z.array(tagSchema).max(3, {
+		message: "The maximum of tags should be 3"
+	}).optional(),
 })
 
 export const updatePostSchema = z.object({

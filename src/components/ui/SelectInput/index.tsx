@@ -6,7 +6,6 @@ import tw from "twin.macro"
 
 import { tagsOptions } from "@/utils/data"
 
-
 const animatedComponents = makeAnimated()
 
 const SelectInput = ({ ...rest }) => {
@@ -27,7 +26,7 @@ const SelectInput = ({ ...rest }) => {
 }
 
 const SelectStyled = styled(Select)`
-  ${tw`!bg-transparent z-50 text-gray-400`}
+  ${tw`!bg-transparent text-gray-400`}
 
   & .react-select__control {
     ${tw`!bg-transparent border-none`}
@@ -57,6 +56,7 @@ const SelectStyled = styled(Select)`
 
   /* Multi value select box */
   & .react-select__value-container {
+    ${tw`gap-2`}
     & div {
       ${tw`mr-1 text-white rounded-lg bg-primary`}
       & .react-select__multi-value__label {

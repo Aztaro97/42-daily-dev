@@ -25,7 +25,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
         </SkeletonTheme>
       </main>
       <ToastContainer autoClose={3000} hideProgressBar />
-      <GlobalStyles />
+      {/* <GlobalStyles /> */}
     </>
   )
 }

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
 import styled from "@emotion/styled"
 import { zodResolver } from "@hookform/resolvers/zod"
-import blobUtil from "blob-util"
 import { Divider } from "react-daisyui"
 import { Controller, useForm } from "react-hook-form"
 import TextareaAutoSize from "react-textarea-autosize"
@@ -9,7 +8,6 @@ import tw from "twin.macro"
 import { z } from "zod"
 
 import { api } from "@/utils/api"
-import { convertToBase64 } from "@/utils/utils"
 import CustomButton from "@/components/ui/customButton"
 import { postSchema } from "@/schema/postSchema"
 import { successAlert } from "../alert"
@@ -31,7 +29,6 @@ export default function Editor({ postData }: { postData: editorProps }) {
     register,
     handleSubmit,
     control,
-    setValue,
     formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(postSchema),
@@ -43,15 +40,15 @@ export default function Editor({ postData }: { postData: editorProps }) {
     },
   })
 
-  const updatePost = api.blog.updatePost.useMutation()
+  const publishedPost = api.blog.publishedPost.useMutation()
+  const createDraftPost = api.blog.createDraftPost.useMutation()
 
-  const onSubmit = async (formData: FormData) => {
+  const handleOnPublishPost = async (formData: FormData) => {
     if (isValid) {
-      const response = await updatePost.mutateAsync({
+      const response = await publishedPost.mutateAsync({
         id: formData.id,
         title: formData.title,
         tags: formData.tags,
-        published: true,
         content: formData.content,
       })
       if (response) {
@@ -60,13 +57,22 @@ export default function Editor({ postData }: { postData: editorProps }) {
     }
   }
 
-  const onPublish = () => {
-    console.log(" on onPublish")
-    console.log(errors)
+  const handleOnDraftPost = async (formData: FormData) => {
+    if (isValid) {
+      const response = await createDraftPost.mutateAsync({
+        id: formData.id,
+        title: formData.title,
+        tags: formData.tags,
+        content: formData.content,
+      })
+      if (response) {
+        successAlert("Post saved as Draft")
+      }
+    }
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(handleOnPublishPost)}>
       <FieldErrorMessage errors={errors} name="title">
         <TextareaAutoSizeStyled
           autoFocus
@@ -111,12 +117,16 @@ export default function Editor({ postData }: { postData: editorProps }) {
         <CustomButton
           variants="primary"
           type="submit"
-          loading={updatePost.isLoading}
-          onClick={onPublish}
+          loading={publishedPost.isLoading}
         >
           Publish
         </CustomButton>
-        <CustomButton>Save draft</CustomButton>
+        <CustomButton
+          loading={createDraftPost.isLoading}
+          onClick={handleSubmit(handleOnDraftPost)}
+        >
+          Save draft
+        </CustomButton>
       </ActionButtonWrapper>
     </Form>
   )

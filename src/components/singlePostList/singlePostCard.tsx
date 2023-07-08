@@ -147,7 +147,7 @@ PostCardTwo.Skeleton = function PostCardTwoSkeleton() {
   return (
     <CardStyled>
       <div>
-        <Skeleton width={300} height={20} />
+        <Skeleton className="w-full" height={20} />
         <Skeleton width={100} height={10} />
       </div>
       <div className="flex items-center justify-center">
@@ -160,7 +160,7 @@ PostCardTwo.Skeleton = function PostCardTwoSkeleton() {
   )
 }
 
-const CardStyled = tw.div`grid grid-cols-3 items-center gap-5  justify-between py-5 px-6 border border-gray-400 border-opacity-50`
+const CardStyled = tw.div`grid grid-cols-[2fr_1fr_1fr] items-center gap-5  justify-between py-5 px-6 border border-gray-400 border-opacity-50`
 const CardTitle = tw.h2`text-white text-xl`
 const CardDate = tw.p``
 const CardStatus = styled.p(({ published }: { published: boolean }) => [

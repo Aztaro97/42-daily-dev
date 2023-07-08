@@ -41,7 +41,6 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/marked": "^4.3.0",
     "@types/react-howler": "^5.2.0",
-    "blob-util": "^2.0.2",
     "cloudinary": "^1.36.2",
     "cloudinary-build-url": "^0.2.4",
     "contentlayer": "^0.3.1",
