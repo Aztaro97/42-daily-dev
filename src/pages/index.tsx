@@ -8,6 +8,7 @@ import HeadSEO from "@/components/headSeo"
 import Layout from "@/components/layout"
 import PostContent from "@/components/postContent"
 import { DefaultPostImg } from "@/assets"
+import { APP_DESCRIPTION, APP_NAME } from "@/constants/constants"
 
 export const LIMIT_ITEMS_PER_PAGE: number = 9
 
@@ -35,18 +36,18 @@ function HomePage() {
   return (
     <>
       <HeadSEO
-        title="Home Page"
-        description="Home"
+        title={`${APP_NAME} | Home Page`}
+        description={APP_DESCRIPTION}
         openGraph={{
           url: getBrowserInfo().url,
-          title: "Home Page",
-          description: "Home Page",
+          title: `${APP_NAME} | Home Page`,
+          description: APP_DESCRIPTION,
           images: [
             {
               url: DefaultPostImg.src,
               width: 800,
               height: 600,
-              alt: "Home Page",
+              alt: `${APP_NAME} Logo`,
             },
           ],
         }}

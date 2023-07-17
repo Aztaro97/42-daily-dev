@@ -128,6 +128,9 @@ dependencies:
   next-seo:
     specifier: ^6.0.0
     version: 6.0.0(next@13.3.1)(react-dom@18.2.0)(react@18.2.0)
+  next-sitemap:
+    specifier: ^4.1.8
+    version: 4.1.8(next@13.3.1)
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -997,6 +1000,10 @@ packages:
       type-fest: 3.9.0
     dev: false
 
+  /@corex/deepmerge@4.0.43:
+    resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
+    dev: false
+
   /@cspotcode/source-map-support@0.8.1:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
@@ -1639,6 +1646,10 @@ packages:
 
   /@next/env@13.3.1:
     resolution: {integrity: sha512-EDtCoedIZC7JlUQ3uaQpSc4aVmyhbLHmQVALg7pFfQgOTjgSnn7mKtA0DiCMkYvvsx6aFb5octGMtWrOtGXW9A==}
+    dev: false
+
+  /@next/env@13.4.10:
+    resolution: {integrity: sha512-3G1yD/XKTSLdihyDSa8JEsaWOELY+OWe08o0LUYzfuHp1zHDA8SObQlzKt+v+wrkkPcnPweoLH1ImZeUa0A1NQ==}
     dev: false
 
   /@next/eslint-plugin-next@13.3.1:
@@ -6112,6 +6123,20 @@ packages:
       next: 13.3.1(@babel/core@7.21.4)(@opentelemetry/api@1.4.1)(babel-plugin-macros@3.1.0)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /next-sitemap@4.1.8(next@13.3.1):
+    resolution: {integrity: sha512-XAXpBHX4o89JfMgvrm0zimlZwpu2iBPXHpimJMUrqOZSc4C2oB1Lv89mxuVON9IE8HOezaM+w4GjJxcYCuGPTQ==}
+    engines: {node: '>=14.18'}
+    hasBin: true
+    peerDependencies:
+      next: '*'
+    dependencies:
+      '@corex/deepmerge': 4.0.43
+      '@next/env': 13.4.10
+      fast-glob: 3.2.12
+      minimist: 1.2.8
+      next: 13.3.1(@babel/core@7.21.4)(@opentelemetry/api@1.4.1)(babel-plugin-macros@3.1.0)(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /next@13.3.1(@babel/core@7.21.4)(@opentelemetry/api@1.4.1)(babel-plugin-macros@3.1.0)(react-dom@18.2.0)(react@18.2.0):

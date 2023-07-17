@@ -18,7 +18,7 @@ const ShareButton = () => {
       ? window.location.origin
       : ""
 
-  const originUrl = `${origin}${asPath}` as string;
+  const originUrl = `${origin}${asPath}` as string
   return (
     <MediaWrapper>
       <MediaText>Share:</MediaText>

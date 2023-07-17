@@ -30,7 +30,7 @@ export default function StudentProfile({ login }: { login: string }) {
     },
   )
 
-  if (!userInfo && !isLoading) {
+  if (!userInfo) {
     return <CustomPage404 title="Page Not Fund!" />
   }
 

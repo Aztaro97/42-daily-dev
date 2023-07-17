@@ -7,3 +7,7 @@ export const convertToBase64 = (file: File) => {
 		fileReader.onerror = (error) => reject(error);
 	})
 };
+
+export const strippedToHTML = (content: string) => {
+	return content.replace(/<[^>]+>/g, '') as string;
+}

@@ -27,8 +27,8 @@ const plugins = [
   withBundleAnalyzer({
     enabled: process.env.ANALYZE === "true",
   }),
-  withAxiom,
   withTwin,
+  withAxiom,
   withContentlayer,
 ]
 

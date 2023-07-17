@@ -4,6 +4,7 @@ import dayjs from "dayjs"
 import tw from "twin.macro"
 
 import { api } from "@/utils/api"
+import { strippedToHTML } from "@/utils/utils"
 import { getBrowserInfo } from "@/lib/getBrowserInfo"
 import HeadSEO from "@/components/headSeo"
 import Layout from "@/components/layout"
@@ -30,19 +31,15 @@ export default function PostPage({ slug }: { slug: string }) {
       { enabled: !!slug },
     )
 
-  //   if (!postData && !isLoading) {
-  //     return <CustomPage404 title="Page Not Fund !" />
-  //   }
-
   return (
     <>
       <HeadSEO
         title={postData?.title || ""}
-        description="Description about the post"
+        description={strippedToHTML(postData?.content!)}
         openGraph={{
           url: getBrowserInfo().url,
           title: postData?.title,
-          description: "Home Page",
+          description: `${strippedToHTML(postData?.content!)}`,
           type: "article",
           article: {
             publishedTime: dayjs(postData?.createdAt).toISOString(),
