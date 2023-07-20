@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import Hamburger from "hamburger-react"
 import { useSession } from "next-auth/react"
@@ -11,6 +12,7 @@ import CreatePostButton from "@/components/createPostButton"
 import SwitchTheme from "@/components/switchTheme"
 import CustomButton from "@/components/ui/customButton"
 import NavUserAvatar from "@/components/userAvatar"
+import { WhiteLogoSVG } from "@/assets"
 import useStore from "@/stores/useStore"
 
 const AppHeader = () => {
@@ -44,7 +46,13 @@ const AppHeader = () => {
             />
           </HamburgerWrapper>
           <Link href="/" className="hidden md:block" color="ghost">
-            <h1>Logo</h1>
+            <Image
+              src={WhiteLogoSVG}
+              alt="Logo"
+              width={100}
+              height={100}
+              className="w-8 h-8"
+            />
           </Link>
         </LeftNav>
         <RightNav>
