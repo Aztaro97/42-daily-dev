@@ -103,28 +103,30 @@ const CommentCard: FC<commenterProps> = ({
               <span>-</span>
               <CommentDate>{dayjs().to(dayjs(createdAt))}</CommentDate>
             </CommentHeaderLeft>
-            <CommentHeaderRight>
-              <Dropdown horizontal="left">
-                <Dropdown.Toggle>
-                  <TbDotsVertical />
-                </Dropdown.Toggle>
-                <div>
-                  <Dropdown.Menu className="w-52">
-                    <Dropdown.Item
-                      onClick={() => router.push(`/comment/edit/`)}
-                    >
-                      Edit
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      className="text-red-500"
-                      onClick={() => setShowModal(true)}
-                    >
-                      Delete
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </div>
-              </Dropdown>
-            </CommentHeaderRight>
+            {sessionData?.userId === author.id && (
+              <CommentHeaderRight>
+                <Dropdown horizontal="left">
+                  <Dropdown.Toggle>
+                    <TbDotsVertical />
+                  </Dropdown.Toggle>
+                  <div>
+                    <Dropdown.Menu className="w-52">
+                      <Dropdown.Item
+                        onClick={() => router.push(`/comment/edit/`)}
+                      >
+                        Edit
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        className="text-red-500"
+                        onClick={() => setShowModal(true)}
+                      >
+                        Delete
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </div>
+                </Dropdown>
+              </CommentHeaderRight>
+            )}
           </CommentHeader>
           <CommentContent>
             <MdRendering data={content} />

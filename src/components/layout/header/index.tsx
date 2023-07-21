@@ -12,7 +12,7 @@ import CreatePostButton from "@/components/createPostButton"
 import SwitchTheme from "@/components/switchTheme"
 import CustomButton from "@/components/ui/customButton"
 import NavUserAvatar from "@/components/userAvatar"
-import { WhiteLogoSVG } from "@/assets"
+import { WhiteLargeLogo, WhiteLogoSVG } from "@/assets"
 import useStore from "@/stores/useStore"
 
 const AppHeader = () => {
@@ -47,11 +47,11 @@ const AppHeader = () => {
           </HamburgerWrapper>
           <Link href="/" className="hidden md:block" color="ghost">
             <Image
-              src={WhiteLogoSVG}
+              src={WhiteLargeLogo}
               alt="Logo"
-              width={100}
-              height={100}
-              className="w-8 h-8"
+              width={400}
+              height={400}
+              className="w-20 h-auto"
             />
           </Link>
         </LeftNav>

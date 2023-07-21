@@ -7,8 +7,8 @@
   "description": "42daily is a platform where you can share your daily thoughts and ideas with the world.",
   "repository": {
     "type": "git",
-    "url": "",
-    "directory": ""
+    "url": "https://www.42daily.dev/",
+    "directory": "https://github.com/Aztaro97/42-daily-dev"
   },
   "scripts": {
     "build": "next build",

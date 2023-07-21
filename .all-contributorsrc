@@ -1,5 +1,5 @@
 {
-  "projectName": "42daily",
+  "projectName": "42daily.dev",
   "projectOwner": "aztaro97",
   "repoHost": "https://github.com",
   "files": [
@@ -22,5 +22,11 @@
   },
   "linkToUsage": true,
   "skipCi": true,
-  "contributors": []
+  "contributors": [
+    {
+      "name": "aztaro97",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17960201?v=4",
+      "profile": ""
+    }
+  ]
 }
