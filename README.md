@@ -1,19 +1,18 @@
 <!-- PROJECT INFOS -->
-
 <div align="center">
- <a href="https://github.com/Aztaro97/42-daily-App"><img src="https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png" height="80px" /></a>
- <h1>42 Daily</h1>
+ <a href="https://github.com/Aztaro97/42-daily-App"><img src="https://raw.githubusercontent.com/Aztaro97/42-daily-dev/eb527258c09abe3a648fe291db11f20cfc57238c/src/assets/img/logo_white_large.svg" height="80px" /></a>
+
+<br />
 
  <p align="center">
-  <a><img src="https://img.shields.io/github/stars/pheralb/slug" /></a>
- <a><img src="https://img.shields.io/badge/LICENSE-MIT-brightgreen" /></a>
+  <a><img src="https://img.shields.io/github/stars/aztaro97/42-daily-dev" /></a>
  <a><img src="https://img.shields.io/badge/LICENSE-MIT-brightgreen" /></a>
  </p>
 </div>
 
 
 <!-- DETAIL ABOUT THE PROJECT -->
-## ✨ About The Project
+## ✨ About 42Daily.Dev
 42Daily.Dev, an open-source platform made just for 42 students like you! It's a place where you can freely share your daily thoughts and ideas with people all over the world. The coolest part is, you'll also get to connect with your fellow peers from various 42 networks, creating a supportive community.
 
 Whether you want to talk about programming, software development, tech trends, or anything related, this platform is your playground. It's all about sharing knowledge, experiences, and insights in a friendly and collaborative atmosphere.
