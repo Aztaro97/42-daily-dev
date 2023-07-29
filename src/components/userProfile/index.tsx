@@ -18,17 +18,7 @@ import CustomButton from "../ui/customButton"
 import FollowButton from "../ui/followButton"
 
 interface cardProfileProps extends IUser {
-  email: string
-  //   name: string
-  //   image: string
-  login: string
-  id: string | null
-  //   followers: any[]
-  //   _count: {
-  //     posts: number
-  //     followers: number
-  //     following: number
-  //   }
+  followers: any[]
 }
 
 export default function UserProfile({
@@ -50,8 +40,7 @@ export default function UserProfile({
   const { setShowEditModal, setShowPictureModal } = useStore()
 
   //   Check if the user is following the profile user
-  //   @ts-ignore
-  const isFollowing = followers.some((fol) => fol.followingId === id)
+  const isFollowing = followers.some((fol: any) => fol.followingId === id)
 
   return (
     <GridContainer>

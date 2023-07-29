@@ -76,7 +76,7 @@ const AppHeader = () => {
               Login
             </CustomButton>
           )}
-          <SwitchThemeStyled />
+          {/* <SwitchThemeStyled /> */}
         </RightNav>
       </NavBarStyled>
     </HeaderContainer>

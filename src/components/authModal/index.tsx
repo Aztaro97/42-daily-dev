@@ -30,7 +30,7 @@ export default function AuthModal() {
   }, [loading])
 
   return (
-    <Modal open={showModal} onClickBackdrop={toggleModal}>
+    <Modal open={showModal} backdrop={true}>
       <Modal.Header className="flex items-center justify-between">
         <SubTitle>Welcome to 42 Daily Dev</SubTitle>
         <CloseButton onClick={toggleModal}>

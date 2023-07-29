@@ -2,6 +2,7 @@ import React, { FC, useRef } from "react"
 import tw from "twin.macro"
 
 import { IPost } from "@/@types/types"
+import { LottieFile } from "../lottieFile"
 import PostCard from "../postCard"
 
 interface postContentProps {
@@ -22,6 +23,15 @@ const PostContent: FC<postContentProps> = ({
           <PostCard.Skeleton key={index} />
         ))}
       </GridWrapper>
+    )
+  }
+
+  if (!data.length) {
+    return (
+      <div tw="flex flex-col justify-center items-center w-full">
+        <LottieFile />
+        <h1 tw="text-2xl font-bold">No Post Found</h1>
+      </div>
     )
   }
 

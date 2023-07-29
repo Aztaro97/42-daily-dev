@@ -64,6 +64,6 @@ const NavMenu = () => {
 }
 
 const MenuTitle = tw(Menu.Title)`font-light mt-10`
-const MenuItem = tw(Menu.Item)`hover-bordered bordered`
+const MenuItem = tw(Menu.Item)`hover:bordered bordered`
 
 export default NavMenu

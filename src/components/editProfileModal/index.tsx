@@ -7,10 +7,10 @@ import EditProfileForm from "./editProfileForm"
 
 export default function EditProfileModal() {
   const { data: userData, isLoading } = api.user.getMyProfile.useQuery()
-  const { showEditModal, setShowEditModal, toggleShowEditModal } = useStore()
+  const { showEditModal, setShowEditModal } = useStore()
 
   return (
-    <Modal open={showEditModal} onClickBackdrop={toggleShowEditModal}>
+    <Modal open={showEditModal} backdrop={true}>
       <Button
         size="sm"
         shape="circle"
@@ -20,7 +20,7 @@ export default function EditProfileModal() {
         ✕
       </Button>
       <Modal.Header>Edit Profile</Modal.Header>
-      <Modal.Body>
+      <Modal.Body >
         {isLoading ? (
           <EditProfileForm.Skeleton />
         ) : (

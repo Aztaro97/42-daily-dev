@@ -14,7 +14,7 @@ const config = {
 		themes: [
 			{
 				night: {
-					...require("daisyui/src/colors/themes")["[data-theme=night]"],
+					...require("daisyui/src/theming/themes")["[data-theme=night]"],
 					primary: colors.PRIMARY,
 					secondary: colors.SECONDARY,
 					accent: colors.ACCENT

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react"
-import { Progress } from "react-daisyui"
 
 import { api } from "@/utils/api"
 import { getBrowserInfo } from "@/lib/getBrowserInfo"
@@ -12,7 +11,7 @@ import { APP_DESCRIPTION, APP_NAME } from "@/constants/constants"
 
 export const LIMIT_ITEMS_PER_PAGE: number = 9
 
-function HomePage() {
+export default function HomePage() {
   const bottomRef = useRef<HTMLDivElement>(null)
   const isReachedBottom = useScreenView(bottomRef)
 
@@ -63,5 +62,3 @@ function HomePage() {
     </>
   )
 }
-
-export default HomePage

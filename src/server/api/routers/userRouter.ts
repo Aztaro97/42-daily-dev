@@ -76,7 +76,6 @@ export const userRouter = createTRPCRouter({
 		return updatedUser
 	}),
 
-
 	updateUserPicture: protectedProcedure.input(z.object({
 		base64Image: z.string()
 	})).mutation(async ({ ctx, input }) => {
@@ -119,5 +118,4 @@ export const userRouter = createTRPCRouter({
 			}
 		})
 	}),
-
 })

@@ -12,20 +12,21 @@ datasource db {
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String  @map("user_id")
-    type              String
-    provider          String
-    providerAccountId String  @map("provider_account_id")
-    refresh_token     String?
-    access_token      String?
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String?
-    session_state     String?
-    created_at        Int?
-    updated_at        Int?
+    id                 String  @id @default(cuid())
+    userId             String  @map("user_id")
+    type               String
+    provider           String
+    providerAccountId  String  @map("provider_account_id")
+    refresh_token      String?
+    access_token       String?
+    expires_at         Int?
+    token_type         String?
+    scope              String?
+    id_token           String?
+    session_state      String?
+    secret_valid_until Int?
+    created_at         Int?
+    updated_at         Int?
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

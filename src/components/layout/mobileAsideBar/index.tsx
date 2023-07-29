@@ -37,7 +37,7 @@ const MobileAsideBar = ({ isOpen }: { isOpen: boolean }) => {
             <IoMdClose size={24} />
           </CloseBtn>
           <NavMenu />
-          <SwitchThemeStyled />
+          {/* <SwitchThemeStyled /> */}
         </Box>
       )}
     </AnimatePresence>

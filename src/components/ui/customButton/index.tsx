@@ -30,7 +30,7 @@ const CustomButton = ({
   return (
     <ButtonStyled
       {...rest}
-      type={type}
+      typeof={type}
       onClick={onClick}
       className={className}
       variants={variants}

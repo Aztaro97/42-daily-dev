@@ -14,7 +14,6 @@ import UploadUserPicture from "@/components/uploadUserPicture"
 import UserProfile from "@/components/userProfile"
 import { DefaultProfileImg } from "@/assets"
 import { generateSSGHelper } from "@/server/helpers/ssgHelper"
-import useStore from "@/stores/useStore"
 import CustomPage404 from "../404"
 
 const LIMIT_ITEM: number = 6
@@ -22,7 +21,6 @@ const { Tab } = Tabs
 
 export default function StudentProfile({ login }: { login: string }) {
   const [tabValue, setTabValue] = useState(0)
-  const [showPictureModal, setShowPictureModal] = useState<boolean>(false)
 
   const { data: userInfo, isLoading } = api.user.getUserProfileByLogin.useQuery(
     {

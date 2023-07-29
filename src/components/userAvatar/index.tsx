@@ -33,7 +33,7 @@ export default function NavUserAvatar() {
         )}
       </Button>
       <Dropdown.Menu
-        tw="border border-gray-400 border-opacity-50 menu-compact"
+        tw="border border-gray-400 border-opacity-50 compact"
         className="w-52"
         dataTheme={theme}
       >

@@ -36,7 +36,7 @@ function PodCastCard() {
           </Box>
 
           <CardActions>
-            <AvatarGroup space={-10}>
+            <AvatarGroup>
               <AvatarStyled src="https://i.pravatar.cc/300" size={"xs"} />
               <AvatarStyled src="https://i.pravatar.cc/300" size={"xs"} />
               <AvatarStyled src="https://i.pravatar.cc/300" size={"xs"} />

@@ -14,9 +14,7 @@ export const authOptions: NextAuthOptions = {
 	callbacks: {
 		jwt({ token, profile, account, user, trigger, session }) {
 
-
-
-			/* Step 1: update the token based on the user object */
+			// Step 1: update the token based on the user object
 			if (profile && account && user) {
 				token.userId = user.id
 				token.accessToken = account.access_token;
@@ -53,14 +51,13 @@ export const authOptions: NextAuthOptions = {
 			clientSecret: env.FORTYTWO_CLIENT_SECRET,
 			// @ts-ignore
 			profile: (profile: IFortyTwoProfile) => {
-				console.log("profile", profile)
 				return {
 					id: profile.id.toString(),
 					loginId: profile.id,
 					login: profile.login,
 					name: profile.usual_full_name,
 					email: profile.email,
-					image: profile.image.link as string,
+					image: profile.image.link,
 				}
 			}
 		}),

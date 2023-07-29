@@ -133,7 +133,7 @@ const CommentCard: FC<commenterProps> = ({
           </CommentContent>
         </CommentBox>
       </Container>
-      <Modal open={showModal} onClickBackdrop={toggleShowModal}>
+      <Modal open={showModal} backdrop={true}>
         <Modal.Body>
           <h1 className="mb-8 text-2xl text-center text-white">
             Are you sure you want to delete this Blog?

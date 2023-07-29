@@ -12,32 +12,33 @@ export enum Role {
 
 
 export interface IUser {
-	id: string | null;
-	name: string;
-	email: string;
-	bio: string;
-	image: string;
-	role: Role;
-	login: string;
-	loginId?: number;
-	emailVerified?: boolean;
-	accessToken?: string;
-	websiteUrl?: string,
-	twitterUrl?: string,
-	githubUrl?: string,
-	createdAt?: string,
+	id: string | null
+	name: string
+	email: string
+	bio: string
+	image: string
+	role: Role
+	login: string
+	loginId?: number
+	emailVerified?: boolean
+	accessToken?: string
+	websiteUrl?: string
+	twitterUrl?: string
+	githubUrl?: string
+	createdAt?: string
 
 	followers: Prisma.FollowsGetPayload<{
 		include: {
 			follower: true;
 			following: true;
 		}
-	}>;
+	}> | any[]
+
 	following: Prisma.FollowsGetPayload<{
 		include: {
 			following: true;
 		}
-	}>;
+	}> | any[]
 
 	posts: Prisma.PostGetPayload<{
 		include: {
@@ -46,9 +47,8 @@ export interface IUser {
 			views: true;
 			tags: true;
 		}
-	}>
+	}> | any[]
 
-	// Count
 	_count: {
 		posts: number;
 		followers: number;
@@ -57,8 +57,6 @@ export interface IUser {
 		comments: number;
 		views: number;
 	}
-
-
 }
 
 interface Profile42 {
