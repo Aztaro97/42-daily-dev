@@ -16,6 +16,8 @@
     "analyze": "next dev",
     "dev": "next dev",
     "postinstall": "prisma generate",
+	"db:push": "prisma db push",
+	"db:migrate": "prisma migrate dev",
     "lint": "next lint",
     "start": "next start"
   },
