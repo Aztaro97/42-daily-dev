@@ -26,7 +26,7 @@ const PostContent: FC<postContentProps> = ({
     )
   }
 
-  if (!data.length) {
+  if (data?.pages[0]?.posts.length === 0) {
     return (
       <div tw="flex flex-col justify-center items-center w-full">
         <LottieFile />
